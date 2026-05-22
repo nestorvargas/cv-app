@@ -1,0 +1,8 @@
+node_modules/
+uploads/
+*.env
+.env
+dist/
+build/
+postgres_data/
+cv_examples/*
