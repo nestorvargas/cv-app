@@ -49,9 +49,9 @@ export default function ExperienceForm({ items, onChange, lang }) {
               {item.company || (isEn ? 'New Company' : 'Nueva Empresa')}
             </span>
             <div style={{ display: 'flex', gap: 4 }}>
-              <button className="btn-icon" onClick={() => moveItem(index, -1)} title="Subir">▲</button>
-              <button className="btn-icon" onClick={() => moveItem(index, 1)} title="Bajar">▼</button>
-              <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar">✕</button>
+              <button className="btn-icon" onClick={() => moveItem(index, -1)} title="Subir"><i className="fa-solid fa-chevron-up" /></button>
+              <button className="btn-icon" onClick={() => moveItem(index, 1)} title="Bajar"><i className="fa-solid fa-chevron-down" /></button>
+              <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar"><i className="fa-solid fa-trash" /></button>
             </div>
           </div>
 

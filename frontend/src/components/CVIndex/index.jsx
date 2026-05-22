@@ -3,12 +3,11 @@ import { listProfiles, createProfile, deleteProfile } from '../../api/cvApi.js';
 import './index.css';
 
 const PROFILE_META = {
-  'devops-linux':  { icon: '🖥️',  color: '#0984e3', bg: '#e8f4fd' },
-  'desarrollador': { icon: '💻',  color: '#00b894', bg: '#e6f9f5' },
-  'lider-tecnico': { icon: '👑',  color: '#6c5ce7', bg: '#f0eeff' },
+  'devops-linux':  { faIcon: 'fa-server',      color: '#2980b9' },
+  'desarrollador': { faIcon: 'fa-laptop-code', color: '#27ae60' },
+  'lider-tecnico': { faIcon: 'fa-chess-king',  color: '#e67e22' },
 };
-
-const DEFAULT_META = { icon: '📄', color: '#636e72', bg: '#f4f4f4' };
+const DEFAULT_META = { faIcon: 'fa-file-lines', color: '#636e72' };
 
 function getProfileMeta(profileName) {
   return PROFILE_META[profileName] || DEFAULT_META;
@@ -64,53 +63,74 @@ export default function CVIndex({ onEdit }) {
 
   return (
     <div className="cv-index">
-      {/* Header */}
       <header className="cv-index-header">
         <div className="cv-index-header-inner">
           <div className="cv-index-logo">
-            <span className="cv-index-logo-icon">📋</span>
+            <div className="cv-index-logo-icon">
+              <i className="fa-solid fa-id-card" />
+            </div>
             <div>
               <h1 className="cv-index-title">CV Manager</h1>
               <p className="cv-index-subtitle">Nestor Fabian Vargas Ferrucho</p>
             </div>
           </div>
+          {!loading && (
+            <div className="cv-index-header-badge">
+              <i className="fa-solid fa-layer-group" />
+              {profiles.length} perfil{profiles.length !== 1 ? 'es' : ''}
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Main */}
       <main className="cv-index-main">
         <div className="cv-index-section-header">
           <h2 className="cv-index-section-title">Mis CVs</h2>
           <button className="cv-index-add-btn" onClick={() => setShowModal(true)}>
-            + Nuevo CV
+            <i className="fa-solid fa-plus" /> Nuevo CV
           </button>
         </div>
 
         {loading ? (
-          <div className="cv-index-loading">Cargando perfiles...</div>
+          <div className="cv-index-loading">
+            <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 10 }} />
+            Cargando perfiles...
+          </div>
         ) : (
           <div className="cv-index-grid">
             {profiles.map((profile) => {
               const meta = getProfileMeta(profile.profile_name);
               const isDefault = ['desarrollador', 'devops-linux', 'lider-tecnico'].includes(profile.profile_name);
               return (
-                <div key={profile.profile_name} className="cv-card" style={{ '--card-color': meta.color, '--card-bg': meta.bg }}>
-                  <div className="cv-card-top" style={{ background: meta.color }}>
-                    <span className="cv-card-icon">{meta.icon}</span>
+                <div key={profile.profile_name} className="cv-card">
+                  <div className="cv-card-header" style={{ background: meta.color }}>
                     {!isDefault && (
                       <button
                         className="cv-card-delete"
                         onClick={() => handleDelete(profile.profile_name)}
                         title="Eliminar perfil"
-                      >✕</button>
+                      >
+                        <i className="fa-solid fa-xmark" />
+                      </button>
                     )}
+                  </div>
+
+                  <div className="cv-card-icon-wrap">
+                    <div className="cv-card-icon-circle" style={{ background: meta.color }}>
+                      <i className={`fa-solid ${meta.faIcon}`} />
+                    </div>
                   </div>
 
                   <div className="cv-card-body">
                     <h3 className="cv-card-label">{profile.profile_label}</h3>
-                    <p className="cv-card-name">{profile.personal_info?.name || '—'}</p>
+                    <p className="cv-card-name">
+                      <i className="fa-solid fa-user" />
+                      {profile.personal_info?.name || '—'}
+                    </p>
                     <p className="cv-card-role">{profile.personal_info?.title || '—'}</p>
                   </div>
+
+                  <div className="cv-card-divider" />
 
                   <div className="cv-card-actions">
                     <button
@@ -118,14 +138,14 @@ export default function CVIndex({ onEdit }) {
                       style={{ background: meta.color }}
                       onClick={() => onEdit(profile.profile_name, profile.profile_label, 'es')}
                     >
-                      Editar ES
+                      <i className="fa-solid fa-pen-to-square" /> Editar ES
                     </button>
                     <button
                       className="cv-card-edit-btn cv-card-edit-btn--outline"
                       style={{ color: meta.color, borderColor: meta.color }}
                       onClick={() => onEdit(profile.profile_name, profile.profile_label, 'en')}
                     >
-                      Editar EN
+                      <i className="fa-solid fa-pen-to-square" /> Editar EN
                     </button>
                   </div>
                 </div>
@@ -135,10 +155,12 @@ export default function CVIndex({ onEdit }) {
         )}
       </main>
 
-      {/* Modal: nuevo CV */}
       {showModal && (
         <div className="cv-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="cv-modal" onClick={e => e.stopPropagation()}>
+            <div className="cv-modal-icon">
+              <i className="fa-solid fa-file-circle-plus" />
+            </div>
             <h3 className="cv-modal-title">Nuevo perfil de CV</h3>
             <p className="cv-modal-desc">Dale un nombre al nuevo CV (ej: "Data Science", "Mobile Developer")</p>
             <input
@@ -150,13 +172,20 @@ export default function CVIndex({ onEdit }) {
               onKeyDown={e => e.key === 'Enter' && handleCreate()}
               autoFocus
             />
-            {error && <p className="cv-modal-error">{error}</p>}
+            {error && (
+              <p className="cv-modal-error">
+                <i className="fa-solid fa-circle-exclamation" /> {error}
+              </p>
+            )}
             <div className="cv-modal-actions">
               <button className="cv-modal-cancel" onClick={() => { setShowModal(false); setNewLabel(''); setError(''); }}>
                 Cancelar
               </button>
               <button className="cv-modal-confirm" onClick={handleCreate} disabled={creating || !newLabel.trim()}>
-                {creating ? 'Creando...' : 'Crear CV'}
+                {creating
+                  ? <><i className="fa-solid fa-spinner fa-spin" /> Creando...</>
+                  : <><i className="fa-solid fa-check" /> Crear CV</>
+                }
               </button>
             </div>
           </div>

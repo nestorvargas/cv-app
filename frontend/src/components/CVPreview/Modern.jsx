@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Modern({ cvData, lang }) {
+export default function Modern({ cvData, lang, accentColor, bgColor }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Modern({ cvData, lang }) {
   ];
 
   return (
-    <div className="cv-modern-wrapper">
+    <div className="cv-modern-wrapper" style={{ '--cv-accent': accentColor || '#e67e22', '--cv-bg': bgColor || '#1a252f' }}>
       <div className="cv-modern">
         {/* FULL-WIDTH HEADER */}
         <header className="cv-modern-header">
@@ -53,7 +53,7 @@ export default function Modern({ cvData, lang }) {
             {imgSrc ? (
               <img src={imgSrc} alt="Profile" className="cv-modern-photo" />
             ) : (
-              <div className="cv-modern-photo-placeholder">👤</div>
+              <div className="cv-modern-photo-placeholder"><i className="fa-solid fa-user" /></div>
             )}
           </div>
 
@@ -134,7 +134,7 @@ export default function Modern({ cvData, lang }) {
                 <h2 className="cv-modern-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-modern-cert-item">
-                    <span className="cv-modern-cert-icon">🏅</span>
+                    <span className="cv-modern-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-modern-cert-info">
                       <div className="cv-modern-cert-name">{cert.name}</div>
                       <div className="cv-modern-cert-meta">{cert.issuer}{cert.year ? ` · ${cert.year}` : ''}</div>
@@ -148,19 +148,19 @@ export default function Modern({ cvData, lang }) {
               <h2 className="cv-modern-section-title">{L.contact}</h2>
               {personal_info.phone && (
                 <div className="cv-modern-contact-item">
-                  <span className="cv-modern-contact-icon">📞</span>
+                  <span className="cv-modern-contact-icon"><i className="fa-solid fa-phone" /></span>
                   <span>{personal_info.phone}</span>
                 </div>
               )}
               {personal_info.email && (
                 <div className="cv-modern-contact-item">
-                  <span className="cv-modern-contact-icon">✉️</span>
+                  <span className="cv-modern-contact-icon"><i className="fa-solid fa-envelope" /></span>
                   <span>{personal_info.email}</span>
                 </div>
               )}
               {personal_info.location && (
                 <div className="cv-modern-contact-item">
-                  <span className="cv-modern-contact-icon">📍</span>
+                  <span className="cv-modern-contact-icon"><i className="fa-solid fa-location-dot" /></span>
                   <span>{personal_info.location}</span>
                 </div>
               )}

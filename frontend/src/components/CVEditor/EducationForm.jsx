@@ -29,7 +29,7 @@ export default function EducationForm({ items, onChange, lang }) {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
             <span style={{ fontWeight: 600, color: '#2c3e50', fontSize: 13 }}>{item.institution || (isEn ? 'New Institution' : 'Nueva Institución')}</span>
-            <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar">✕</button>
+            <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar"><i className="fa-solid fa-trash" /></button>
           </div>
           <div className="form-group">
             <label>{isEn ? 'Institution' : 'Institución'}</label>

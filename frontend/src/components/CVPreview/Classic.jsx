@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Classic({ cvData, lang }) {
+export default function Classic({ cvData, lang, accentColor, bgColor }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Classic({ cvData, lang }) {
   ];
 
   return (
-    <div className="cv-classic-wrapper">
+    <div className="cv-classic-wrapper" style={{ '--cv-accent': accentColor || '#1abc9c', '--cv-bg': bgColor || '#2c3e50' }}>
       <div className="cv-classic">
         {/* LEFT SIDEBAR */}
         <aside className="cv-classic-sidebar">
@@ -53,7 +53,7 @@ export default function Classic({ cvData, lang }) {
             {imgSrc ? (
               <img src={imgSrc} alt="Profile" className="cv-classic-photo" />
             ) : (
-              <div className="cv-classic-photo-placeholder">👤</div>
+              <div className="cv-classic-photo-placeholder"><i className="fa-solid fa-user" /></div>
             )}
           </div>
 
@@ -61,19 +61,19 @@ export default function Classic({ cvData, lang }) {
             <h4 className="cv-classic-sidebar-title">{L.contact}</h4>
             {personal_info.phone && (
               <div className="cv-classic-contact-item">
-                <span className="cv-classic-contact-icon">📞</span>
+                <span className="cv-classic-contact-icon"><i className="fa-solid fa-phone" /></span>
                 <span>{personal_info.phone}</span>
               </div>
             )}
             {personal_info.email && (
               <div className="cv-classic-contact-item">
-                <span className="cv-classic-contact-icon">✉️</span>
+                <span className="cv-classic-contact-icon"><i className="fa-solid fa-envelope" /></span>
                 <span style={{ wordBreak: 'break-all' }}>{personal_info.email}</span>
               </div>
             )}
             {personal_info.location && (
               <div className="cv-classic-contact-item">
-                <span className="cv-classic-contact-icon">📍</span>
+                <span className="cv-classic-contact-icon"><i className="fa-solid fa-location-dot" /></span>
                 <span>{personal_info.location}</span>
               </div>
             )}
@@ -145,7 +145,7 @@ export default function Classic({ cvData, lang }) {
                 <h2 className="cv-classic-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-classic-cert-item">
-                    <span className="cv-classic-cert-icon">🏅</span>
+                    <span className="cv-classic-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-classic-cert-info">
                       <div className="cv-classic-cert-name">{cert.name}</div>
                       <div className="cv-classic-cert-meta">{cert.issuer}{cert.year ? ` · ${cert.year}` : ''}</div>

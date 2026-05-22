@@ -35,7 +35,7 @@ export default function CertificatesForm({ items, onChange, lang }) {
             <span style={{ fontWeight: 600, color: '#2c3e50', fontSize: 13 }}>
               {item.name || (isEn ? 'New Certificate' : 'Nuevo Certificado')}
             </span>
-            <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar">✕</button>
+            <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar"><i className="fa-solid fa-trash" /></button>
           </div>
           <div className="form-group">
             <label>{isEn ? 'Certificate Name' : 'Nombre del Certificado'}</label>

@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Executive({ cvData, lang }) {
+export default function Executive({ cvData, lang, accentColor, bgColor }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Executive({ cvData, lang }) {
   ];
 
   return (
-    <div className="cv-executive-wrapper">
+    <div className="cv-executive-wrapper" style={{ '--cv-accent': accentColor || '#8e44ad', '--cv-bg': bgColor || '#2c3e50' }}>
       <div className="cv-executive">
         {/* FULL-WIDTH HEADER (centered) */}
         <header className="cv-executive-header">
@@ -62,7 +62,7 @@ export default function Executive({ cvData, lang }) {
               {imgSrc ? (
                 <img src={imgSrc} alt="Profile" className="cv-executive-photo" />
               ) : (
-                <div className="cv-executive-photo-placeholder">👤</div>
+                <div className="cv-executive-photo-placeholder"><i className="fa-solid fa-user" /></div>
               )}
             </div>
 
@@ -70,19 +70,19 @@ export default function Executive({ cvData, lang }) {
               <h4 className="cv-executive-sidebar-title">{L.contact}</h4>
               {personal_info.phone && (
                 <div className="cv-executive-contact-item">
-                  <span className="cv-executive-contact-icon">📞</span>
+                  <span className="cv-executive-contact-icon"><i className="fa-solid fa-phone" /></span>
                   <span>{personal_info.phone}</span>
                 </div>
               )}
               {personal_info.email && (
                 <div className="cv-executive-contact-item">
-                  <span className="cv-executive-contact-icon">✉️</span>
+                  <span className="cv-executive-contact-icon"><i className="fa-solid fa-envelope" /></span>
                   <span style={{ wordBreak: 'break-all' }}>{personal_info.email}</span>
                 </div>
               )}
               {personal_info.location && (
                 <div className="cv-executive-contact-item">
-                  <span className="cv-executive-contact-icon">📍</span>
+                  <span className="cv-executive-contact-icon"><i className="fa-solid fa-location-dot" /></span>
                   <span>{personal_info.location}</span>
                 </div>
               )}
@@ -148,7 +148,7 @@ export default function Executive({ cvData, lang }) {
                 <h2 className="cv-executive-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-executive-cert-item">
-                    <span className="cv-executive-cert-icon">🏅</span>
+                    <span className="cv-executive-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-executive-cert-info">
                       <div className="cv-executive-cert-name">{cert.name}</div>
                       <div className="cv-executive-cert-meta">{cert.issuer}{cert.year ? ` · ${cert.year}` : ''}</div>

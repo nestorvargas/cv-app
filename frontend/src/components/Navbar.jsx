@@ -1,11 +1,11 @@
 import React from 'react';
 import { downloadPdf } from '../api/cvApi.js';
 
-export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, template, profileName, profileLabel, onBack }) {
+export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, template, profileName, profileLabel, onBack, accentColor, bgColor }) {
   return (
     <nav style={{
       height: 64,
-      background: '#1a252f',
+      background: 'linear-gradient(135deg, #1a252f 0%, #2c3e50 100%)',
       color: 'white',
       display: 'flex',
       alignItems: 'center',
@@ -38,16 +38,29 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
             onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
           >
-            ← Volver
+            <i className="fa-solid fa-arrow-left" style={{ fontSize: 12 }} /> Volver
           </button>
         )}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 20 }}>📋</span>
+          <div style={{
+            width: 36,
+            height: 36,
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: 10,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 16,
+            color: 'white',
+          }}>
+            <i className="fa-solid fa-id-card" />
+          </div>
           <div>
             <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
               {profileLabel || 'CV Editor'}
             </div>
-            <div style={{ color: '#7f8c8d', fontSize: 11 }}>Nestor Fabian Vargas</div>
+            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11 }}>Nestor Fabian Vargas</div>
           </div>
         </div>
       </div>
@@ -61,18 +74,22 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
             color: saveMsg.includes('Error') ? '#e74c3c' : '#2ecc71',
             fontWeight: 700,
             padding: '0 8px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 5,
           }}>
-            {saveMsg.includes('Error') ? '✗' : '✓'} {saveMsg}
+            <i className={`fa-solid ${saveMsg.includes('Error') ? 'fa-circle-xmark' : 'fa-circle-check'}`} />
+            {saveMsg}
           </span>
         )}
 
         {/* Language toggle */}
         <div style={{
           display: 'flex',
-          background: '#0f1923',
+          background: 'rgba(0,0,0,0.25)',
           borderRadius: 10,
           padding: 3,
-          border: '1px solid #2c3e50',
+          border: '1px solid rgba(255,255,255,0.1)',
           gap: 2,
         }}>
           {['es', 'en'].map(l => (
@@ -91,6 +108,9 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
                 transition: 'all 0.2s',
                 letterSpacing: '0.5px',
                 boxShadow: lang === l ? '0 2px 6px rgba(52,152,219,0.4)' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
               }}
             >
               {l === 'es' ? '🇨🇴 ES' : '🇺🇸 EN'}
@@ -115,15 +135,16 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
             transition: 'all 0.2s',
             display: 'flex',
             alignItems: 'center',
-            gap: 6,
+            gap: 7,
           }}
         >
-          {saving ? <><span style={{ fontSize: 14 }}>⏳</span> Guardando...</> : <><span style={{ fontSize: 14 }}>💾</span> Guardar</>}
+          <i className={`fa-solid ${saving ? 'fa-spinner fa-spin' : 'fa-floppy-disk'}`} />
+          {saving ? 'Guardando...' : 'Guardar'}
         </button>
 
         {/* Download PDF */}
         <button
-          onClick={() => downloadPdf(profileName, lang, template)}
+          onClick={() => downloadPdf(profileName, lang, template, accentColor, bgColor)}
           style={{
             background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
             color: 'white',
@@ -137,12 +158,12 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
             transition: 'all 0.2s',
             display: 'flex',
             alignItems: 'center',
-            gap: 6,
+            gap: 7,
           }}
           onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 14px rgba(231,76,60,0.55)'}
           onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(231,76,60,0.4)'}
         >
-          <span style={{ fontSize: 14 }}>📥</span> Descargar PDF
+          <i className="fa-solid fa-file-arrow-down" /> Descargar PDF
         </button>
       </div>
     </nav>

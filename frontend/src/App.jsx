@@ -13,7 +13,32 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
+  const DEFAULT_COLORS = {
+    classic:   '#1abc9c',
+    modern:    '#e67e22',
+    executive: '#8e44ad',
+    creative:  '#e94560',
+    minimal:   '#2980b9',
+  };
+  const DEFAULT_BG_COLORS = {
+    classic:   '#2c3e50',
+    modern:    '#1a252f',
+    executive: '#2c3e50',
+    creative:  '#1a1a2e',
+    minimal:   '#3d3d3d',
+  };
+
+  const loadPrefs = (profileName) => {
+    try {
+      const raw = localStorage.getItem(`cv_prefs_${profileName}`);
+      if (raw) return JSON.parse(raw);
+    } catch (_) {}
+    return null;
+  };
+
   const [template, setTemplate] = useState('classic');
+  const [templateColors, setTemplateColors] = useState(DEFAULT_COLORS);
+  const [templateBgColors, setTemplateBgColors] = useState(DEFAULT_BG_COLORS);
 
   const loadCv = useCallback(async (profileName, language) => {
     setLoading(true);
@@ -33,7 +58,27 @@ export default function App() {
     }
   }, [page, activeProfile, lang, loadCv]);
 
+  useEffect(() => {
+    if (activeProfile) {
+      localStorage.setItem(`cv_prefs_${activeProfile.profileName}`, JSON.stringify({
+        template,
+        templateColors,
+        templateBgColors,
+      }));
+    }
+  }, [template, templateColors, templateBgColors, activeProfile]);
+
   const handleEdit = (profileName, profileLabel, initialLang = 'es') => {
+    const saved = loadPrefs(profileName);
+    if (saved) {
+      if (saved.template) setTemplate(saved.template);
+      if (saved.templateColors) setTemplateColors({ ...DEFAULT_COLORS, ...saved.templateColors });
+      if (saved.templateBgColors) setTemplateBgColors({ ...DEFAULT_BG_COLORS, ...saved.templateBgColors });
+    } else {
+      setTemplate('classic');
+      setTemplateColors(DEFAULT_COLORS);
+      setTemplateBgColors(DEFAULT_BG_COLORS);
+    }
     setActiveProfile({ profileName, profileLabel });
     setLang(initialLang);
     setPage('editor');
@@ -93,6 +138,8 @@ export default function App() {
         profileName={activeProfile?.profileName}
         profileLabel={activeProfile?.profileLabel}
         onBack={handleBack}
+        accentColor={templateColors[template]}
+        bgColor={templateBgColors[template]}
       />
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden', height: 'calc(100vh - 64px)' }}>
         {loading ? (
@@ -106,13 +153,18 @@ export default function App() {
                 cvData={cvData}
                 onChange={handleChange}
                 lang={lang}
+                profileName={activeProfile.profileName}
                 onRefresh={() => loadCv(activeProfile.profileName, lang)}
                 activeTemplate={template}
                 onTemplateChange={setTemplate}
+                templateColors={templateColors}
+                onColorChange={(tmpl, color) => setTemplateColors(prev => ({ ...prev, [tmpl]: color }))}
+                templateBgColors={templateBgColors}
+                onBgColorChange={(tmpl, color) => setTemplateBgColors(prev => ({ ...prev, [tmpl]: color }))}
               />
             </div>
             <div style={{ width: '55%', overflowY: 'auto', background: '#525659', padding: '28px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-              <CVPreview cvData={cvData} lang={lang} template={template} />
+              <CVPreview cvData={cvData} lang={lang} template={template} accentColor={templateColors[template]} bgColor={templateBgColors[template]} />
             </div>
           </>
         ) : (

@@ -6,7 +6,7 @@
   flex-shrink: 0;
   position: relative;
   /* Sidebar color extends as content grows — matches PDF exactly */
-  background: linear-gradient(to right, #2c3e50 35%, #ffffff 35%);
+  background: linear-gradient(to right, var(--cv-bg, #2c3e50) 35%, #ffffff 35%);
   min-height: 1123px;
   box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
 }
@@ -49,7 +49,7 @@
 }
 
 .cv-classic-photo-area {
-  background: #1a252f;
+  background: rgba(0,0,0,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +62,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #1abc9c;
+  border: 3px solid var(--cv-accent, #1abc9c);
   box-shadow: 0 4px 16px rgba(26, 188, 156, 0.35);
 }
 
@@ -71,11 +71,12 @@
   height: 120px;
   border-radius: 50%;
   background: #34495e;
-  border: 3px solid #1abc9c;
+  border: 3px solid var(--cv-accent, #1abc9c);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 52px;
+  font-size: 44px;
+  color: #7f8c8d;
 }
 
 .cv-classic-sidebar-section {
@@ -87,7 +88,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2.5px;
-  color: #1abc9c;
+  color: var(--cv-accent, #1abc9c);
   margin-bottom: 13px;
   text-transform: uppercase;
 }
@@ -103,9 +104,13 @@
 }
 
 .cv-classic-contact-icon {
-  font-size: 13px;
+  width: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--cv-accent, #1abc9c);
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
+  line-height: 1;
 }
 
 /* Certificates */
@@ -125,9 +130,13 @@
 }
 
 .cv-classic-cert-icon {
-  font-size: 15px;
+  width: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--cv-accent, #1abc9c);
   flex-shrink: 0;
-  margin-top: 1px;
+  margin-top: 2px;
+  line-height: 1;
 }
 
 .cv-classic-cert-info {
@@ -142,7 +151,7 @@
 
 .cv-classic-cert-meta {
   font-size: 11.5px;
-  color: #1abc9c;
+  color: var(--cv-accent, #1abc9c);
   margin-top: 2px;
 }
 
@@ -184,7 +193,7 @@
 }
 
 .cv-classic-header {
-  background: #2c3e50;
+  background: var(--cv-bg, #2c3e50);
   color: white;
   padding: 34px 34px 28px;
   position: relative;
@@ -197,7 +206,7 @@
   left: 34px;
   right: 34px;
   height: 3px;
-  background: linear-gradient(90deg, #1abc9c, transparent);
+  background: linear-gradient(90deg, var(--cv-accent, #1abc9c), transparent);
   border-radius: 2px;
 }
 
@@ -211,7 +220,7 @@
 
 .cv-classic-title-text {
   font-size: 12.5px;
-  color: #1abc9c;
+  color: var(--cv-accent, #1abc9c);
   margin-top: 8px;
   line-height: 1.5;
   font-weight: 500;
@@ -233,7 +242,7 @@
   text-transform: uppercase;
   letter-spacing: 1.8px;
   padding-bottom: 6px;
-  border-bottom: 2.5px solid #1abc9c;
+  border-bottom: 2.5px solid var(--cv-accent, #1abc9c);
   margin-bottom: 15px;
   position: relative;
 }
@@ -282,7 +291,7 @@
 
 .cv-classic-exp-position {
   font-size: 12px;
-  color: #1abc9c;
+  color: var(--cv-accent, #1abc9c);
   font-weight: 600;
   margin: 4px 0 7px;
 }

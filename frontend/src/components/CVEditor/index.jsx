@@ -9,17 +9,17 @@ import TemplatesForm from './TemplatesForm.jsx';
 import CertificatesForm from './CertificatesForm.jsx';
 
 const TABS = [
-  { id: 'personal', label: '👤 Personal' },
-  { id: 'photo', label: '📷 Foto' },
-  { id: 'summary', label: '📝 Resumen' },
-  { id: 'experience', label: '💼 Experiencia' },
-  { id: 'education', label: '🎓 Educación' },
-  { id: 'skills', label: '⚡ Habilidades' },
-  { id: 'certificates', label: '🏅 Certificados' },
-  { id: 'templates', label: '🎨 Plantillas' },
+  { id: 'personal',     icon: 'fa-user',            label: 'Personal' },
+  { id: 'photo',        icon: 'fa-camera',           label: 'Foto' },
+  { id: 'summary',      icon: 'fa-align-left',       label: 'Resumen' },
+  { id: 'experience',   icon: 'fa-briefcase',        label: 'Experiencia' },
+  { id: 'education',    icon: 'fa-graduation-cap',   label: 'Educación' },
+  { id: 'skills',       icon: 'fa-code',             label: 'Habilidades' },
+  { id: 'certificates', icon: 'fa-award',            label: 'Certificados' },
+  { id: 'templates',    icon: 'fa-palette',          label: 'Plantillas' },
 ];
 
-export default function CVEditor({ cvData, onChange, lang, onRefresh, activeTemplate, onTemplateChange }) {
+export default function CVEditor({ cvData, onChange, lang, profileName, onRefresh, activeTemplate, onTemplateChange, templateColors, onColorChange, templateBgColors, onBgColorChange }) {
   const [activeTab, setActiveTab] = useState('personal');
 
   return (
@@ -29,34 +29,44 @@ export default function CVEditor({ cvData, onChange, lang, onRefresh, activeTemp
         display: 'flex',
         borderBottom: '2px solid #e9ecef',
         background: '#f8f9fa',
-        flexWrap: 'wrap',
+        overflowX: 'auto',
+        flexShrink: 0,
         padding: '6px 8px 0',
         gap: 2,
+        scrollbarWidth: 'none',
       }}>
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              padding: '8px 14px',
-              background: activeTab === tab.id ? '#ffffff' : 'transparent',
-              color: activeTab === tab.id ? '#2c3e50' : '#6c757d',
-              border: 'none',
-              borderBottom: activeTab === tab.id ? '2px solid #3498db' : '2px solid transparent',
-              borderRadius: '8px 8px 0 0',
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: activeTab === tab.id ? 700 : 500,
-              transition: 'all 0.15s',
-              whiteSpace: 'nowrap',
-              boxShadow: activeTab === tab.id ? '0 -2px 8px rgba(0,0,0,0.06)' : 'none',
-            }}
-            onMouseEnter={e => { if (activeTab !== tab.id) e.currentTarget.style.background = '#e9ecef'; }}
-            onMouseLeave={e => { if (activeTab !== tab.id) e.currentTarget.style.background = 'transparent'; }}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {TABS.map(tab => {
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: '8px 12px',
+                background: active ? '#ffffff' : 'transparent',
+                color: active ? '#2c3e50' : '#6c757d',
+                border: 'none',
+                borderBottom: active ? '2px solid #3498db' : '2px solid transparent',
+                borderRadius: '8px 8px 0 0',
+                cursor: 'pointer',
+                fontSize: 12,
+                fontWeight: active ? 700 : 500,
+                transition: 'all 0.15s',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                boxShadow: active ? '0 -2px 8px rgba(0,0,0,0.06)' : 'none',
+              }}
+              onMouseEnter={e => { if (!active) e.currentTarget.style.background = '#e9ecef'; }}
+              onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}
+            >
+              <i className={`fa-solid ${tab.icon}`} style={{ fontSize: 11 }} />
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab content */}
@@ -98,6 +108,7 @@ export default function CVEditor({ cvData, onChange, lang, onRefresh, activeTemp
         {activeTab === 'photo' && (
           <ImageUpload
             currentImage={cvData.profile_image}
+            profileName={profileName}
             onChange={(url) => { onChange('profile_image', url); onRefresh(); }}
           />
         )}
@@ -112,6 +123,10 @@ export default function CVEditor({ cvData, onChange, lang, onRefresh, activeTemp
           <TemplatesForm
             activeTemplate={activeTemplate}
             onChange={onTemplateChange}
+            templateColors={templateColors}
+            onColorChange={onColorChange}
+            templateBgColors={templateBgColors}
+            onBgColorChange={onBgColorChange}
           />
         )}
       </div>

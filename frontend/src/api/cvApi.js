@@ -8,19 +8,22 @@ export const updateCv = (profileName, lang, data) => axios.put(`${BASE}/cv/${pro
 export const createProfile = (data) => axios.post(`${BASE}/cv`, data);
 export const deleteProfile = (profileName) => axios.delete(`${BASE}/cv/${profileName}`);
 
-export const downloadPdf = (profileName, lang, template = 'classic') => {
+export const downloadPdf = (profileName, lang, template = 'classic', accentColor, bgColor) => {
+  const params = new URLSearchParams({ template });
+  if (accentColor) params.set('accentColor', accentColor);
+  if (bgColor) params.set('bgColor', bgColor);
   const a = document.createElement('a');
-  a.href = `${BASE}/pdf/${profileName}/${lang}?template=${template}`;
+  a.href = `${BASE}/pdf/${profileName}/${lang}?${params.toString()}`;
   a.download = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
 };
 
-export const uploadImage = (file) => {
+export const uploadImage = (file, profileName) => {
   const form = new FormData();
   form.append('image', file);
-  return axios.post(`${BASE}/upload/image`, form, {
+  return axios.post(`${BASE}/upload/image?profileName=${encodeURIComponent(profileName)}`, form, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };

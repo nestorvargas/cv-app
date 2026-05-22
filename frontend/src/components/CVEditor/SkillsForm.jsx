@@ -50,18 +50,21 @@ export default function SkillsForm({ data, onChange, lang }) {
                 <button
                   onClick={() => removeSkill(cat, i)}
                   style={{
-                    background: 'rgba(255,255,255,0.12)',
-                    color: '#ecf0f1',
+                    background: 'transparent',
+                    color: 'rgba(255,255,255,0.6)',
                     border: 'none',
                     cursor: 'pointer',
-                    padding: '1px 5px',
-                    fontSize: 13,
+                    padding: '0 0 0 2px',
+                    fontSize: 11,
                     lineHeight: 1,
-                    borderRadius: 4,
-                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    transition: 'color 0.15s',
                   }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#ff6b6b'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
                   title="Quitar"
-                >×</button>
+                ><i className="fa-solid fa-xmark" /></button>
               </div>
             ))}
           </div>

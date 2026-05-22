@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Creative({ cvData, lang }) {
+export default function Creative({ cvData, lang, accentColor, bgColor }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Creative({ cvData, lang }) {
   ];
 
   return (
-    <div className="cv-creative-wrapper">
+    <div className="cv-creative-wrapper" style={{ '--cv-accent': accentColor || '#e94560', '--cv-bg': bgColor || '#1a1a2e' }}>
       <div className="cv-creative">
         {/* HEADER: photo left + info right */}
         <header className="cv-creative-header">
@@ -53,7 +53,7 @@ export default function Creative({ cvData, lang }) {
             {imgSrc ? (
               <img src={imgSrc} alt="Profile" className="cv-creative-photo" />
             ) : (
-              <div className="cv-creative-photo-placeholder">👤</div>
+              <div className="cv-creative-photo-placeholder"><i className="fa-solid fa-user" /></div>
             )}
           </div>
           <div className="cv-creative-header-info">
@@ -63,19 +63,19 @@ export default function Creative({ cvData, lang }) {
             <div className="cv-creative-header-contacts">
               {personal_info.phone && (
                 <span className="cv-creative-header-contact-item">
-                  <span className="cv-creative-header-contact-icon">📞</span>
+                  <span className="cv-creative-header-contact-icon"><i className="fa-solid fa-phone" /></span>
                   {personal_info.phone}
                 </span>
               )}
               {personal_info.email && (
                 <span className="cv-creative-header-contact-item">
-                  <span className="cv-creative-header-contact-icon">✉️</span>
+                  <span className="cv-creative-header-contact-icon"><i className="fa-solid fa-envelope" /></span>
                   {personal_info.email}
                 </span>
               )}
               {personal_info.location && (
                 <span className="cv-creative-header-contact-item">
-                  <span className="cv-creative-header-contact-icon">📍</span>
+                  <span className="cv-creative-header-contact-icon"><i className="fa-solid fa-location-dot" /></span>
                   {personal_info.location}
                 </span>
               )}
@@ -128,7 +128,7 @@ export default function Creative({ cvData, lang }) {
                 <h2 className="cv-creative-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-creative-cert-item">
-                    <span className="cv-creative-cert-icon">🏅</span>
+                    <span className="cv-creative-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-creative-cert-info">
                       <div className="cv-creative-cert-name">{cert.name}</div>
                       <div className="cv-creative-cert-meta">{cert.issuer}{cert.year ? ` · ${cert.year}` : ''}</div>
@@ -145,19 +145,19 @@ export default function Creative({ cvData, lang }) {
               <h4 className="cv-creative-sidebar-title">{L.contact}</h4>
               {personal_info.phone && (
                 <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon">📞</span>
+                  <span className="cv-creative-contact-icon"><i className="fa-solid fa-phone" /></span>
                   <span>{personal_info.phone}</span>
                 </div>
               )}
               {personal_info.email && (
                 <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon">✉️</span>
+                  <span className="cv-creative-contact-icon"><i className="fa-solid fa-envelope" /></span>
                   <span style={{ wordBreak: 'break-all' }}>{personal_info.email}</span>
                 </div>
               )}
               {personal_info.location && (
                 <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon">📍</span>
+                  <span className="cv-creative-contact-icon"><i className="fa-solid fa-location-dot" /></span>
                   <span>{personal_info.location}</span>
                 </div>
               )}

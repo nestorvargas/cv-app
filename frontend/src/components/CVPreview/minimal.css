@@ -1,0 +1,322 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* ── Page viewer shell ── */
+.cv-minimal-wrapper {
+  width: 794px;
+  flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(to right, var(--cv-bg, #3d3d3d) 29%, #ffffff 29%);
+  min-height: 1123px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+.cv-minimal-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent calc(1123px - 3px),
+    rgba(0, 0, 0, 0.18) calc(1123px - 3px),
+    rgba(0, 0, 0, 0.18) 1123px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cv-minimal {
+  display: flex;
+  width: 794px;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #222;
+}
+
+/* ── SIDEBAR ── */
+.cv-minimal-sidebar {
+  width: 29%;
+  background: transparent;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.cv-minimal-photo-area {
+  background: rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+}
+
+.cv-minimal-photo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.cv-minimal-photo-placeholder {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.cv-minimal-sidebar-section {
+  padding: 18px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cv-minimal-sidebar-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-transform: uppercase;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 12px;
+}
+
+.cv-minimal-about-text {
+  font-size: 11px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* Skills */
+.cv-minimal-skill-item {
+  margin-bottom: 8px;
+}
+
+.cv-minimal-skill-name {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.cv-minimal-skill-bar-wrap {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+}
+
+.cv-minimal-skill-bar-fill {
+  height: 100%;
+  background: var(--cv-accent, #2980b9);
+  border-radius: 2px;
+  opacity: 0.85;
+}
+
+/* Certificates in sidebar */
+.cv-minimal-cert-item {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.cv-minimal-cert-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cv-minimal-cert-year {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cv-minimal-cert-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.cv-minimal-cert-issuer {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.48);
+  margin-top: 2px;
+}
+
+/* ── MAIN ── */
+.cv-minimal-main {
+  width: 71%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-minimal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 28px 26px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cv-minimal-header-left {
+  flex: 1;
+}
+
+.cv-minimal-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d2d2d;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
+  margin: 0 0 8px 0;
+}
+
+.cv-minimal-title-text {
+  font-size: 10px;
+  color: #999;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
+
+.cv-minimal-header-right {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+.cv-minimal-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #555;
+}
+
+.cv-minimal-contact-icon {
+  width: 22px;
+  height: 22px;
+  background: var(--cv-accent, #2980b9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 9px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.cv-minimal-body {
+  padding: 22px 26px;
+  flex: 1;
+}
+
+.cv-minimal-section {
+  margin-bottom: 24px;
+}
+
+.cv-minimal-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2d2d2d;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-bottom: 7px;
+  border-bottom: 2px solid var(--cv-accent, #2980b9);
+  margin-bottom: 16px;
+}
+
+/* Timeline */
+.cv-minimal-timeline-item {
+  display: grid;
+  grid-template-columns: 130px 22px 1fr;
+  gap: 0;
+  margin-bottom: 18px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.cv-minimal-timeline-meta {
+  text-align: right;
+  padding-right: 6px;
+  padding-top: 1px;
+}
+
+.cv-minimal-timeline-company {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #2d2d2d;
+  line-height: 1.3;
+}
+
+.cv-minimal-timeline-period {
+  font-size: 9.5px;
+  color: #999;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+.cv-minimal-timeline-dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cv-minimal-timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cv-accent, #2980b9);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.cv-minimal-timeline-line {
+  flex: 1;
+  width: 1px;
+  background: #e0e0e0;
+  margin-top: 5px;
+}
+
+.cv-minimal-timeline-content {
+  padding-left: 8px;
+  padding-top: 0;
+}
+
+.cv-minimal-timeline-position {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.cv-minimal-timeline-desc {
+  font-size: 11px;
+  line-height: 1.65;
+  color: #555;
+  margin: 0;
+}

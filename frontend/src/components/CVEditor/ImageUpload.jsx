@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { uploadImage } from '../../api/cvApi.js';
 
-export default function ImageUpload({ currentImage, onChange }) {
+export default function ImageUpload({ currentImage, profileName, onChange }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const fileRef = useRef();
@@ -12,7 +12,7 @@ export default function ImageUpload({ currentImage, onChange }) {
     setUploading(true);
     setError('');
     try {
-      const res = await uploadImage(file);
+      const res = await uploadImage(file, profileName);
       onChange(res.data.url);
     } catch (err) {
       setError('Error al subir la imagen');
