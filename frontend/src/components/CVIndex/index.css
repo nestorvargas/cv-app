@@ -1,0 +1,296 @@
+.cv-index {
+  min-height: 100vh;
+  background: #f0f2f5;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Header */
+.cv-index-header {
+  background: #1a252f;
+  padding: 0;
+}
+
+.cv-index-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cv-index-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cv-index-logo-icon {
+  font-size: 32px;
+}
+
+.cv-index-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cv-index-subtitle {
+  font-size: 13px;
+  color: #95a5a6;
+  margin: 0;
+}
+
+/* Main */
+.cv-index-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+.cv-index-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.cv-index-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.cv-index-add-btn {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cv-index-add-btn:hover {
+  background: #34495e;
+}
+
+.cv-index-loading {
+  text-align: center;
+  color: #95a5a6;
+  padding: 60px 0;
+  font-size: 16px;
+}
+
+/* Card grid */
+.cv-index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* CV Card */
+.cv-card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+}
+
+.cv-card-top {
+  padding: 28px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+}
+
+.cv-card-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.cv-card-delete {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.cv-card-delete:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.cv-card-body {
+  padding: 18px 20px 12px;
+  flex: 1;
+}
+
+.cv-card-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.cv-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin: 0 0 4px 0;
+}
+
+.cv-card-role {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cv-card-actions {
+  padding: 12px 20px 18px;
+  display: flex;
+  gap: 10px;
+}
+
+.cv-card-edit-btn {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  border: 2px solid transparent;
+  color: white;
+}
+
+.cv-card-edit-btn:hover {
+  opacity: 0.85;
+}
+
+.cv-card-edit-btn--outline {
+  background: white !important;
+}
+
+/* Modal */
+.cv-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.cv-modal {
+  background: white;
+  border-radius: 14px;
+  padding: 32px;
+  width: 440px;
+  max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.cv-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.cv-modal-desc {
+  font-size: 13px;
+  color: #7f8c8d;
+  margin: 0 0 20px 0;
+}
+
+.cv-modal-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.cv-modal-input:focus {
+  border-color: #2c3e50;
+}
+
+.cv-modal-error {
+  font-size: 12px;
+  color: #e74c3c;
+  margin: 8px 0 0 0;
+}
+
+.cv-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+}
+
+.cv-modal-cancel {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cv-modal-cancel:hover {
+  background: #e9ecef;
+}
+
+.cv-modal-confirm {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cv-modal-confirm:hover:not(:disabled) {
+  background: #34495e;
+}
+
+.cv-modal-confirm:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

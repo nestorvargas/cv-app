@@ -24,27 +24,37 @@ body {
 button {
   cursor: pointer;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
-  font-weight: 500;
-  padding: 8px 16px;
-  transition: all 0.2s;
+  font-weight: 600;
+  padding: 9px 18px;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+  white-space: nowrap;
+  font-family: inherit;
 }
+
+button:active:not(:disabled) { transform: scale(0.97); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
 
 input, textarea, select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  padding: 9px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.12);
 }
 
 textarea { resize: vertical; min-height: 80px; }
@@ -54,41 +64,99 @@ label {
   font-size: 13px;
   font-weight: 600;
   color: var(--primary);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
-.form-group { margin-bottom: 14px; }
+.form-group { margin-bottom: 16px; }
 
+/* ── Primary ── */
 .btn-primary {
   background: var(--accent);
   color: white;
+  box-shadow: 0 2px 6px rgba(52,152,219,0.3);
 }
-.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 10px rgba(52,152,219,0.4);
+}
 
+/* ── Success ── */
 .btn-success {
   background: var(--success);
   color: white;
+  box-shadow: 0 2px 6px rgba(39,174,96,0.3);
 }
-.btn-success:hover { background: #219a52; }
+.btn-success:hover:not(:disabled) {
+  background: #219a52;
+  box-shadow: 0 4px 10px rgba(39,174,96,0.4);
+}
 
+/* ── Danger ── */
 .btn-danger {
   background: var(--danger);
   color: white;
-  padding: 5px 10px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px rgba(231,76,60,0.25);
 }
-.btn-danger:hover { background: #c0392b; }
+.btn-danger:hover:not(:disabled) {
+  background: #c0392b;
+  box-shadow: 0 3px 8px rgba(231,76,60,0.4);
+}
 
+/* ── Outline ── */
 .btn-outline {
   background: transparent;
   border: 2px solid var(--accent);
   color: var(--accent);
 }
-.btn-outline:hover { background: var(--accent); color: white; }
+.btn-outline:hover:not(:disabled) { background: var(--accent); color: white; }
 
+/* ── Ghost (subtle) ── */
 .btn-ghost {
   background: transparent;
   color: var(--text-muted);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 7px;
 }
-.btn-ghost:hover { background: var(--border); }
+.btn-ghost:hover:not(:disabled) {
+  background: #e9ecef;
+  color: var(--primary);
+  border-color: #adb5bd;
+}
+
+/* ── Icon-only small buttons (▲▼) ── */
+.btn-icon {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  min-width: 30px;
+  justify-content: center;
+}
+.btn-icon:hover:not(:disabled) {
+  background: #e9ecef;
+  color: var(--primary);
+  border-color: #adb5bd;
+}
+
+/* ── Delete icon button (✕ in card header) ── */
+.btn-delete {
+  background: transparent;
+  border: 1.5px solid #f5c6cb;
+  color: #c0392b;
+  padding: 5px 9px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 6px;
+}
+.btn-delete:hover:not(:disabled) {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+}

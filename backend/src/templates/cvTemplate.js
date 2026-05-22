@@ -61,7 +61,7 @@ function buildCvHtml(cvData, imageBase64) {
 <meta charset="UTF-8">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 9pt; color: #222; background: white; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #222; background: white; }
 
   .cv-wrapper { display: flex; width: 210mm; min-height: 297mm; }
 
@@ -80,28 +80,28 @@ function buildCvHtml(cvData, imageBase64) {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 16px;
-    min-height: 130px;
+    padding: 26px 16px;
+    min-height: 145px;
   }
 
   .photo-area img {
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #3498db;
   }
 
   .photo-placeholder {
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     background: #34495e;
     border: 3px solid #3498db;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
+    font-size: 40px;
     color: #7f8c8d;
   }
 
@@ -109,36 +109,36 @@ function buildCvHtml(cvData, imageBase64) {
   .sidebar-section + .sidebar-section { border-top: 1px solid #34495e; }
 
   .sidebar-title {
-    font-size: 10pt;
+    font-size: 10.5pt;
     font-weight: 700;
     letter-spacing: 2px;
     color: #3498db;
-    margin-bottom: 10px;
+    margin-bottom: 11px;
     text-transform: uppercase;
   }
 
   .contact-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 6px;
-    font-size: 8pt;
+    margin-bottom: 7px;
+    font-size: 10pt;
     color: #bdc3c7;
     word-break: break-all;
   }
 
-  .contact-icon { margin-right: 8px; color: #3498db; font-size: 10pt; min-width: 14px; }
+  .contact-icon { margin-right: 8px; color: #3498db; font-size: 11pt; min-width: 15px; }
 
-  .skills-group { margin-bottom: 10px; }
-  .skills-group-title { font-size: 8pt; color: #95a5a6; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+  .skills-group { margin-bottom: 12px; }
+  .skills-group-title { font-size: 9.5pt; color: #95a5a6; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
   .skill-badge {
     display: inline-block;
     background: #34495e;
     color: #ecf0f1;
     border-radius: 3px;
-    padding: 2px 7px;
-    font-size: 7.5pt;
-    margin: 2px 2px 2px 0;
+    padding: 3px 9px;
+    font-size: 9.5pt;
+    margin: 2px 3px 2px 0;
   }
 
   /* RIGHT MAIN CONTENT */
@@ -153,39 +153,39 @@ function buildCvHtml(cvData, imageBase64) {
   .header-area {
     background: #2c3e50;
     color: white;
-    padding: 24px 28px 20px;
+    padding: 26px 30px 22px;
   }
 
-  .cv-name { font-size: 20pt; font-weight: 700; line-height: 1.1; color: white; }
-  .cv-title { font-size: 8.5pt; color: #3498db; margin-top: 5px; line-height: 1.4; }
+  .cv-name { font-size: 23pt; font-weight: 700; line-height: 1.1; color: white; }
+  .cv-title { font-size: 10.5pt; color: #3498db; margin-top: 6px; line-height: 1.5; }
 
-  .main-content { padding: 20px 28px; flex: 1; }
+  .main-content { padding: 22px 30px; flex: 1; }
 
-  .section { margin-bottom: 18px; }
+  .section { margin-bottom: 20px; }
   .section-title {
-    font-size: 11pt;
+    font-size: 11.5pt;
     font-weight: 700;
     color: #2c3e50;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    padding-bottom: 4px;
+    padding-bottom: 5px;
     border-bottom: 2px solid #3498db;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
-  .summary-text { font-size: 8.5pt; line-height: 1.55; color: #444; text-align: justify; }
+  .summary-text { font-size: 10.5pt; line-height: 1.65; color: #444; text-align: justify; }
 
-  .exp-item { margin-bottom: 12px; }
+  .exp-item { margin-bottom: 14px; }
   .exp-header { display: flex; justify-content: space-between; align-items: flex-start; }
-  .exp-company { font-weight: 700; font-size: 9pt; color: #2c3e50; }
-  .exp-period { font-size: 7.5pt; color: #7f8c8d; white-space: nowrap; margin-left: 8px; }
-  .exp-position { font-size: 8pt; color: #3498db; font-weight: 600; margin: 2px 0 4px; }
-  .exp-desc { font-size: 8pt; line-height: 1.45; color: #555; text-align: justify; }
+  .exp-company { font-weight: 700; font-size: 11pt; color: #2c3e50; }
+  .exp-period { font-size: 9.5pt; color: #7f8c8d; white-space: nowrap; margin-left: 8px; }
+  .exp-position { font-size: 10pt; color: #3498db; font-weight: 600; margin: 3px 0 5px; }
+  .exp-desc { font-size: 10pt; line-height: 1.6; color: #555; text-align: justify; }
 
-  .edu-item { margin-bottom: 9px; }
-  .edu-institution { font-weight: 700; font-size: 8.5pt; color: #2c3e50; }
-  .edu-degree { font-size: 8pt; color: #555; }
-  .edu-period { font-size: 7.5pt; color: #7f8c8d; }
+  .edu-item { margin-bottom: 12px; }
+  .edu-institution { font-weight: 700; font-size: 10.5pt; color: #2c3e50; }
+  .edu-degree { font-size: 10pt; color: #555; margin-top: 2px; }
+  .edu-period { font-size: 9.5pt; color: #7f8c8d; }
 </style>
 </head>
 <body>
