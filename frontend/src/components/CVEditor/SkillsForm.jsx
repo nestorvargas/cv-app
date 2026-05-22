@@ -50,15 +50,18 @@ export default function SkillsForm({ data, onChange, lang }) {
                 <button
                   onClick={() => removeSkill(cat, i)}
                   style={{
-                    background: 'transparent',
-                    color: '#bdc3c7',
+                    background: 'rgba(255,255,255,0.12)',
+                    color: '#ecf0f1',
                     border: 'none',
                     cursor: 'pointer',
-                    padding: '0 2px',
-                    fontSize: 14,
+                    padding: '1px 5px',
+                    fontSize: 13,
                     lineHeight: 1,
+                    borderRadius: 4,
+                    fontWeight: 700,
                   }}
-                >x</button>
+                  title="Quitar"
+                >×</button>
               </div>
             ))}
           </div>

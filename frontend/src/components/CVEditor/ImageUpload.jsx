@@ -21,7 +21,7 @@ export default function ImageUpload({ currentImage, onChange }) {
     }
   };
 
-  const imgSrc = currentImage ? `/api${currentImage}` : null;
+  const imgSrc = currentImage || null;
 
   return (
     <div>

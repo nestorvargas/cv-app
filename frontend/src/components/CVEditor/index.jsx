@@ -5,17 +5,21 @@ import ExperienceForm from './ExperienceForm.jsx';
 import EducationForm from './EducationForm.jsx';
 import SkillsForm from './SkillsForm.jsx';
 import ImageUpload from './ImageUpload.jsx';
+import TemplatesForm from './TemplatesForm.jsx';
+import CertificatesForm from './CertificatesForm.jsx';
 
 const TABS = [
   { id: 'personal', label: '👤 Personal' },
+  { id: 'photo', label: '📷 Foto' },
   { id: 'summary', label: '📝 Resumen' },
   { id: 'experience', label: '💼 Experiencia' },
   { id: 'education', label: '🎓 Educación' },
   { id: 'skills', label: '⚡ Habilidades' },
-  { id: 'photo', label: '📷 Foto' },
+  { id: 'certificates', label: '🏅 Certificados' },
+  { id: 'templates', label: '🎨 Plantillas' },
 ];
 
-export default function CVEditor({ cvData, onChange, lang, onRefresh }) {
+export default function CVEditor({ cvData, onChange, lang, onRefresh, activeTemplate, onTemplateChange }) {
   const [activeTab, setActiveTab] = useState('personal');
 
   return (
@@ -23,26 +27,32 @@ export default function CVEditor({ cvData, onChange, lang, onRefresh }) {
       {/* Tab bar */}
       <div style={{
         display: 'flex',
-        borderBottom: '2px solid #dee2e6',
+        borderBottom: '2px solid #e9ecef',
         background: '#f8f9fa',
         flexWrap: 'wrap',
+        padding: '6px 8px 0',
+        gap: 2,
       }}>
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             style={{
-              padding: '10px 14px',
-              background: activeTab === tab.id ? '#2c3e50' : 'transparent',
-              color: activeTab === tab.id ? 'white' : '#555',
+              padding: '8px 14px',
+              background: activeTab === tab.id ? '#ffffff' : 'transparent',
+              color: activeTab === tab.id ? '#2c3e50' : '#6c757d',
               border: 'none',
-              borderBottom: activeTab === tab.id ? '2px solid #3498db' : 'none',
+              borderBottom: activeTab === tab.id ? '2px solid #3498db' : '2px solid transparent',
+              borderRadius: '8px 8px 0 0',
               cursor: 'pointer',
               fontSize: 13,
-              fontWeight: activeTab === tab.id ? 600 : 400,
+              fontWeight: activeTab === tab.id ? 700 : 500,
               transition: 'all 0.15s',
               whiteSpace: 'nowrap',
+              boxShadow: activeTab === tab.id ? '0 -2px 8px rgba(0,0,0,0.06)' : 'none',
             }}
+            onMouseEnter={e => { if (activeTab !== tab.id) e.currentTarget.style.background = '#e9ecef'; }}
+            onMouseLeave={e => { if (activeTab !== tab.id) e.currentTarget.style.background = 'transparent'; }}
           >
             {tab.label}
           </button>
@@ -89,6 +99,19 @@ export default function CVEditor({ cvData, onChange, lang, onRefresh }) {
           <ImageUpload
             currentImage={cvData.profile_image}
             onChange={(url) => { onChange('profile_image', url); onRefresh(); }}
+          />
+        )}
+        {activeTab === 'certificates' && (
+          <CertificatesForm
+            items={cvData.certificates || []}
+            onChange={(val) => onChange('certificates', val)}
+            lang={lang}
+          />
+        )}
+        {activeTab === 'templates' && (
+          <TemplatesForm
+            activeTemplate={activeTemplate}
+            onChange={onTemplateChange}
           />
         )}
       </div>

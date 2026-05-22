@@ -1,0 +1,329 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Page viewer shell ── */
+.cv-executive-wrapper {
+  width: 794px;
+  flex-shrink: 0;
+  position: relative;
+  /* 30% dark sidebar extends to full content height — matches PDF */
+  background: linear-gradient(to right, #2c3e50 30%, #ffffff 30%);
+  min-height: 1123px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Page-break indicator line every A4 height */
+.cv-executive-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent calc(1123px - 3px),
+    rgba(0, 0, 0, 0.18) calc(1123px - 3px),
+    rgba(0, 0, 0, 0.18) 1123px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* A4 "paper" page */
+.cv-executive {
+  display: flex;
+  flex-direction: column;
+  width: 794px;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1.65;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #222;
+}
+
+/* ── HEADER (full-width, centered) ── */
+.cv-executive-header {
+  background: #1a252f;
+  color: white;
+  padding: 36px 36px 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cv-executive-name {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: white;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+}
+
+.cv-executive-title-text {
+  font-size: 13px;
+  color: #bdc3c7;
+  font-weight: 400;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.5px;
+}
+
+.cv-executive-header-line {
+  width: 80px;
+  height: 3px;
+  background: #8e44ad;
+  border-radius: 2px;
+  margin: 0 auto;
+}
+
+/* ── BODY: sidebar + main ── */
+.cv-executive-body {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+}
+
+/* LEFT SIDEBAR (30%) — transparent, wrapper gradient provides color */
+.cv-executive-sidebar {
+  width: 30%;
+  background: transparent;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.cv-executive-photo-area {
+  background: #1a252f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 18px;
+  min-height: 148px;
+}
+
+.cv-executive-photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #8e44ad;
+  box-shadow: 0 4px 16px rgba(142, 68, 173, 0.4);
+}
+
+.cv-executive-photo-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #34495e;
+  border: 3px solid #8e44ad;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+}
+
+.cv-executive-sidebar-section {
+  padding: 20px 18px;
+  border-top: 1px solid #34495e;
+}
+
+.cv-executive-sidebar-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #8e44ad;
+  margin-bottom: 13px;
+  text-transform: uppercase;
+}
+
+.cv-executive-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-bottom: 9px;
+  font-size: 11.5px;
+  color: #bdc3c7;
+  word-break: break-all;
+}
+
+.cv-executive-contact-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cv-executive-skill-group {
+  margin-bottom: 13px;
+}
+
+.cv-executive-skill-group-title {
+  font-size: 9.5px;
+  color: #95a5a6;
+  font-weight: 700;
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cv-executive-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cv-executive-skill-badge {
+  background: #34495e;
+  color: #ecf0f1;
+  border-radius: 10px;
+  padding: 3px 9px;
+  font-size: 10.5px;
+  font-weight: 500;
+  border: 1px solid #3d566e;
+}
+
+/* RIGHT CONTENT (70%) */
+.cv-executive-main {
+  width: 70%;
+  background: white;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-executive-section {
+  margin-bottom: 24px;
+}
+
+.cv-executive-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #8e44ad;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.cv-executive-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, white);
+}
+
+.cv-executive-summary {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #444;
+  text-align: justify;
+}
+
+.cv-executive-exp-item {
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cv-executive-exp-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cv-executive-exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cv-executive-exp-company {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #1a252f;
+}
+
+.cv-executive-exp-period {
+  font-size: 11px;
+  color: #7f8c8d;
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.cv-executive-exp-position {
+  font-size: 12px;
+  color: #8e44ad;
+  font-weight: 600;
+  margin: 4px 0 7px;
+}
+
+.cv-executive-exp-desc {
+  font-size: 12px;
+  line-height: 1.65;
+  color: #555;
+  text-align: justify;
+}
+
+.cv-executive-edu-item {
+  margin-bottom: 14px;
+}
+
+.cv-executive-edu-institution {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1a252f;
+}
+
+.cv-executive-edu-degree {
+  font-size: 12px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.cv-executive-edu-period {
+  font-size: 11px;
+  color: #7f8c8d;
+  margin-top: 1px;
+}
+
+/* Certificates */
+.cv-executive-cert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cv-executive-cert-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cv-executive-cert-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cv-executive-cert-info {
+  flex: 1;
+}
+
+.cv-executive-cert-name {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: #1a252f;
+}
+
+.cv-executive-cert-meta {
+  font-size: 11.5px;
+  color: #8e44ad;
+  margin-top: 2px;
+}

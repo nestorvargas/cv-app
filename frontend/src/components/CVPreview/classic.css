@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* ── Page viewer shell ── */
+.cv-classic-wrapper {
+  width: 794px;
+  flex-shrink: 0;
+  position: relative;
+  /* Sidebar color extends as content grows — matches PDF exactly */
+  background: linear-gradient(to right, #2c3e50 35%, #ffffff 35%);
+  min-height: 1123px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Page-break indicator line every A4 height */
+.cv-classic-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent calc(1123px - 3px),
+    rgba(0, 0, 0, 0.18) calc(1123px - 3px),
+    rgba(0, 0, 0, 0.18) 1123px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* A4 "paper" page */
+.cv-classic {
+  display: flex;
+  width: 794px;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1.65;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #222;
+}
+
+/* ── LEFT SIDEBAR — transparent, wrapper gradient provides the color ── */
+.cv-classic-sidebar {
+  width: 35%;
+  background: transparent;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.cv-classic-photo-area {
+  background: #1a252f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 18px;
+  min-height: 168px;
+}
+
+.cv-classic-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #1abc9c;
+  box-shadow: 0 4px 16px rgba(26, 188, 156, 0.35);
+}
+
+.cv-classic-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #34495e;
+  border: 3px solid #1abc9c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52px;
+}
+
+.cv-classic-sidebar-section {
+  padding: 20px 22px;
+  border-top: 1px solid #34495e;
+}
+
+.cv-classic-sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #1abc9c;
+  margin-bottom: 13px;
+  text-transform: uppercase;
+}
+
+.cv-classic-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 9px;
+  font-size: 12.5px;
+  color: #bdc3c7;
+  word-break: break-all;
+}
+
+.cv-classic-contact-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Certificates */
+.cv-classic-cert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 9px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.cv-classic-cert-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.cv-classic-cert-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cv-classic-cert-info {
+  flex: 1;
+}
+
+.cv-classic-cert-name {
+  font-weight: 600;
+  font-size: 12.5px;
+  color: #2c3e50;
+}
+
+.cv-classic-cert-meta {
+  font-size: 11.5px;
+  color: #1abc9c;
+  margin-top: 2px;
+}
+
+.cv-classic-skill-group {
+  margin-bottom: 14px;
+}
+
+.cv-classic-skill-group-title {
+  font-size: 10px;
+  color: #95a5a6;
+  font-weight: 700;
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.cv-classic-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cv-classic-skill-badge {
+  background: #34495e;
+  color: #ecf0f1;
+  border-radius: 12px;
+  padding: 4px 11px;
+  font-size: 11.5px;
+  font-weight: 500;
+  border: 1px solid #3d566e;
+}
+
+/* ── RIGHT MAIN ── */
+.cv-classic-main {
+  width: 65%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.cv-classic-header {
+  background: #2c3e50;
+  color: white;
+  padding: 34px 34px 28px;
+  position: relative;
+}
+
+.cv-classic-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 34px;
+  right: 34px;
+  height: 3px;
+  background: linear-gradient(90deg, #1abc9c, transparent);
+  border-radius: 2px;
+}
+
+.cv-classic-name {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: white;
+  letter-spacing: -0.3px;
+}
+
+.cv-classic-title-text {
+  font-size: 12.5px;
+  color: #1abc9c;
+  margin-top: 8px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.cv-classic-body {
+  padding: 26px 32px;
+  flex: 1;
+}
+
+.cv-classic-section {
+  margin-bottom: 24px;
+}
+
+.cv-classic-section-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  padding-bottom: 6px;
+  border-bottom: 2.5px solid #1abc9c;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.cv-classic-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2.5px;
+  left: 50%;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, white);
+  pointer-events: none;
+}
+
+.cv-classic-summary {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #444;
+  text-align: justify;
+}
+
+.cv-classic-exp-item {
+  margin-bottom: 18px;
+}
+
+.cv-classic-exp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cv-classic-exp-company {
+  font-weight: 700;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.cv-classic-exp-period {
+  font-size: 11.5px;
+  color: #7f8c8d;
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.cv-classic-exp-position {
+  font-size: 12px;
+  color: #1abc9c;
+  font-weight: 600;
+  margin: 4px 0 7px;
+}
+
+.cv-classic-exp-desc {
+  font-size: 12px;
+  line-height: 1.65;
+  color: #555;
+  text-align: justify;
+}
+
+.cv-classic-edu-item {
+  margin-bottom: 14px;
+}
+
+.cv-classic-edu-institution {
+  font-weight: 700;
+  font-size: 13px;
+  color: #2c3e50;
+}
+
+.cv-classic-edu-degree {
+  font-size: 12px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.cv-classic-edu-period {
+  font-size: 11px;
+  color: #7f8c8d;
+  margin-top: 1px;
+}

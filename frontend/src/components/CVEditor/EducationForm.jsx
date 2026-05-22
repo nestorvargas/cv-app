@@ -18,8 +18,8 @@ export default function EducationForm({ items, onChange, lang }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <h3 style={{ color: '#2c3e50', fontSize: 16 }}>{isEn ? 'Education' : 'Educación'}</h3>
-        <button className="btn-primary" onClick={addItem} style={{ fontSize: 13 }}>
-          + {isEn ? 'Add' : 'Agregar'}
+        <button className="btn-primary" onClick={addItem}>
+          + Agregar
         </button>
       </div>
 
@@ -29,7 +29,7 @@ export default function EducationForm({ items, onChange, lang }) {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
             <span style={{ fontWeight: 600, color: '#2c3e50', fontSize: 13 }}>{item.institution || (isEn ? 'New Institution' : 'Nueva Institución')}</span>
-            <button className="btn-danger" onClick={() => removeItem(index)}>✕</button>
+            <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar">✕</button>
           </div>
           <div className="form-group">
             <label>{isEn ? 'Institution' : 'Institución'}</label>

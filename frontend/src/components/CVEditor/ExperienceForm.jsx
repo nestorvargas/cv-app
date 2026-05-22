@@ -31,8 +31,8 @@ export default function ExperienceForm({ items, onChange, lang }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <h3 style={{ color: '#2c3e50', fontSize: 16 }}>{isEn ? 'Work Experience' : 'Experiencia Laboral'}</h3>
-        <button className="btn-primary" onClick={addItem} style={{ fontSize: 13 }}>
-          + {isEn ? 'Add' : 'Agregar'}
+        <button className="btn-primary" onClick={addItem}>
+          + {isEn ? 'Agregar' : 'Agregar'}
         </button>
       </div>
 
@@ -49,9 +49,9 @@ export default function ExperienceForm({ items, onChange, lang }) {
               {item.company || (isEn ? 'New Company' : 'Nueva Empresa')}
             </span>
             <div style={{ display: 'flex', gap: 4 }}>
-              <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }} onClick={() => moveItem(index, -1)}>▲</button>
-              <button className="btn-ghost" style={{ padding: '3px 8px', fontSize: 12 }} onClick={() => moveItem(index, 1)}>▼</button>
-              <button className="btn-danger" onClick={() => removeItem(index)}>✕</button>
+              <button className="btn-icon" onClick={() => moveItem(index, -1)} title="Subir">▲</button>
+              <button className="btn-icon" onClick={() => moveItem(index, 1)} title="Bajar">▼</button>
+              <button className="btn-delete" onClick={() => removeItem(index)} title="Eliminar">✕</button>
             </div>
           </div>
 
