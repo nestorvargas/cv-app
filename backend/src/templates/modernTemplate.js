@@ -1,4 +1,4 @@
-function buildModernHtml(cvData, imageBase64) {
+function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor = '#1a252f') {
   const { personal_info, summary, experience, education, skills, certificates } = cvData;
   const lang = cvData.language;
 
@@ -73,7 +73,7 @@ function buildModernHtml(cvData, imageBase64) {
   const renderCertificates = (certs) =>
     certs.map(c => `
       <div class="cert-item">
-        <span class="cert-icon">&#127885;</span>
+        <span class="cert-icon"><i class="fa-solid fa-award"></i></span>
         <div class="cert-info">
           <div class="cert-name">${c.name}</div>
           <div class="cert-meta">${c.issuer}${c.year ? ' · ' + c.year : ''}</div>
@@ -86,6 +86,7 @@ function buildModernHtml(cvData, imageBase64) {
 <head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
   @page { margin: 14mm 0 10mm 0; }
   @page :first { margin: 0; }
@@ -109,7 +110,7 @@ function buildModernHtml(cvData, imageBase64) {
 
   /* HEADER */
   .header {
-    background: #1a252f;
+    background: ${bgColor};
     color: white;
     padding: 26px 32px;
     display: flex;
@@ -124,7 +125,7 @@ function buildModernHtml(cvData, imageBase64) {
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #e67e22;
+    border: 3px solid ${accentColor};
     box-shadow: 0 4px 14px rgba(230,126,34,0.4);
   }
 
@@ -132,8 +133,8 @@ function buildModernHtml(cvData, imageBase64) {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: #2c3e50;
-    border: 3px solid #e67e22;
+    background: rgba(255,255,255,0.12);
+    border: 3px solid ${accentColor};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -143,12 +144,12 @@ function buildModernHtml(cvData, imageBase64) {
 
   .header-info { flex: 1; }
   .cv-name { font-size: 22pt; font-weight: 700; color: white; line-height: 1.1; }
-  .cv-title { font-size: 10pt; color: #e67e22; margin-top: 7px; font-weight: 500; }
+  .cv-title { font-size: 10pt; color: ${accentColor}; margin-top: 7px; font-weight: 500; }
 
   .header-accent {
     width: 3px;
     height: 70px;
-    background: linear-gradient(180deg, #e67e22, transparent);
+    background: linear-gradient(180deg, ${accentColor}, transparent);
     border-radius: 2px;
     flex-shrink: 0;
   }
@@ -178,11 +179,11 @@ function buildModernHtml(cvData, imageBase64) {
   .section-title {
     font-size: 10pt;
     font-weight: 700;
-    color: #e67e22;
+    color: ${accentColor};
     text-transform: uppercase;
     letter-spacing: 2px;
     padding-bottom: 5px;
-    border-bottom: 2px solid #e67e22;
+    border-bottom: 2px solid ${accentColor};
     margin-bottom: 12px;
   }
 
@@ -200,7 +201,7 @@ function buildModernHtml(cvData, imageBase64) {
     border-radius: 8px;
     white-space: nowrap;
   }
-  .exp-position { font-size: 9.5pt; color: #e67e22; font-weight: 600; margin: 4px 0 5px; }
+  .exp-position { font-size: 9.5pt; color: ${accentColor}; font-weight: 600; margin: 4px 0 5px; }
   .exp-desc { font-size: 9pt; line-height: 1.65; color: #555; text-align: justify; }
 
   /* Skills with dot badges */
@@ -222,25 +223,25 @@ function buildModernHtml(cvData, imageBase64) {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #e67e22;
+    background: ${accentColor};
     flex-shrink: 0;
     display: inline-block;
   }
 
-  .edu-item { margin-bottom: 12px; padding-left: 10px; border-left: 3px solid #e67e22; }
+  .edu-item { margin-bottom: 12px; padding-left: 10px; border-left: 3px solid ${accentColor}; }
   .edu-institution { font-weight: 700; font-size: 9.5pt; color: #1a252f; }
   .edu-degree { font-size: 9pt; color: #555; margin-top: 2px; }
   .edu-period { font-size: 8.5pt; color: #95a5a6; margin-top: 2px; }
 
   .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
   .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .cert-icon { font-size: 10pt; flex-shrink: 0; margin-top: 1px; }
+  .cert-icon { width: 17px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
   .cert-info { flex: 1; }
   .cert-name { font-weight: 600; font-size: 9pt; color: #1a252f; }
-  .cert-meta { font-size: 8.5pt; color: #e67e22; margin-top: 2px; }
+  .cert-meta { font-size: 8.5pt; color: ${accentColor}; margin-top: 2px; }
 
   .contact-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 7px; font-size: 9.5pt; color: #444; word-break: break-all; }
-  .contact-icon { font-size: 10pt; flex-shrink: 0; min-width: 14px; }
+  .contact-icon { width: 16px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; line-height: 1; }
 </style>
 </head>
 <body>
@@ -250,7 +251,7 @@ function buildModernHtml(cvData, imageBase64) {
     <div class="photo-wrap">
       ${imageBase64
         ? `<img src="${imageBase64}" alt="Profile" />`
-        : `<div class="photo-placeholder">&#128100;</div>`
+        : `<div class="photo-placeholder"><i class="fa-solid fa-user"></i></div>`
       }
     </div>
     <div class="header-info">
@@ -299,9 +300,9 @@ function buildModernHtml(cvData, imageBase64) {
 
       <div class="section">
         <div class="section-title">${labels.contact}</div>
-        <div class="contact-item"><span class="contact-icon">&#128222;</span>${personal_info.phone || ''}</div>
-        <div class="contact-item"><span class="contact-icon">&#9993;</span>${personal_info.email || ''}</div>
-        <div class="contact-item"><span class="contact-icon">&#128205;</span>${personal_info.location || ''}</div>
+        <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone || ''}</div>
+        <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email || ''}</div>
+        <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location || ''}</div>
       </div>
     </div>
   </div>

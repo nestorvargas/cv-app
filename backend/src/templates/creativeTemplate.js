@@ -1,4 +1,4 @@
-function buildCreativeHtml(cvData, imageBase64) {
+function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor = '#1a1a2e') {
   const { personal_info, summary, experience, education, skills, certificates } = cvData;
   const lang = cvData.language;
 
@@ -68,7 +68,7 @@ function buildCreativeHtml(cvData, imageBase64) {
   const renderCertificates = (certs) =>
     certs.map(c => `
       <div class="cert-item">
-        <span class="cert-icon">&#127885;</span>
+        <span class="cert-icon"><i class="fa-solid fa-award"></i></span>
         <div class="cert-info">
           <div class="cert-name">${c.name}</div>
           <div class="cert-meta">${c.issuer}${c.year ? ' · ' + c.year : ''}</div>
@@ -81,6 +81,7 @@ function buildCreativeHtml(cvData, imageBase64) {
 <head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
   @page { margin: 14mm 0 10mm 0; }
   @page :first { margin: 0; }
@@ -106,7 +107,7 @@ function buildCreativeHtml(cvData, imageBase64) {
 
   /* HEADER: photo left + name right */
   .header {
-    background: #1a1a2e;
+    background: ${bgColor};
     display: flex;
     align-items: center;
     padding: 28px 32px;
@@ -120,7 +121,7 @@ function buildCreativeHtml(cvData, imageBase64) {
     height: 110px;
     border-radius: 12px;
     object-fit: cover;
-    border: 3px solid #e94560;
+    border: 3px solid ${accentColor};
     box-shadow: 0 4px 16px rgba(233, 69, 96, 0.4);
   }
 
@@ -128,8 +129,8 @@ function buildCreativeHtml(cvData, imageBase64) {
     width: 110px;
     height: 110px;
     border-radius: 12px;
-    background: #252545;
-    border: 3px solid #e94560;
+    background: rgba(255,255,255,0.12);
+    border: 3px solid ${accentColor};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -158,7 +159,7 @@ function buildCreativeHtml(cvData, imageBase64) {
   .header-accent {
     width: 56px;
     height: 3px;
-    background: #e94560;
+    background: ${accentColor};
     border-radius: 2px;
     margin-bottom: 12px;
   }
@@ -177,7 +178,7 @@ function buildCreativeHtml(cvData, imageBase64) {
     color: #95a5a6;
   }
 
-  .header-contact-icon { font-size: 9pt; }
+  .header-contact-icon { width: 14px; text-align: center; font-size: 9pt; color: ${accentColor}; line-height: 1; }
 
   /* BODY */
   .body { display: flex; flex: 1; }
@@ -200,7 +201,7 @@ function buildCreativeHtml(cvData, imageBase64) {
     text-transform: uppercase;
     letter-spacing: 2px;
     padding-bottom: 5px;
-    border-bottom: 2px solid #e94560;
+    border-bottom: 2px solid ${accentColor};
     margin-bottom: 13px;
   }
 
@@ -210,7 +211,7 @@ function buildCreativeHtml(cvData, imageBase64) {
     margin-bottom: 14px;
     padding-bottom: 12px;
     padding-left: 12px;
-    border-left: 3px solid #e94560;
+    border-left: 3px solid ${accentColor};
     border-bottom: 1px solid #f0f0f0;
   }
 
@@ -221,13 +222,13 @@ function buildCreativeHtml(cvData, imageBase64) {
   .exp-period {
     font-size: 8pt;
     color: white;
-    background: #e94560;
+    background: ${accentColor};
     padding: 1px 8px;
     border-radius: 8px;
     white-space: nowrap;
     font-weight: 500;
   }
-  .exp-position { font-size: 9.5pt; color: #e94560; font-weight: 600; margin: 4px 0 5px; }
+  .exp-position { font-size: 9.5pt; color: ${accentColor}; font-weight: 600; margin: 4px 0 5px; }
   .exp-desc { font-size: 9pt; line-height: 1.65; color: #555; text-align: justify; }
 
   .edu-item { margin-bottom: 12px; }
@@ -237,10 +238,10 @@ function buildCreativeHtml(cvData, imageBase64) {
 
   .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
   .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .cert-icon { font-size: 10pt; flex-shrink: 0; margin-top: 1px; }
+  .cert-icon { width: 17px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
   .cert-info { flex: 1; }
   .cert-name { font-weight: 600; font-size: 9.5pt; color: #1a1a2e; }
-  .cert-meta { font-size: 8.5pt; color: #e94560; margin-top: 2px; }
+  .cert-meta { font-size: 8.5pt; color: ${accentColor}; margin-top: 2px; }
 
   /* RIGHT SIDEBAR (30%) */
   .sidebar {
@@ -259,10 +260,10 @@ function buildCreativeHtml(cvData, imageBase64) {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #e94560;
+    color: ${accentColor};
     margin-bottom: 11px;
     padding-bottom: 5px;
-    border-bottom: 1.5px solid #e94560;
+    border-bottom: 1.5px solid ${accentColor};
   }
 
   .contact-item {
@@ -275,7 +276,7 @@ function buildCreativeHtml(cvData, imageBase64) {
     word-break: break-all;
   }
 
-  .contact-icon { font-size: 10pt; min-width: 14px; flex-shrink: 0; margin-top: 1px; }
+  .contact-icon { width: 16px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
 
   .skill-group { margin-bottom: 11px; }
 
@@ -292,7 +293,7 @@ function buildCreativeHtml(cvData, imageBase64) {
 
   .skill-badge {
     display: inline-block;
-    background: #1a1a2e;
+    background: ${bgColor};
     color: #ecf0f1;
     border-radius: 10px;
     padding: 2px 9px;
@@ -309,7 +310,7 @@ function buildCreativeHtml(cvData, imageBase64) {
     <div class="photo-area">
       ${imageBase64
         ? `<img src="${imageBase64}" alt="Profile" />`
-        : `<div class="photo-placeholder">&#128100;</div>`
+        : `<div class="photo-placeholder"><i class="fa-solid fa-user"></i></div>`
       }
     </div>
     <div class="header-info">
@@ -317,9 +318,9 @@ function buildCreativeHtml(cvData, imageBase64) {
       <div class="cv-title">${personal_info.title || ''}</div>
       <div class="header-accent"></div>
       <div class="header-contacts">
-        ${personal_info.phone ? `<span class="header-contact-item"><span class="header-contact-icon">&#128222;</span>${personal_info.phone}</span>` : ''}
-        ${personal_info.email ? `<span class="header-contact-item"><span class="header-contact-icon">&#9993;</span>${personal_info.email}</span>` : ''}
-        ${personal_info.location ? `<span class="header-contact-item"><span class="header-contact-icon">&#128205;</span>${personal_info.location}</span>` : ''}
+        ${personal_info.phone ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</span>` : ''}
+        ${personal_info.email ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email}</span>` : ''}
+        ${personal_info.location ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</span>` : ''}
       </div>
     </div>
   </div>
@@ -355,9 +356,9 @@ function buildCreativeHtml(cvData, imageBase64) {
     <div class="sidebar">
       <div class="sidebar-section">
         <div class="sidebar-title">${labels.contact}</div>
-        ${personal_info.phone ? `<div class="contact-item"><span class="contact-icon">&#128222;</span>${personal_info.phone}</div>` : ''}
-        ${personal_info.email ? `<div class="contact-item"><span class="contact-icon">&#9993;</span>${personal_info.email}</div>` : ''}
-        ${personal_info.location ? `<div class="contact-item"><span class="contact-icon">&#128205;</span>${personal_info.location}</div>` : ''}
+        ${personal_info.phone ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</div>` : ''}
+        ${personal_info.email ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email}</div>` : ''}
+        ${personal_info.location ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</div>` : ''}
       </div>
 
       <div class="sidebar-section">

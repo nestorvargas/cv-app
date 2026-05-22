@@ -1,4 +1,4 @@
-function buildClassicHtml(cvData, imageBase64) {
+function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor = '#2c3e50') {
   const { personal_info, summary, experience, education, skills, certificates } = cvData;
   const lang = cvData.language;
 
@@ -60,7 +60,7 @@ function buildClassicHtml(cvData, imageBase64) {
   const renderCertificates = (certs) =>
     certs.map(c => `
       <div class="cert-item">
-        <span class="cert-icon">&#127885;</span>
+        <span class="cert-icon"><i class="fa-solid fa-award"></i></span>
         <div class="cert-info">
           <div class="cert-name">${c.name}</div>
           <div class="cert-meta">${c.issuer}${c.year ? ' · ' + c.year : ''}</div>
@@ -73,6 +73,7 @@ function buildClassicHtml(cvData, imageBase64) {
 <head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
   @page { margin: 14mm 0 10mm 0; }
   @page :first { margin: 0; }
@@ -81,7 +82,7 @@ function buildClassicHtml(cvData, imageBase64) {
 
   /* Sidebar color continues across ALL pages via html background */
   html {
-    background: linear-gradient(to right, #2c3e50 35%, #ffffff 35%);
+    background: linear-gradient(to right, ${bgColor} 35%, #ffffff 35%);
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -107,7 +108,7 @@ function buildClassicHtml(cvData, imageBase64) {
   }
 
   .photo-area {
-    background: #1a252f;
+    background: rgba(0,0,0,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -120,7 +121,7 @@ function buildClassicHtml(cvData, imageBase64) {
     height: 110px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #1abc9c;
+    border: 3px solid ${accentColor};
     box-shadow: 0 4px 14px rgba(26,188,156,0.35);
   }
 
@@ -129,11 +130,11 @@ function buildClassicHtml(cvData, imageBase64) {
     height: 110px;
     border-radius: 50%;
     background: #34495e;
-    border: 3px solid #1abc9c;
+    border: 3px solid ${accentColor};
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 38px;
     color: #7f8c8d;
   }
 
@@ -144,7 +145,7 @@ function buildClassicHtml(cvData, imageBase64) {
     font-size: 10pt;
     font-weight: 700;
     letter-spacing: 2px;
-    color: #1abc9c;
+    color: ${accentColor};
     margin-bottom: 12px;
     text-transform: uppercase;
   }
@@ -158,7 +159,7 @@ function buildClassicHtml(cvData, imageBase64) {
     word-break: break-all;
   }
 
-  .contact-icon { margin-right: 8px; color: #1abc9c; font-size: 11pt; min-width: 15px; }
+  .contact-icon { width: 16px; text-align: center; margin-right: 8px; color: ${accentColor}; font-size: 10pt; flex-shrink: 0; line-height: 1; }
 
   .skills-group { margin-bottom: 13px; }
   .skills-group-title {
@@ -192,7 +193,7 @@ function buildClassicHtml(cvData, imageBase64) {
   }
 
   .header-area {
-    background: #2c3e50;
+    background: ${bgColor};
     color: white;
     padding: 32px 30px 26px;
     position: relative;
@@ -205,12 +206,12 @@ function buildClassicHtml(cvData, imageBase64) {
     left: 30px;
     right: 30px;
     height: 3px;
-    background: linear-gradient(90deg, #1abc9c, transparent);
+    background: linear-gradient(90deg, ${accentColor}, transparent);
     border-radius: 2px;
   }
 
   .cv-name { font-size: 22pt; font-weight: 700; line-height: 1.1; color: white; }
-  .cv-title { font-size: 10.5pt; color: #1abc9c; margin-top: 8px; line-height: 1.5; font-weight: 500; }
+  .cv-title { font-size: 10.5pt; color: ${accentColor}; margin-top: 8px; line-height: 1.5; font-weight: 500; }
 
   .main-content { padding: 24px 30px; flex: 1; }
 
@@ -222,7 +223,7 @@ function buildClassicHtml(cvData, imageBase64) {
     text-transform: uppercase;
     letter-spacing: 1.8px;
     padding-bottom: 6px;
-    border-bottom: 2.5px solid #1abc9c;
+    border-bottom: 2.5px solid ${accentColor};
     margin-bottom: 13px;
   }
 
@@ -232,7 +233,7 @@ function buildClassicHtml(cvData, imageBase64) {
   .exp-header { display: flex; justify-content: space-between; align-items: flex-start; }
   .exp-company { font-weight: 700; font-size: 10.5pt; color: #2c3e50; }
   .exp-period { font-size: 9pt; color: #7f8c8d; white-space: nowrap; margin-left: 8px; }
-  .exp-position { font-size: 9.5pt; color: #1abc9c; font-weight: 600; margin: 4px 0 6px; }
+  .exp-position { font-size: 9.5pt; color: ${accentColor}; font-weight: 600; margin: 4px 0 6px; }
   .exp-desc { font-size: 9.5pt; line-height: 1.65; color: #555; text-align: justify; }
 
   .edu-item { margin-bottom: 13px; }
@@ -242,10 +243,10 @@ function buildClassicHtml(cvData, imageBase64) {
 
   .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
   .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .cert-icon { font-size: 10pt; flex-shrink: 0; margin-top: 1px; }
+  .cert-icon { width: 17px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
   .cert-info { flex: 1; }
   .cert-name { font-weight: 600; font-size: 9.5pt; color: #2c3e50; }
-  .cert-meta { font-size: 8.5pt; color: #1abc9c; margin-top: 2px; }
+  .cert-meta { font-size: 8.5pt; color: ${accentColor}; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -255,15 +256,15 @@ function buildClassicHtml(cvData, imageBase64) {
     <div class="photo-area">
       ${imageBase64
         ? `<img src="${imageBase64}" alt="Profile" />`
-        : `<div class="photo-placeholder">&#128100;</div>`
+        : `<div class="photo-placeholder"><i class="fa-solid fa-user"></i></div>`
       }
     </div>
 
     <div class="sidebar-section">
       <div class="sidebar-title">${labels.contact}</div>
-      <div class="contact-item"><span class="contact-icon">&#128222;</span>${personal_info.phone || ''}</div>
-      <div class="contact-item"><span class="contact-icon">&#9993;</span>${personal_info.email || ''}</div>
-      <div class="contact-item"><span class="contact-icon">&#128205;</span>${personal_info.location || ''}</div>
+      <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone || ''}</div>
+      <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email || ''}</div>
+      <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location || ''}</div>
     </div>
 
     <div class="sidebar-section">

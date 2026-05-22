@@ -5,6 +5,7 @@ const { buildClassicHtml } = require('../templates/classicTemplate');
 const { buildModernHtml } = require('../templates/modernTemplate');
 const { buildExecutiveHtml } = require('../templates/executiveTemplate');
 const { buildCreativeHtml } = require('../templates/creativeTemplate');
+const { buildMinimalHtml } = require('../templates/minimalTemplate');
 const path = require('path');
 const fs = require('fs');
 
@@ -32,11 +33,14 @@ async function generatePdf(req, res) {
     }
 
     const tmpl = req.query.template || 'classic';
+    const accentColor = req.query.accentColor ? decodeURIComponent(req.query.accentColor) : undefined;
+    const bgColor = req.query.bgColor ? decodeURIComponent(req.query.bgColor) : undefined;
     let html;
-    if (tmpl === 'modern') html = buildModernHtml(cvData, imageBase64);
-    else if (tmpl === 'executive') html = buildExecutiveHtml(cvData, imageBase64);
-    else if (tmpl === 'creative') html = buildCreativeHtml(cvData, imageBase64);
-    else html = buildClassicHtml(cvData, imageBase64);
+    if (tmpl === 'modern')         html = buildModernHtml(cvData, imageBase64, accentColor, bgColor);
+    else if (tmpl === 'executive') html = buildExecutiveHtml(cvData, imageBase64, accentColor, bgColor);
+    else if (tmpl === 'creative')  html = buildCreativeHtml(cvData, imageBase64, accentColor, bgColor);
+    else if (tmpl === 'minimal')   html = buildMinimalHtml(cvData, imageBase64, accentColor, bgColor);
+    else                           html = buildClassicHtml(cvData, imageBase64, accentColor, bgColor);
 
     const browser = await puppeteer.launch({
       headless: true,
