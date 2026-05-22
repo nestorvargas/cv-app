@@ -109,7 +109,7 @@ export default function CVEditor({ cvData, onChange, lang, profileName, onRefres
           <ImageUpload
             currentImage={cvData.profile_image}
             profileName={profileName}
-            onChange={(url) => { onChange('profile_image', url); onRefresh(); }}
+            onChange={(url) => onChange('profile_image', url)}
           />
         )}
         {activeTab === 'certificates' && (
