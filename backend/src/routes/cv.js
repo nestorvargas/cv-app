@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getCv, updateCv } = require('../controllers/cvController');
+const { listProfiles, getCv, updateCv, createProfile, deleteProfile } = require('../controllers/cvController');
 
-router.get('/:lang', getCv);
-router.put('/:lang', updateCv);
+router.get('/', listProfiles);
+router.post('/', createProfile);
+router.get('/:profileName/:lang', getCv);
+router.put('/:profileName/:lang', updateCv);
+router.delete('/:profileName', deleteProfile);
 
 module.exports = router;

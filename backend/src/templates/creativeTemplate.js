@@ -1,0 +1,378 @@
+function buildCreativeHtml(cvData, imageBase64) {
+  const { personal_info, summary, experience, education, skills, certificates } = cvData;
+  const lang = cvData.language;
+
+  const labelMap = {
+    es: {
+      contact: 'CONTACTO',
+      skills: 'HABILIDADES',
+      technical: 'Técnicas',
+      databases: 'Bases de Datos',
+      devops: 'DevOps & Herramientas',
+      tools: 'Gestión',
+      languages: 'Idiomas',
+      profile: 'Perfil Profesional',
+      experience: 'Experiencia Laboral',
+      education: 'Educación',
+      certificates: 'Certificados',
+    },
+    en: {
+      contact: 'CONTACT',
+      skills: 'SKILLS',
+      technical: 'Technical',
+      databases: 'Databases',
+      devops: 'DevOps & Tools',
+      tools: 'Management',
+      languages: 'Languages',
+      profile: 'Professional Profile',
+      experience: 'Work Experience',
+      education: 'Education',
+      certificates: 'Certificates',
+    },
+  };
+
+  const labels = labelMap[lang] || labelMap['es'];
+
+  const renderSkillGroup = (title, items) => {
+    if (!items || items.length === 0) return '';
+    const badges = items.map(s => `<span class="skill-badge">${s}</span>`).join('');
+    return `
+      <div class="skill-group">
+        <div class="skill-group-title">${title}</div>
+        <div class="skill-badges">${badges}</div>
+      </div>
+    `;
+  };
+
+  const renderExperience = (exp) =>
+    exp.map(e => `
+      <div class="exp-item">
+        <div class="exp-header">
+          <span class="exp-company">${e.company}</span>
+          <span class="exp-period">${e.period}</span>
+        </div>
+        <div class="exp-position">${e.position}</div>
+        <div class="exp-desc">${e.description}</div>
+      </div>
+    `).join('');
+
+  const renderEducation = (edu) =>
+    edu.map(e => `
+      <div class="edu-item">
+        <div class="edu-institution">${e.institution}</div>
+        <div class="edu-degree">${e.degree}</div>
+        ${e.period ? `<div class="edu-period">${e.period}</div>` : ''}
+      </div>
+    `).join('');
+
+  const renderCertificates = (certs) =>
+    certs.map(c => `
+      <div class="cert-item">
+        <span class="cert-icon">&#127885;</span>
+        <div class="cert-info">
+          <div class="cert-name">${c.name}</div>
+          <div class="cert-meta">${c.issuer}${c.year ? ' · ' + c.year : ''}</div>
+        </div>
+      </div>
+    `).join('');
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { margin: 14mm 0 10mm 0; }
+  @page :first { margin: 0; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Right sidebar color extends across all pages */
+  html {
+    background: linear-gradient(to right, #ffffff 70%, #f4f6f8 70%);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #222; background: transparent; }
+
+  /* Page-break rules */
+  .exp-item  { page-break-inside: avoid; break-inside: avoid; }
+  .edu-item  { page-break-inside: avoid; break-inside: avoid; }
+  .skill-group { page-break-inside: avoid; break-inside: avoid; }
+  .section-title { page-break-after: avoid; break-after: avoid; }
+
+  .cv-wrapper { display: flex; flex-direction: column; width: 210mm; }
+
+  /* HEADER: photo left + name right */
+  .header {
+    background: #1a1a2e;
+    display: flex;
+    align-items: center;
+    padding: 28px 32px;
+    gap: 28px;
+  }
+
+  .photo-area { flex-shrink: 0; }
+
+  .photo-area img {
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 3px solid #e94560;
+    box-shadow: 0 4px 16px rgba(233, 69, 96, 0.4);
+  }
+
+  .photo-placeholder {
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+    background: #252545;
+    border: 3px solid #e94560;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #7f8c8d;
+  }
+
+  .header-info { flex: 1; }
+
+  .cv-name {
+    font-size: 24pt;
+    font-weight: 700;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .cv-title {
+    font-size: 10.5pt;
+    color: #bdc3c7;
+    margin-bottom: 14px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+  }
+
+  .header-accent {
+    width: 56px;
+    height: 3px;
+    background: #e94560;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+
+  .header-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .header-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 8.5pt;
+    color: #95a5a6;
+  }
+
+  .header-contact-icon { font-size: 9pt; }
+
+  /* BODY */
+  .body { display: flex; flex: 1; }
+
+  /* MAIN CONTENT (70%) */
+  .main {
+    width: 70%;
+    background: transparent;
+    padding: 24px 26px 24px 32px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section { margin-bottom: 20px; }
+
+  .section-title {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #1a1a2e;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #e94560;
+    margin-bottom: 13px;
+  }
+
+  .summary-text { font-size: 9.5pt; line-height: 1.7; color: #444; text-align: justify; }
+
+  .exp-item {
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    border-left: 3px solid #e94560;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; }
+  .exp-company { font-weight: 700; font-size: 10pt; color: #1a1a2e; }
+  .exp-period {
+    font-size: 8pt;
+    color: white;
+    background: #e94560;
+    padding: 1px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .exp-position { font-size: 9.5pt; color: #e94560; font-weight: 600; margin: 4px 0 5px; }
+  .exp-desc { font-size: 9pt; line-height: 1.65; color: #555; text-align: justify; }
+
+  .edu-item { margin-bottom: 12px; }
+  .edu-institution { font-weight: 700; font-size: 9.5pt; color: #1a1a2e; }
+  .edu-degree { font-size: 9pt; color: #555; margin-top: 2px; }
+  .edu-period { font-size: 8.5pt; color: #95a5a6; margin-top: 2px; }
+
+  .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
+  .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .cert-icon { font-size: 10pt; flex-shrink: 0; margin-top: 1px; }
+  .cert-info { flex: 1; }
+  .cert-name { font-weight: 600; font-size: 9.5pt; color: #1a1a2e; }
+  .cert-meta { font-size: 8.5pt; color: #e94560; margin-top: 2px; }
+
+  /* RIGHT SIDEBAR (30%) */
+  .sidebar {
+    width: 30%;
+    background: transparent;
+    padding: 24px 18px;
+    border-left: 1px solid #e0e6ed;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-section { margin-bottom: 20px; }
+
+  .sidebar-title {
+    font-size: 9.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #e94560;
+    margin-bottom: 11px;
+    padding-bottom: 5px;
+    border-bottom: 1.5px solid #e94560;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 8px;
+    font-size: 9pt;
+    color: #444;
+    word-break: break-all;
+  }
+
+  .contact-icon { font-size: 10pt; min-width: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  .skill-group { margin-bottom: 11px; }
+
+  .skill-group-title {
+    font-size: 8.5pt;
+    color: #7f8c8d;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .skill-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .skill-badge {
+    display: inline-block;
+    background: #1a1a2e;
+    color: #ecf0f1;
+    border-radius: 10px;
+    padding: 2px 9px;
+    font-size: 8.5pt;
+    font-weight: 500;
+    margin: 1px 0;
+  }
+</style>
+</head>
+<body>
+<div class="cv-wrapper">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="photo-area">
+      ${imageBase64
+        ? `<img src="${imageBase64}" alt="Profile" />`
+        : `<div class="photo-placeholder">&#128100;</div>`
+      }
+    </div>
+    <div class="header-info">
+      <div class="cv-name">${personal_info.name || ''}</div>
+      <div class="cv-title">${personal_info.title || ''}</div>
+      <div class="header-accent"></div>
+      <div class="header-contacts">
+        ${personal_info.phone ? `<span class="header-contact-item"><span class="header-contact-icon">&#128222;</span>${personal_info.phone}</span>` : ''}
+        ${personal_info.email ? `<span class="header-contact-item"><span class="header-contact-icon">&#9993;</span>${personal_info.email}</span>` : ''}
+        ${personal_info.location ? `<span class="header-contact-item"><span class="header-contact-icon">&#128205;</span>${personal_info.location}</span>` : ''}
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+    <!-- LEFT MAIN (70%) -->
+    <div class="main">
+      ${summary ? `
+      <div class="section">
+        <div class="section-title">${labels.profile}</div>
+        <div class="summary-text">${summary}</div>
+      </div>` : ''}
+
+      <div class="section">
+        <div class="section-title">${labels.experience}</div>
+        ${renderExperience(experience || [])}
+      </div>
+
+      <div class="section">
+        <div class="section-title">${labels.education}</div>
+        ${renderEducation(education || [])}
+      </div>
+
+      ${certificates?.length > 0 ? `
+      <div class="section">
+        <div class="section-title">${labels.certificates}</div>
+        ${renderCertificates(certificates)}
+      </div>` : ''}
+    </div>
+
+    <!-- RIGHT SIDEBAR (30%) -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">${labels.contact}</div>
+        ${personal_info.phone ? `<div class="contact-item"><span class="contact-icon">&#128222;</span>${personal_info.phone}</div>` : ''}
+        ${personal_info.email ? `<div class="contact-item"><span class="contact-icon">&#9993;</span>${personal_info.email}</div>` : ''}
+        ${personal_info.location ? `<div class="contact-item"><span class="contact-icon">&#128205;</span>${personal_info.location}</div>` : ''}
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">${labels.skills}</div>
+        ${renderSkillGroup(labels.technical, skills.technical)}
+        ${renderSkillGroup(labels.databases, skills.databases)}
+        ${renderSkillGroup(labels.devops, skills.devops)}
+        ${renderSkillGroup(labels.tools, skills.tools)}
+        ${renderSkillGroup(labels.languages, skills.languages)}
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+}
+
+module.exports = { buildCreativeHtml };

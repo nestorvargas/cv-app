@@ -1,15 +1,19 @@
 const puppeteer = require('puppeteer');
 const { pool } = require('../db');
 const { buildCvHtml } = require('../templates/cvTemplate');
+const { buildClassicHtml } = require('../templates/classicTemplate');
+const { buildModernHtml } = require('../templates/modernTemplate');
+const { buildExecutiveHtml } = require('../templates/executiveTemplate');
+const { buildCreativeHtml } = require('../templates/creativeTemplate');
 const path = require('path');
 const fs = require('fs');
 
 async function generatePdf(req, res) {
-  const { lang } = req.params;
+  const { profileName, lang } = req.params;
   try {
     const result = await pool.query(
-      'SELECT * FROM cv_profiles WHERE language = $1',
-      [lang]
+      'SELECT * FROM cv_profiles WHERE profile_name = $1 AND language = $2',
+      [profileName, lang]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'CV not found' });
@@ -27,10 +31,15 @@ async function generatePdf(req, res) {
       }
     }
 
-    const html = buildCvHtml(cvData, imageBase64);
+    const tmpl = req.query.template || 'classic';
+    let html;
+    if (tmpl === 'modern') html = buildModernHtml(cvData, imageBase64);
+    else if (tmpl === 'executive') html = buildExecutiveHtml(cvData, imageBase64);
+    else if (tmpl === 'creative') html = buildCreativeHtml(cvData, imageBase64);
+    else html = buildClassicHtml(cvData, imageBase64);
 
     const browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true,
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
@@ -41,12 +50,11 @@ async function generatePdf(req, res) {
     const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: { top: '0', right: '0', bottom: '0', left: '0' },
     });
 
     await browser.close();
 
-    const filename = `CV_NestorVargas_${lang.toUpperCase()}.pdf`;
+    const filename = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(pdf);
