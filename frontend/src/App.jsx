@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar.jsx';
 import CVEditor from './components/CVEditor/index.jsx';
-import CVPreview from './components/CVPreview/index.jsx';
+import CVPagedViewer from './components/CVPreview/Paged.jsx';
 import CVIndex from './components/CVIndex/index.jsx';
 import { getCv, updateCv } from './api/cvApi.js';
 
@@ -163,8 +163,8 @@ export default function App() {
                 onBgColorChange={(tmpl, color) => setTemplateBgColors(prev => ({ ...prev, [tmpl]: color }))}
               />
             </div>
-            <div style={{ width: '55%', overflowY: 'auto', background: '#525659', padding: '28px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-              <CVPreview cvData={cvData} lang={lang} template={template} accentColor={templateColors[template]} bgColor={templateBgColors[template]} />
+            <div style={{ width: '55%', overflowY: 'auto', background: '#3a3a3a', padding: '32px 20px 48px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
+              <CVPagedViewer cvData={cvData} lang={lang} template={template} accentColor={templateColors[template]} bgColor={templateBgColors[template]} />
             </div>
           </>
         ) : (
