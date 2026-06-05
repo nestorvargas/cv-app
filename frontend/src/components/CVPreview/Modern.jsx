@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Modern({ cvData, lang, accentColor, bgColor }) {
+export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeight }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor }) {
   ];
 
   return (
-    <div className="cv-modern-wrapper" style={{ '--cv-accent': accentColor || '#e67e22', '--cv-bg': bgColor || '#1a252f' }}>
+    <div className="cv-modern-wrapper" style={{ '--cv-accent': accentColor || '#e67e22', '--cv-bg': bgColor || '#1a252f', minHeight: pageMinHeight }}>
       <div className="cv-modern">
         {/* FULL-WIDTH HEADER */}
         <header className="cv-modern-header">
@@ -80,7 +80,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-modern-section">
                 <h2 className="cv-modern-section-title">{L.experience}</h2>
                 {experience.map((exp, i) => (
-                  <div key={exp.id || i} className="cv-modern-exp-item">
+                  <div key={exp.id || i} className="cv-modern-exp-item" data-block>
                     <div className="cv-modern-exp-header">
                       <span className="cv-modern-exp-company">{exp.company}</span>
                       <span className="cv-modern-exp-period">{exp.period}</span>
@@ -120,7 +120,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-modern-section">
                 <h2 className="cv-modern-section-title">{L.education}</h2>
                 {education.map((edu, i) => (
-                  <div key={edu.id || i} className="cv-modern-edu-item">
+                  <div key={edu.id || i} className="cv-modern-edu-item" data-block>
                     <div className="cv-modern-edu-institution">{edu.institution}</div>
                     <div className="cv-modern-edu-degree">{edu.degree}</div>
                     {edu.period && <div className="cv-modern-edu-period">{edu.period}</div>}
@@ -133,7 +133,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-modern-section">
                 <h2 className="cv-modern-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
-                  <div key={cert.id || i} className="cv-modern-cert-item">
+                  <div key={cert.id || i} className="cv-modern-cert-item" data-block>
                     <span className="cv-modern-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-modern-cert-info">
                       <div className="cv-modern-cert-name">{cert.name}</div>

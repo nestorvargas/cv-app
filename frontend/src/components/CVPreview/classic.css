@@ -1,13 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 /* ── Page viewer shell ── */
+/* ── Page viewer shell ── */
 .cv-classic-wrapper {
   width: 794px;
   flex-shrink: 0;
   position: relative;
-  /* Sidebar color extends as content grows — matches PDF exactly */
+  /* Sidebar color extends as content grows — matches PDF exactly.
+     minHeight is injected as inline style by Paged.jsx (1123px per page). */
   background: linear-gradient(to right, var(--cv-bg, #2c3e50) 35%, #ffffff 35%);
-  min-height: 1123px;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
 }
 
@@ -16,11 +19,13 @@
 .cv-classic {
   display: flex;
   width: 794px;
+  flex: 1;
   background: transparent;
   font-size: 14px;
   line-height: 1.65;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   color: #222;
+  align-items: stretch;
 }
 
 /* ── LEFT SIDEBAR — transparent, wrapper gradient provides the color ── */

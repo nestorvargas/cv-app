@@ -8,7 +8,7 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
       skills: 'HABILIDADES',
       technical: 'Técnicas',
       databases: 'Bases de Datos',
-      devops: 'Herramientas',
+      devops: 'DevOps',
       tools: 'Gestión',
       languages: 'Idiomas',
       profile: 'Perfil Profesional',
@@ -21,7 +21,7 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
       skills: 'SKILLS',
       technical: 'Technical',
       databases: 'Databases',
-      devops: 'Tools',
+      devops: 'DevOps',
       tools: 'Management',
       languages: 'Languages',
       profile: 'Professional Profile',
@@ -83,19 +83,20 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
-  @page { margin: 14mm 0 10mm 0; }
-  @page :first { margin: 0; }
+  @page { margin: 10mm 0 8mm 0; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-  /* Right sidebar color extends across all pages */
-  html {
+  /* Right sidebar background via position:fixed — repeats on every page including margin areas */
+  html { background: white; }
+  .cv-page-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(to right, #ffffff 70%, #f4f6f8 70%);
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    z-index: -1;
   }
 
-  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #222; background: transparent; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #222; background: transparent; }
 
   /* Page-break rules */
   .exp-item  { page-break-inside: avoid; break-inside: avoid; }
@@ -134,14 +135,14 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 44px;
     color: #7f8c8d;
   }
 
   .header-info { flex: 1; }
 
   .cv-name {
-    font-size: 24pt;
+    font-size: 28px;
     font-weight: 700;
     color: white;
     line-height: 1.1;
@@ -149,7 +150,7 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
   }
 
   .cv-title {
-    font-size: 10.5pt;
+    font-size: 13px;
     color: #bdc3c7;
     margin-bottom: 14px;
     font-weight: 400;
@@ -174,14 +175,14 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 8.5pt;
+    font-size: 12px;
     color: #95a5a6;
   }
 
-  .header-contact-icon { width: 14px; text-align: center; font-size: 9pt; color: ${accentColor}; line-height: 1; }
+  .header-contact-icon { width: 14px; text-align: center; font-size: 11px; color: ${accentColor}; line-height: 1; }
 
   /* BODY */
-  .body { display: flex; flex: 1; }
+  .body { display: flex; flex: 1; align-items: start; }
 
   /* MAIN CONTENT (70%) */
   .main {
@@ -192,10 +193,10 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     flex-direction: column;
   }
 
-  .section { margin-bottom: 20px; }
+  .section { margin-bottom: 22px; }
 
   .section-title {
-    font-size: 10pt;
+    font-size: 11px;
     font-weight: 700;
     color: #1a1a2e;
     text-transform: uppercase;
@@ -205,11 +206,11 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     margin-bottom: 13px;
   }
 
-  .summary-text { font-size: 9.5pt; line-height: 1.7; color: #444; text-align: justify; }
+  .summary-text { font-size: 12.5px; line-height: 1.7; color: #444; text-align: justify; }
 
   .exp-item {
-    margin-bottom: 14px;
-    padding-bottom: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
     padding-left: 12px;
     border-left: 3px solid ${accentColor};
     border-bottom: 1px solid #f0f0f0;
@@ -218,30 +219,30 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
   .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
   .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; }
-  .exp-company { font-weight: 700; font-size: 10pt; color: #1a1a2e; }
+  .exp-company { font-weight: 700; font-size: 13.5px; color: #1a1a2e; }
   .exp-period {
-    font-size: 8pt;
+    font-size: 11px;
     color: white;
     background: ${accentColor};
-    padding: 1px 8px;
-    border-radius: 8px;
+    padding: 2px 9px;
+    border-radius: 9px;
     white-space: nowrap;
     font-weight: 500;
   }
-  .exp-position { font-size: 9.5pt; color: ${accentColor}; font-weight: 600; margin: 4px 0 5px; }
-  .exp-desc { font-size: 9pt; line-height: 1.65; color: #555; text-align: justify; }
+  .exp-position { font-size: 12px; color: ${accentColor}; font-weight: 600; margin: 4px 0 6px; }
+  .exp-desc { font-size: 11.5px; line-height: 1.65; color: #555; text-align: justify; }
 
-  .edu-item { margin-bottom: 12px; }
-  .edu-institution { font-weight: 700; font-size: 9.5pt; color: #1a1a2e; }
-  .edu-degree { font-size: 9pt; color: #555; margin-top: 2px; }
-  .edu-period { font-size: 8.5pt; color: #95a5a6; margin-top: 2px; }
+  .edu-item { margin-bottom: 13px; }
+  .edu-institution { font-weight: 700; font-size: 13px; color: #1a1a2e; }
+  .edu-degree { font-size: 12px; color: #555; margin-top: 2px; }
+  .edu-period { font-size: 11px; color: #95a5a6; margin-top: 2px; }
 
-  .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
+  .cert-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; padding-bottom: 9px; border-bottom: 1px dashed #e0e0e0; }
   .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .cert-icon { width: 17px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+  .cert-icon { width: 18px; text-align: center; font-size: 13px; color: ${accentColor}; flex-shrink: 0; margin-top: 2px; line-height: 1; }
   .cert-info { flex: 1; }
-  .cert-name { font-weight: 600; font-size: 9.5pt; color: #1a1a2e; }
-  .cert-meta { font-size: 8.5pt; color: ${accentColor}; margin-top: 2px; }
+  .cert-name { font-weight: 600; font-size: 12.5px; color: #1a1a2e; }
+  .cert-meta { font-size: 11.5px; color: ${accentColor}; margin-top: 2px; }
 
   /* RIGHT SIDEBAR (30%) */
   .sidebar {
@@ -256,7 +257,7 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
   .sidebar-section { margin-bottom: 20px; }
 
   .sidebar-title {
-    font-size: 9.5pt;
+    font-size: 10.5px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -271,17 +272,17 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     align-items: flex-start;
     gap: 7px;
     margin-bottom: 8px;
-    font-size: 9pt;
+    font-size: 12px;
     color: #444;
     word-break: break-all;
   }
 
-  .contact-icon { width: 16px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+  .contact-icon { width: 16px; text-align: center; font-size: 12px; color: ${accentColor}; flex-shrink: 0; margin-top: 2px; line-height: 1; }
 
-  .skill-group { margin-bottom: 11px; }
+  .skill-group { margin-bottom: 12px; }
 
   .skill-group-title {
-    font-size: 8.5pt;
+    font-size: 10px;
     color: #7f8c8d;
     font-weight: 700;
     margin-bottom: 6px;
@@ -296,14 +297,14 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     background: ${bgColor};
     color: #ecf0f1;
     border-radius: 10px;
-    padding: 2px 9px;
-    font-size: 8.5pt;
+    padding: 3px 10px;
+    font-size: 11px;
     font-weight: 500;
-    margin: 1px 0;
   }
 </style>
 </head>
 <body>
+<div class="cv-page-bg"></div>
 <div class="cv-wrapper">
   <!-- HEADER -->
   <div class="header">
@@ -335,15 +336,17 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
         <div class="summary-text">${summary}</div>
       </div>` : ''}
 
+      ${experience?.length > 0 ? `
       <div class="section">
         <div class="section-title">${labels.experience}</div>
-        ${renderExperience(experience || [])}
-      </div>
+        ${renderExperience(experience)}
+      </div>` : ''}
 
+      ${education?.length > 0 ? `
       <div class="section">
         <div class="section-title">${labels.education}</div>
-        ${renderEducation(education || [])}
-      </div>
+        ${renderEducation(education)}
+      </div>` : ''}
 
       ${certificates?.length > 0 ? `
       <div class="section">
@@ -357,7 +360,7 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
       <div class="sidebar-section">
         <div class="sidebar-title">${labels.contact}</div>
         ${personal_info.phone ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</div>` : ''}
-        ${personal_info.email ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email}</div>` : ''}
+        ${personal_info.email ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span><span style="word-break:break-all;">${personal_info.email}</span></div>` : ''}
         ${personal_info.location ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</div>` : ''}
       </div>
 

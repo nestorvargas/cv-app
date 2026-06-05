@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Executive({ cvData, lang, accentColor, bgColor }) {
+export default function Executive({ cvData, lang, accentColor, bgColor, pageMinHeight }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor }) {
   ];
 
   return (
-    <div className="cv-executive-wrapper" style={{ '--cv-accent': accentColor || '#8e44ad', '--cv-bg': bgColor || '#2c3e50' }}>
+    <div className="cv-executive-wrapper" style={{ '--cv-accent': accentColor || '#8e44ad', '--cv-bg': bgColor || '#2c3e50', minHeight: pageMinHeight }}>
       <div className="cv-executive">
         {/* FULL-WIDTH HEADER (centered) */}
         <header className="cv-executive-header">
@@ -118,7 +118,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-executive-section">
                 <h2 className="cv-executive-section-title">{L.experience}</h2>
                 {experience.map((exp, i) => (
-                  <div key={exp.id || i} className="cv-executive-exp-item">
+                  <div key={exp.id || i} className="cv-executive-exp-item" data-block>
                     <div className="cv-executive-exp-header">
                       <span className="cv-executive-exp-company">{exp.company}</span>
                       <span className="cv-executive-exp-period">{exp.period}</span>
@@ -134,7 +134,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-executive-section">
                 <h2 className="cv-executive-section-title">{L.education}</h2>
                 {education.map((edu, i) => (
-                  <div key={edu.id || i} className="cv-executive-edu-item">
+                  <div key={edu.id || i} className="cv-executive-edu-item" data-block>
                     <div className="cv-executive-edu-institution">{edu.institution}</div>
                     <div className="cv-executive-edu-degree">{edu.degree}</div>
                     {edu.period && <div className="cv-executive-edu-period">{edu.period}</div>}
@@ -147,7 +147,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-executive-section">
                 <h2 className="cv-executive-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
-                  <div key={cert.id || i} className="cv-executive-cert-item">
+                  <div key={cert.id || i} className="cv-executive-cert-item" data-block>
                     <span className="cv-executive-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-executive-cert-info">
                       <div className="cv-executive-cert-name">{cert.name}</div>

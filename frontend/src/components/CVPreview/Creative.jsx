@@ -7,7 +7,7 @@ const LABELS = {
     skills: 'HABILIDADES',
     technical: 'Técnicas',
     databases: 'Bases de Datos',
-    devops: 'Herramientas',
+    devops: 'DevOps',
     tools: 'Gestión',
     languages: 'Idiomas',
     profile: 'Perfil Profesional',
@@ -20,7 +20,7 @@ const LABELS = {
     skills: 'SKILLS',
     technical: 'Technical',
     databases: 'Databases',
-    devops: 'Herramientas',
+    devops: 'DevOps',
     tools: 'Management',
     languages: 'Languages',
     profile: 'Professional Profile',
@@ -30,7 +30,7 @@ const LABELS = {
   },
 };
 
-export default function Creative({ cvData, lang, accentColor, bgColor }) {
+export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHeight }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
 
@@ -45,7 +45,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor }) {
   ];
 
   return (
-    <div className="cv-creative-wrapper" style={{ '--cv-accent': accentColor || '#e94560', '--cv-bg': bgColor || '#1a1a2e' }}>
+    <div className="cv-creative-wrapper" style={{ '--cv-accent': accentColor || '#e94560', '--cv-bg': bgColor || '#1a1a2e', minHeight: pageMinHeight }}>
       <div className="cv-creative">
         {/* HEADER: photo left + info right */}
         <header className="cv-creative-header">
@@ -98,7 +98,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-creative-section">
                 <h2 className="cv-creative-section-title">{L.experience}</h2>
                 {experience.map((exp, i) => (
-                  <div key={exp.id || i} className="cv-creative-exp-item">
+                  <div key={exp.id || i} className="cv-creative-exp-item" data-block>
                     <div className="cv-creative-exp-header">
                       <span className="cv-creative-exp-company">{exp.company}</span>
                       <span className="cv-creative-exp-period">{exp.period}</span>
@@ -114,7 +114,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-creative-section">
                 <h2 className="cv-creative-section-title">{L.education}</h2>
                 {education.map((edu, i) => (
-                  <div key={edu.id || i} className="cv-creative-edu-item">
+                  <div key={edu.id || i} className="cv-creative-edu-item" data-block>
                     <div className="cv-creative-edu-institution">{edu.institution}</div>
                     <div className="cv-creative-edu-degree">{edu.degree}</div>
                     {edu.period && <div className="cv-creative-edu-period">{edu.period}</div>}
@@ -127,7 +127,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-creative-section">
                 <h2 className="cv-creative-section-title">{L.certificates}</h2>
                 {certificates.map((cert, i) => (
-                  <div key={cert.id || i} className="cv-creative-cert-item">
+                  <div key={cert.id || i} className="cv-creative-cert-item" data-block>
                     <span className="cv-creative-cert-icon"><i className="fa-solid fa-award" /></span>
                     <div className="cv-creative-cert-info">
                       <div className="cv-creative-cert-name">{cert.name}</div>

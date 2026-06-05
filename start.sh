@@ -35,9 +35,9 @@ case "$ACTION" in
     docker compose up --build -d
     echo ""
     echo -e "${GREEN}✅ Aplicación corriendo:${NC}"
-    echo -e "   🌐 Frontend:  ${YELLOW}http://localhost:5173${NC}"
-    echo -e "   🔧 Backend:   ${YELLOW}http://localhost:3001${NC}"
-    echo -e "   🐘 PostgreSQL: localhost:5432"
+    echo -e "   🌐 Frontend:  ${YELLOW}http://localhost:15173${NC}"
+    echo -e "   🔧 Backend:   ${YELLOW}http://localhost:13001${NC}"
+    echo -e "   🐘 PostgreSQL: localhost:15432"
     echo ""
     echo -e "Para ver los logs: ${BLUE}./start.sh logs${NC}"
     echo -e "Para detener:      ${BLUE}./start.sh stop${NC}"
@@ -53,7 +53,7 @@ case "$ACTION" in
     echo -e "${YELLOW}🔄 Reiniciando...${NC}"
     docker compose down
     docker compose up --build -d
-    echo -e "${GREEN}✅ Reiniciada en http://localhost:5173${NC}"
+    echo -e "${GREEN}✅ Reiniciada en http://localhost:15173${NC}"
     ;;
 
   logs)

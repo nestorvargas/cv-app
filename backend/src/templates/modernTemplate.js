@@ -8,7 +8,7 @@ function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor =
       skills: 'HABILIDADES',
       technical: 'Técnicas',
       databases: 'Bases de Datos',
-      devops: 'DevOps & Herramientas',
+      devops: 'DevOps',
       tools: 'Gestión',
       languages: 'Idiomas',
       profile: 'Perfil Profesional',
@@ -21,7 +21,7 @@ function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor =
       skills: 'SKILLS',
       technical: 'Technical',
       databases: 'Databases',
-      devops: 'DevOps & Tools',
+      devops: 'DevOps',
       tools: 'Management',
       languages: 'Languages',
       profile: 'Professional Profile',
@@ -88,13 +88,12 @@ function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor =
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
-  @page { margin: 14mm 0 10mm 0; }
-  @page :first { margin: 0; }
+  @page { margin: 10mm 0 8mm 0; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
   html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #222; background: white; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #222; background: white; }
 
   /* Page-break rules */
   .exp-item  { page-break-inside: avoid; break-inside: avoid; }
@@ -112,136 +111,150 @@ function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor =
   .header {
     background: ${bgColor};
     color: white;
-    padding: 26px 32px;
+    padding: 32px 36px;
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 28px;
   }
 
   .photo-wrap { flex-shrink: 0; }
 
   .photo-wrap img {
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid ${accentColor};
-    box-shadow: 0 4px 14px rgba(230,126,34,0.4);
+    box-shadow: 0 4px 16px rgba(230,126,34,0.4);
   }
 
   .photo-placeholder {
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     background: rgba(255,255,255,0.12);
     border: 3px solid ${accentColor};
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 38px;
+    font-size: 44px;
     color: #7f8c8d;
   }
 
   .header-info { flex: 1; }
-  .cv-name { font-size: 22pt; font-weight: 700; color: white; line-height: 1.1; }
-  .cv-title { font-size: 10pt; color: ${accentColor}; margin-top: 7px; font-weight: 500; }
+  .cv-name { font-size: 28px; font-weight: 700; color: white; line-height: 1.15; letter-spacing: -0.3px; margin-bottom: 8px; }
+  .cv-title { font-size: 13px; color: ${accentColor}; margin-top: 0; font-weight: 500; line-height: 1.5; }
 
   .header-accent {
     width: 3px;
-    height: 70px;
+    height: 80px;
     background: linear-gradient(180deg, ${accentColor}, transparent);
     border-radius: 2px;
     flex-shrink: 0;
   }
 
-  /* BODY: 2-column */
+  /* BODY: 2-column grid */
   .body {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     flex: 1;
+    align-items: start;
   }
 
   .col {
-    padding: 22px 24px;
-    flex: 1;
+    padding: 28px 28px;
   }
 
   .col-left {
+    padding-right: 20px;
     border-right: 1px solid #e9ecef;
   }
 
   .col-right {
+    padding-left: 20px;
     background: #fafbfc;
     -webkit-print-color-adjust: exact;
   }
 
-  .section { margin-bottom: 20px; }
+  .section { margin-bottom: 26px; }
 
   .section-title {
-    font-size: 10pt;
+    font-size: 11.5px;
     font-weight: 700;
     color: ${accentColor};
     text-transform: uppercase;
     letter-spacing: 2px;
-    padding-bottom: 5px;
+    padding-bottom: 6px;
     border-bottom: 2px solid ${accentColor};
     margin-bottom: 12px;
+    position: relative;
   }
 
-  .summary-text { font-size: 9.5pt; line-height: 1.7; color: #444; text-align: justify; }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 40%;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #fafbfc);
+  }
 
-  .exp-item { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px dashed #e0e0e0; }
+  .summary-text { font-size: 12.5px; line-height: 1.7; color: #444; text-align: justify; }
+
+  .exp-item { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px dashed #e0e0e0; }
   .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
   .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 4px; }
-  .exp-company { font-weight: 700; font-size: 10pt; color: #1a252f; }
+  .exp-company { font-weight: 700; font-size: 13.5px; color: #1a252f; }
   .exp-period {
-    font-size: 8.5pt;
+    font-size: 11px;
     color: #95a5a6;
     background: #f0f2f4;
-    padding: 2px 7px;
-    border-radius: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
     white-space: nowrap;
   }
-  .exp-position { font-size: 9.5pt; color: ${accentColor}; font-weight: 600; margin: 4px 0 5px; }
-  .exp-desc { font-size: 9pt; line-height: 1.65; color: #555; text-align: justify; }
+  .exp-position { font-size: 12px; color: ${accentColor}; font-weight: 600; margin: 4px 0 7px; }
+  .exp-desc { font-size: 11.5px; line-height: 1.65; color: #555; text-align: justify; }
 
   /* Skills with dot badges */
-  .skill-cat { margin-bottom: 12px; }
-  .skill-cat-label { font-size: 8.5pt; font-weight: 700; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .skill-dots { display: flex; flex-wrap: wrap; gap: 4px; }
+  .skill-cat { margin-bottom: 14px; }
+  .skill-cat-label { font-size: 10.5px; font-weight: 700; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
+  .skill-dots { display: flex; flex-wrap: wrap; gap: 5px; }
   .skill-dot-item {
     display: flex;
     align-items: center;
     gap: 5px;
     background: white;
     border: 1px solid #e0e0e0;
-    border-radius: 18px;
-    padding: 3px 9px;
-    font-size: 8.5pt;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11.5px;
     color: #333;
   }
   .skill-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: ${accentColor};
     flex-shrink: 0;
     display: inline-block;
   }
 
-  .edu-item { margin-bottom: 12px; padding-left: 10px; border-left: 3px solid ${accentColor}; }
-  .edu-institution { font-weight: 700; font-size: 9.5pt; color: #1a252f; }
-  .edu-degree { font-size: 9pt; color: #555; margin-top: 2px; }
-  .edu-period { font-size: 8.5pt; color: #95a5a6; margin-top: 2px; }
+  .edu-item { margin-bottom: 14px; padding-left: 12px; border-left: 3px solid ${accentColor}; }
+  .edu-institution { font-weight: 700; font-size: 13px; color: #1a252f; }
+  .edu-degree { font-size: 12px; color: #555; margin-top: 2px; }
+  .edu-period { font-size: 11px; color: #95a5a6; margin-top: 2px; }
 
-  .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
+  .cert-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
   .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .cert-icon { width: 17px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+  .cert-icon { width: 18px; text-align: center; font-size: 13px; color: ${accentColor}; flex-shrink: 0; margin-top: 2px; line-height: 1; }
   .cert-info { flex: 1; }
-  .cert-name { font-weight: 600; font-size: 9pt; color: #1a252f; }
-  .cert-meta { font-size: 8.5pt; color: ${accentColor}; margin-top: 2px; }
+  .cert-name { font-weight: 600; font-size: 12px; color: #1a252f; }
+  .cert-meta { font-size: 11px; color: ${accentColor}; margin-top: 2px; }
 
-  .contact-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 7px; font-size: 9.5pt; color: #444; word-break: break-all; }
-  .contact-icon { width: 16px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; line-height: 1; }
+  .contact-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; font-size: 12.5px; color: #444; word-break: break-all; }
+  .contact-icon { width: 16px; text-align: center; font-size: 12px; color: ${accentColor}; flex-shrink: 0; margin-top: 2px; line-height: 1; }
 </style>
 </head>
 <body>
@@ -261,7 +274,7 @@ function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor =
     <div class="header-accent"></div>
   </div>
 
-  <!-- BODY: 2-column -->
+  <!-- BODY: 2-column grid -->
   <div class="body">
     <!-- LEFT: Profile + Experience -->
     <div class="col col-left">
@@ -300,9 +313,9 @@ function buildModernHtml(cvData, imageBase64, accentColor = '#e67e22', bgColor =
 
       <div class="section">
         <div class="section-title">${labels.contact}</div>
-        <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone || ''}</div>
-        <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email || ''}</div>
-        <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location || ''}</div>
+        ${personal_info.phone ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</div>` : ''}
+        ${personal_info.email ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email}</div>` : ''}
+        ${personal_info.location ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</div>` : ''}
       </div>
     </div>
   </div>

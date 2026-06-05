@@ -8,7 +8,7 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
       skills: 'HABILIDADES',
       technical: 'Técnicas',
       databases: 'Bases de Datos',
-      devops: 'DevOps & Herramientas',
+      devops: 'DevOps',
       tools: 'Gestión',
       languages: 'Idiomas',
       profile: 'Perfil Profesional',
@@ -21,7 +21,7 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
       skills: 'SKILLS',
       technical: 'Technical',
       databases: 'Databases',
-      devops: 'DevOps & Tools',
+      devops: 'DevOps',
       tools: 'Management',
       languages: 'Languages',
       profile: 'Professional Profile',
@@ -75,19 +75,20 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
-  @page { margin: 14mm 0 10mm 0; }
-  @page :first { margin: 0; }
+  @page { margin: 10mm 0 8mm 0; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-  /* Sidebar color continues across ALL pages via html background */
-  html {
+  /* Sidebar background via position:fixed — repeats on every page including margin areas */
+  html { background: white; }
+  .cv-page-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(to right, ${bgColor} 35%, #ffffff 35%);
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    z-index: -1;
   }
 
-  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #222; background: transparent; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #222; background: transparent; }
 
   .cv-wrapper { display: flex; width: 210mm; }
 
@@ -100,7 +101,7 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
   /* LEFT SIDEBAR */
   .sidebar {
     width: 35%;
-    background: transparent;   /* html gradient provides the color */
+    background: transparent;
     color: #ecf0f1;
     padding: 0;
     display: flex;
@@ -112,63 +113,64 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px 16px;
-    min-height: 155px;
+    padding: 32px 18px;
+    min-height: 168px;
   }
 
   .photo-area img {
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid ${accentColor};
-    box-shadow: 0 4px 14px rgba(26,188,156,0.35);
+    box-shadow: 0 4px 16px rgba(26,188,156,0.35);
   }
 
   .photo-placeholder {
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background: #34495e;
     border: 3px solid ${accentColor};
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 38px;
+    font-size: 44px;
     color: #7f8c8d;
   }
 
-  .sidebar-section { padding: 18px 20px; }
+  .sidebar-section { padding: 20px 22px; }
   .sidebar-section + .sidebar-section { border-top: 1px solid #34495e; }
 
   .sidebar-title {
-    font-size: 10pt;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     color: ${accentColor};
-    margin-bottom: 12px;
+    margin-bottom: 13px;
     text-transform: uppercase;
   }
 
   .contact-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 8px;
-    font-size: 9.5pt;
+    gap: 8px;
+    margin-bottom: 9px;
+    font-size: 12.5px;
     color: #bdc3c7;
     word-break: break-all;
   }
 
-  .contact-icon { width: 16px; text-align: center; margin-right: 8px; color: ${accentColor}; font-size: 10pt; flex-shrink: 0; line-height: 1; }
+  .contact-icon { width: 16px; text-align: center; margin-right: 0; color: ${accentColor}; font-size: 12px; flex-shrink: 0; margin-top: 2px; line-height: 1; }
 
-  .skills-group { margin-bottom: 13px; }
+  .skills-group { margin-bottom: 14px; }
   .skills-group-title {
-    font-size: 9pt;
+    font-size: 10px;
     color: #95a5a6;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-weight: 700;
+    margin-bottom: 7px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
   }
 
   .skill-badge {
@@ -176,8 +178,8 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
     background: #34495e;
     color: #ecf0f1;
     border-radius: 12px;
-    padding: 3px 10px;
-    font-size: 9pt;
+    padding: 4px 11px;
+    font-size: 11.5px;
     margin: 2px 3px 2px 0;
     border: 1px solid #3d566e;
     font-weight: 500;
@@ -195,7 +197,7 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
   .header-area {
     background: ${bgColor};
     color: white;
-    padding: 32px 30px 26px;
+    padding: 34px 34px 28px;
     position: relative;
   }
 
@@ -203,53 +205,66 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
     content: '';
     position: absolute;
     bottom: 0;
-    left: 30px;
-    right: 30px;
+    left: 34px;
+    right: 34px;
     height: 3px;
     background: linear-gradient(90deg, ${accentColor}, transparent);
     border-radius: 2px;
   }
 
-  .cv-name { font-size: 22pt; font-weight: 700; line-height: 1.1; color: white; }
-  .cv-title { font-size: 10.5pt; color: ${accentColor}; margin-top: 8px; line-height: 1.5; font-weight: 500; }
+  .cv-name { font-size: 27px; font-weight: 700; line-height: 1.15; color: white; letter-spacing: -0.3px; }
+  .cv-title { font-size: 12.5px; color: ${accentColor}; margin-top: 8px; line-height: 1.5; font-weight: 500; }
 
-  .main-content { padding: 24px 30px; flex: 1; }
+  .main-content { padding: 26px 32px; flex: 1; }
 
-  .section { margin-bottom: 22px; }
+  .section { margin-bottom: 24px; }
   .section-title {
-    font-size: 11pt;
+    font-size: 12.5px;
     font-weight: 700;
     color: #2c3e50;
     text-transform: uppercase;
     letter-spacing: 1.8px;
     padding-bottom: 6px;
     border-bottom: 2.5px solid ${accentColor};
-    margin-bottom: 13px;
+    margin-bottom: 15px;
+    position: relative;
   }
 
-  .summary-text { font-size: 10pt; line-height: 1.7; color: #444; text-align: justify; }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2.5px;
+    left: 50%;
+    right: 0;
+    height: 2.5px;
+    background: linear-gradient(90deg, transparent, white);
+    pointer-events: none;
+  }
 
-  .exp-item { margin-bottom: 15px; }
+  .summary-text { font-size: 13px; line-height: 1.7; color: #444; text-align: justify; }
+
+  .exp-item { margin-bottom: 18px; }
   .exp-header { display: flex; justify-content: space-between; align-items: flex-start; }
-  .exp-company { font-weight: 700; font-size: 10.5pt; color: #2c3e50; }
-  .exp-period { font-size: 9pt; color: #7f8c8d; white-space: nowrap; margin-left: 8px; }
-  .exp-position { font-size: 9.5pt; color: ${accentColor}; font-weight: 600; margin: 4px 0 6px; }
-  .exp-desc { font-size: 9.5pt; line-height: 1.65; color: #555; text-align: justify; }
+  .exp-company { font-weight: 700; font-size: 14px; color: #2c3e50; }
+  .exp-period { font-size: 11.5px; color: #7f8c8d; white-space: nowrap; margin-left: 8px; flex-shrink: 0; }
+  .exp-position { font-size: 12px; color: ${accentColor}; font-weight: 600; margin: 4px 0 7px; }
+  .exp-desc { font-size: 12px; line-height: 1.65; color: #555; text-align: justify; }
 
-  .edu-item { margin-bottom: 13px; }
-  .edu-institution { font-weight: 700; font-size: 10pt; color: #2c3e50; }
-  .edu-degree { font-size: 9.5pt; color: #555; margin-top: 2px; }
-  .edu-period { font-size: 9pt; color: #7f8c8d; }
+  .edu-item { margin-bottom: 14px; }
+  .edu-institution { font-weight: 700; font-size: 13px; color: #2c3e50; }
+  .edu-degree { font-size: 12px; color: #555; margin-top: 2px; }
+  .edu-period { font-size: 11px; color: #7f8c8d; margin-top: 1px; }
 
-  .cert-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 9px; padding-bottom: 8px; border-bottom: 1px dashed #e0e0e0; }
+  .cert-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; padding-bottom: 9px; border-bottom: 1px dashed #e0e0e0; }
   .cert-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .cert-icon { width: 17px; text-align: center; font-size: 10pt; color: ${accentColor}; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+  .cert-icon { width: 18px; text-align: center; font-size: 13px; color: ${accentColor}; flex-shrink: 0; margin-top: 2px; line-height: 1; }
   .cert-info { flex: 1; }
-  .cert-name { font-weight: 600; font-size: 9.5pt; color: #2c3e50; }
-  .cert-meta { font-size: 8.5pt; color: ${accentColor}; margin-top: 2px; }
+  .cert-name { font-weight: 600; font-size: 12.5px; color: #2c3e50; }
+  .cert-meta { font-size: 11.5px; color: ${accentColor}; margin-top: 2px; }
 </style>
 </head>
 <body>
+<div class="cv-page-bg"></div>
 <div class="cv-wrapper">
   <!-- LEFT SIDEBAR -->
   <div class="sidebar">
@@ -262,18 +277,18 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
 
     <div class="sidebar-section">
       <div class="sidebar-title">${labels.contact}</div>
-      <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone || ''}</div>
-      <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email || ''}</div>
-      <div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location || ''}</div>
+      ${personal_info.phone ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</div>` : ''}
+      ${personal_info.email ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span><span style="word-break: break-all;">${personal_info.email}</span></div>` : ''}
+      ${personal_info.location ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</div>` : ''}
     </div>
 
     <div class="sidebar-section">
       <div class="sidebar-title">${labels.skills}</div>
-      ${skills.technical ? `<div class="skills-group"><div class="skills-group-title">${labels.technical}</div>${renderSkillBadges(skills.technical)}</div>` : ''}
-      ${skills.databases ? `<div class="skills-group"><div class="skills-group-title">${labels.databases}</div>${renderSkillBadges(skills.databases)}</div>` : ''}
-      ${skills.devops ? `<div class="skills-group"><div class="skills-group-title">${labels.devops}</div>${renderSkillBadges(skills.devops)}</div>` : ''}
-      ${skills.tools ? `<div class="skills-group"><div class="skills-group-title">${labels.tools}</div>${renderSkillBadges(skills.tools)}</div>` : ''}
-      ${skills.languages ? `<div class="skills-group"><div class="skills-group-title">${labels.languages}</div>${renderSkillBadges(skills.languages)}</div>` : ''}
+      ${skills.technical?.length > 0 ? `<div class="skills-group"><div class="skills-group-title">${labels.technical}</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${renderSkillBadges(skills.technical)}</div></div>` : ''}
+      ${skills.databases?.length > 0 ? `<div class="skills-group"><div class="skills-group-title">${labels.databases}</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${renderSkillBadges(skills.databases)}</div></div>` : ''}
+      ${skills.devops?.length > 0 ? `<div class="skills-group"><div class="skills-group-title">${labels.devops}</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${renderSkillBadges(skills.devops)}</div></div>` : ''}
+      ${skills.tools?.length > 0 ? `<div class="skills-group"><div class="skills-group-title">${labels.tools}</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${renderSkillBadges(skills.tools)}</div></div>` : ''}
+      ${skills.languages?.length > 0 ? `<div class="skills-group"><div class="skills-group-title">${labels.languages}</div><div style="display:flex;flex-wrap:wrap;gap:5px;">${renderSkillBadges(skills.languages)}</div></div>` : ''}
     </div>
   </div>
 
@@ -285,20 +300,23 @@ function buildClassicHtml(cvData, imageBase64, accentColor = '#1abc9c', bgColor 
     </div>
 
     <div class="main-content">
+      ${summary ? `
       <div class="section">
         <div class="section-title">${labels.profile}</div>
-        <div class="summary-text">${summary || ''}</div>
-      </div>
+        <div class="summary-text">${summary}</div>
+      </div>` : ''}
 
+      ${experience?.length > 0 ? `
       <div class="section">
         <div class="section-title">${labels.experience}</div>
-        ${renderExperience(experience || [])}
-      </div>
+        ${renderExperience(experience)}
+      </div>` : ''}
 
+      ${education?.length > 0 ? `
       <div class="section">
         <div class="section-title">${labels.education}</div>
-        ${renderEducation(education || [])}
-      </div>
+        ${renderEducation(education)}
+      </div>` : ''}
 
       ${certificates?.length > 0 ? `
       <div class="section">

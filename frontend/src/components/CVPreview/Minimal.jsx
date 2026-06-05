@@ -20,7 +20,7 @@ const LABELS = {
 
 const BAR_WIDTHS = [95, 88, 92, 85, 90, 80, 85, 78, 88, 82, 75, 90, 85, 80, 88];
 
-export default function Minimal({ cvData, lang, accentColor, bgColor }) {
+export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHeight }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
   const accent = accentColor || '#2980b9';
@@ -36,7 +36,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor }) {
   ];
 
   return (
-    <div className="cv-minimal-wrapper" style={{ '--cv-accent': accent, '--cv-bg': bgColor || '#3d3d3d' }}>
+    <div className="cv-minimal-wrapper" style={{ '--cv-accent': accent, '--cv-bg': bgColor || '#3d3d3d', minHeight: pageMinHeight }}>
       <div className="cv-minimal">
 
         {/* ── LEFT SIDEBAR ── */}
@@ -120,7 +120,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor }) {
                   <span className="cv-minimal-contact-icon">
                     <i className="fa-solid fa-envelope" />
                   </span>
-                  <span style={{ wordBreak: 'break-all' }}>{personal_info.email}</span>
+                  <span className="cv-minimal-email">{personal_info.email}</span>
                 </div>
               )}
             </div>
@@ -132,7 +132,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-minimal-section">
                 <h2 className="cv-minimal-section-title">{L.experience}</h2>
                 {experience.map((exp, i) => (
-                  <div key={exp.id || i} className="cv-minimal-timeline-item">
+                  <div key={exp.id || i} className="cv-minimal-timeline-item" data-block>
                     <div className="cv-minimal-timeline-meta">
                       <div className="cv-minimal-timeline-company">{exp.company}</div>
                       {exp.period && <div className="cv-minimal-timeline-period">{exp.period}</div>}
@@ -154,7 +154,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor }) {
               <section className="cv-minimal-section">
                 <h2 className="cv-minimal-section-title">{L.education}</h2>
                 {education.map((edu, i) => (
-                  <div key={edu.id || i} className="cv-minimal-timeline-item">
+                  <div key={edu.id || i} className="cv-minimal-timeline-item" data-block>
                     <div className="cv-minimal-timeline-meta">
                       <div className="cv-minimal-timeline-company">{edu.institution}</div>
                       {edu.period && <div className="cv-minimal-timeline-period">{edu.period}</div>}
