@@ -77,6 +77,18 @@ export default function Classic({ cvData, lang, accentColor, bgColor, pageMinHei
                 <span>{personal_info.location}</span>
               </div>
             )}
+            {personal_info.linkedin && (
+              <div className="cv-classic-contact-item">
+                <span className="cv-classic-contact-icon"><i className="fa-brands fa-linkedin" /></span>
+                <span style={{ wordBreak: 'break-all' }}>{personal_info.linkedin}</span>
+              </div>
+            )}
+            {personal_info.github && (
+              <div className="cv-classic-contact-item">
+                <span className="cv-classic-contact-icon"><i className="fa-brands fa-github" /></span>
+                <span style={{ wordBreak: 'break-all' }}>{personal_info.github}</span>
+              </div>
+            )}
           </div>
 
           <div className="cv-classic-sidebar-section">
@@ -106,14 +118,14 @@ export default function Classic({ cvData, lang, accentColor, bgColor, pageMinHei
           <div className="cv-classic-body">
             {summary && (
               <section className="cv-classic-section">
-                <h2 className="cv-classic-section-title">{L.profile}</h2>
+                <h2 className="cv-classic-section-title" data-block>{L.profile}</h2>
                 <p className="cv-classic-summary">{summary}</p>
               </section>
             )}
 
             {experience?.length > 0 && (
               <section className="cv-classic-section">
-                <h2 className="cv-classic-section-title">{L.experience}</h2>
+                <h2 className="cv-classic-section-title" data-block>{L.experience}</h2>
                 {experience.map((exp, i) => (
                   <div key={exp.id || i} className="cv-classic-exp-item" data-block>
                     <div className="cv-classic-exp-header">
@@ -129,7 +141,7 @@ export default function Classic({ cvData, lang, accentColor, bgColor, pageMinHei
 
             {education?.length > 0 && (
               <section className="cv-classic-section">
-                <h2 className="cv-classic-section-title">{L.education}</h2>
+                <h2 className="cv-classic-section-title" data-block>{L.education}</h2>
                 {education.map((edu, i) => (
                   <div key={edu.id || i} className="cv-classic-edu-item" data-block>
                     <div className="cv-classic-edu-institution">{edu.institution}</div>
@@ -142,7 +154,7 @@ export default function Classic({ cvData, lang, accentColor, bgColor, pageMinHei
 
             {certificates?.length > 0 && (
               <section className="cv-classic-section">
-                <h2 className="cv-classic-section-title">{L.certificates}</h2>
+                <h2 className="cv-classic-section-title" data-block>{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-classic-cert-item" data-block>
                     <span className="cv-classic-cert-icon"><i className="fa-solid fa-award" /></span>

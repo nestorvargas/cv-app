@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import CVTemplateRenderer from './index.jsx';
 
-const PAGE_W      = 794;
-const PAGE_H      = 1123;
-const PAGE_INSET  = 24;                    // top breathing room on pages 2+
-const PAGE_BOTTOM_INSET = 24;              // bottom breathing room on every page
+const PAGE_W            = 794;
+const PAGE_H            = 1123;
+const PAGE_INSET        = 24;   // top breathing room on pages 2+
+const PAGE_BOTTOM_INSET = 24;   // bottom breathing room on every page
 const FIRST_PAGE_H = PAGE_H - PAGE_BOTTOM_INSET;
-const EFFECTIVE_H = PAGE_H - PAGE_INSET - PAGE_BOTTOM_INSET;
+const EFFECTIVE_H  = PAGE_H - PAGE_INSET - PAGE_BOTTOM_INSET;
 
 // Left-sidebar widths (%) per template — used to reconstruct the correct overlay color
 const SIDEBAR_WIDTHS = { classic: 35, executive: 30, minimal: 29 };
@@ -45,10 +45,13 @@ function computePageOffsets(totalHeight, blocks) {
 
     let breakPoint;
     if (collision) {
-      // Move the cut up to just before the colliding block's top.
-      // The next page will start at that block's top minus PAGE_INSET so the
-      // block appears immediately after the top overlay breathing room.
-      breakPoint = collision.top;
+      // Move the cut up to just before the colliding block's top so the block
+      // starts fresh on the next page.
+      // Guard: if the block is larger than EFFECTIVE_H the moved breakPoint
+      // would never advance past it — fall back to rawBreak to prevent an
+      // infinite loop.
+      const candidate = collision.top;
+      breakPoint = candidate > offsets[offsets.length - 1] ? candidate : rawBreak;
     } else {
       breakPoint = rawBreak;
     }
@@ -134,8 +137,7 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
         >
           {/* Inner div is absolutely positioned so its scrollHeight = full template height.
               Page 0 (i=0) is referenced for measurement. The top offset scrolls the
-              template content so the correct slice is visible in this page's clip window.
-              For pages 2+ we subtract PAGE_INSET so the content starts below the overlay. */}
+              template content so the correct slice is visible in this page's clip window. */}
           <div
             ref={i === 0 ? innerRef : undefined}
             style={{
@@ -143,7 +145,6 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
               top: i === 0 ? 0 : PAGE_INSET - offset,
               left: 0,
               width: PAGE_W,
-              paddingBottom: PAGE_BOTTOM_INSET,
             }}
           >
             {/* pageMinHeight ensures the template wrapper's background gradient
@@ -153,8 +154,8 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
             <CVTemplateRenderer {...props} pageMinHeight={(i + 1) * PAGE_H} />
           </div>
 
-          {/* Top inset overlay for pages 2+: hides the overlap region and gives
-              breathing room; matches the template wrapper background exactly. */}
+          {/* Top overlay for pages 2+: hides the bleed from the previous page
+              and gives breathing room. */}
           {i > 0 && (
             <div
               style={{
@@ -168,15 +169,14 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
             />
           )}
 
-          {/* Bottom inset overlay for all pages except the last: hides the bottom
-              edge of the clipped content and provides visual breathing room before
-              the page break. Matches the template wrapper background exactly. */}
+          {/* Bottom overlay: hides content that belongs to the next page.
+              Height is dynamic — covers from the break point to the page bottom. */}
           {i < pageCount - 1 && (
             <div
               style={{
                 position: 'absolute',
                 bottom: 0, left: 0, right: 0,
-                height: PAGE_BOTTOM_INSET,
+                height: PAGE_H - (pageOffsets[i + 1] - pageOffsets[i] + (i === 0 ? 0 : PAGE_INSET)),
                 background: overlayBg,
                 zIndex: 5,
                 pointerEvents: 'none',

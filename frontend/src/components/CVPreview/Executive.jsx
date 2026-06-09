@@ -86,6 +86,18 @@ export default function Executive({ cvData, lang, accentColor, bgColor, pageMinH
                   <span>{personal_info.location}</span>
                 </div>
               )}
+              {personal_info.linkedin && (
+                <div className="cv-executive-contact-item">
+                  <span className="cv-executive-contact-icon"><i className="fa-brands fa-linkedin" /></span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.linkedin}</span>
+                </div>
+              )}
+              {personal_info.github && (
+                <div className="cv-executive-contact-item">
+                  <span className="cv-executive-contact-icon"><i className="fa-brands fa-github" /></span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.github}</span>
+                </div>
+              )}
             </div>
 
             <div className="cv-executive-sidebar-section">
@@ -109,14 +121,14 @@ export default function Executive({ cvData, lang, accentColor, bgColor, pageMinH
           <main className="cv-executive-main">
             {summary && (
               <section className="cv-executive-section">
-                <h2 className="cv-executive-section-title">{L.profile}</h2>
+                <h2 className="cv-executive-section-title" data-block>{L.profile}</h2>
                 <p className="cv-executive-summary">{summary}</p>
               </section>
             )}
 
             {experience?.length > 0 && (
               <section className="cv-executive-section">
-                <h2 className="cv-executive-section-title">{L.experience}</h2>
+                <h2 className="cv-executive-section-title" data-block>{L.experience}</h2>
                 {experience.map((exp, i) => (
                   <div key={exp.id || i} className="cv-executive-exp-item" data-block>
                     <div className="cv-executive-exp-header">
@@ -132,7 +144,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor, pageMinH
 
             {education?.length > 0 && (
               <section className="cv-executive-section">
-                <h2 className="cv-executive-section-title">{L.education}</h2>
+                <h2 className="cv-executive-section-title" data-block>{L.education}</h2>
                 {education.map((edu, i) => (
                   <div key={edu.id || i} className="cv-executive-edu-item" data-block>
                     <div className="cv-executive-edu-institution">{edu.institution}</div>
@@ -145,7 +157,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor, pageMinH
 
             {certificates?.length > 0 && (
               <section className="cv-executive-section">
-                <h2 className="cv-executive-section-title">{L.certificates}</h2>
+                <h2 className="cv-executive-section-title" data-block>{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-executive-cert-item" data-block>
                     <span className="cv-executive-cert-icon"><i className="fa-solid fa-award" /></span>

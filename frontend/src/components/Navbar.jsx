@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { downloadPdf } from '../api/cvApi.js';
 
 export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, template, profileName, profileLabel, onBack, accentColor, bgColor }) {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadPdf(profileName, lang, template, accentColor, bgColor);
+    } catch (err) {
+      console.error('PDF download failed:', err);
+      alert('Error al generar el PDF. Intenta de nuevo.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <nav style={{
       height: 64,
@@ -144,9 +158,10 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
 
         {/* Download PDF */}
         <button
-          onClick={() => downloadPdf(profileName, lang, template, accentColor, bgColor)}
+          onClick={handleDownload}
+          disabled={downloading}
           style={{
-            background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+            background: downloading ? '#5d6d7e' : 'linear-gradient(135deg, #e74c3c, #c0392b)',
             color: 'white',
             padding: '9px 20px',
             borderRadius: 9,
@@ -163,7 +178,8 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
           onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 14px rgba(231,76,60,0.55)'}
           onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(231,76,60,0.4)'}
         >
-          <i className="fa-solid fa-file-arrow-down" /> Descargar PDF
+          <i className={`fa-solid ${downloading ? 'fa-spinner fa-spin' : 'fa-file-arrow-down'}`} />
+          {downloading ? 'Generando...' : 'Descargar PDF'}
         </button>
       </div>
     </nav>

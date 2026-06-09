@@ -8,16 +8,22 @@ export const updateCv = (profileName, lang, data) => axios.put(`${BASE}/cv/${pro
 export const createProfile = (data) => axios.post(`${BASE}/cv`, data);
 export const deleteProfile = (profileName) => axios.delete(`${BASE}/cv/${profileName}`);
 
-export const downloadPdf = (profileName, lang, template = 'classic', accentColor, bgColor) => {
+export const downloadPdf = async (profileName, lang, template = 'classic', accentColor, bgColor) => {
   const params = new URLSearchParams({ template });
   if (accentColor) params.set('accentColor', accentColor);
   if (bgColor) params.set('bgColor', bgColor);
+  const url = `${BASE}/pdf/${profileName}/${lang}?${params.toString()}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`PDF error ${res.status}`);
+  const blob = await res.blob();
+  const objectUrl = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = `${BASE}/pdf/${profileName}/${lang}?${params.toString()}`;
+  a.href = objectUrl;
   a.download = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+  URL.revokeObjectURL(objectUrl);
 };
 
 export const uploadImage = (file, profileName) => {

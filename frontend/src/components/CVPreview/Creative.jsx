@@ -79,6 +79,18 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
                   {personal_info.location}
                 </span>
               )}
+              {personal_info.linkedin && (
+                <span className="cv-creative-header-contact-item">
+                  <span className="cv-creative-header-contact-icon"><i className="fa-brands fa-linkedin" /></span>
+                  {personal_info.linkedin}
+                </span>
+              )}
+              {personal_info.github && (
+                <span className="cv-creative-header-contact-item">
+                  <span className="cv-creative-header-contact-icon"><i className="fa-brands fa-github" /></span>
+                  {personal_info.github}
+                </span>
+              )}
             </div>
           </div>
         </header>
@@ -89,14 +101,14 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
           <main className="cv-creative-main">
             {summary && (
               <section className="cv-creative-section">
-                <h2 className="cv-creative-section-title">{L.profile}</h2>
+                <h2 className="cv-creative-section-title" data-block>{L.profile}</h2>
                 <p className="cv-creative-summary">{summary}</p>
               </section>
             )}
 
             {experience?.length > 0 && (
               <section className="cv-creative-section">
-                <h2 className="cv-creative-section-title">{L.experience}</h2>
+                <h2 className="cv-creative-section-title" data-block>{L.experience}</h2>
                 {experience.map((exp, i) => (
                   <div key={exp.id || i} className="cv-creative-exp-item" data-block>
                     <div className="cv-creative-exp-header">
@@ -112,7 +124,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
 
             {education?.length > 0 && (
               <section className="cv-creative-section">
-                <h2 className="cv-creative-section-title">{L.education}</h2>
+                <h2 className="cv-creative-section-title" data-block>{L.education}</h2>
                 {education.map((edu, i) => (
                   <div key={edu.id || i} className="cv-creative-edu-item" data-block>
                     <div className="cv-creative-edu-institution">{edu.institution}</div>
@@ -125,7 +137,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
 
             {certificates?.length > 0 && (
               <section className="cv-creative-section">
-                <h2 className="cv-creative-section-title">{L.certificates}</h2>
+                <h2 className="cv-creative-section-title" data-block>{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-creative-cert-item" data-block>
                     <span className="cv-creative-cert-icon"><i className="fa-solid fa-award" /></span>

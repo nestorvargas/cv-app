@@ -123,6 +123,22 @@ export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHei
                   <span className="cv-minimal-email">{personal_info.email}</span>
                 </div>
               )}
+              {personal_info.linkedin && (
+                <div className="cv-minimal-contact-item">
+                  <span className="cv-minimal-contact-icon">
+                    <i className="fa-brands fa-linkedin" />
+                  </span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.linkedin}</span>
+                </div>
+              )}
+              {personal_info.github && (
+                <div className="cv-minimal-contact-item">
+                  <span className="cv-minimal-contact-icon">
+                    <i className="fa-brands fa-github" />
+                  </span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.github}</span>
+                </div>
+              )}
             </div>
           </header>
 
@@ -130,7 +146,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHei
 
             {experience?.length > 0 && (
               <section className="cv-minimal-section">
-                <h2 className="cv-minimal-section-title">{L.experience}</h2>
+                <h2 className="cv-minimal-section-title" data-block>{L.experience}</h2>
                 {experience.map((exp, i) => (
                   <div key={exp.id || i} className="cv-minimal-timeline-item" data-block>
                     <div className="cv-minimal-timeline-meta">
@@ -152,7 +168,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHei
 
             {education?.length > 0 && (
               <section className="cv-minimal-section">
-                <h2 className="cv-minimal-section-title">{L.education}</h2>
+                <h2 className="cv-minimal-section-title" data-block>{L.education}</h2>
                 {education.map((edu, i) => (
                   <div key={edu.id || i} className="cv-minimal-timeline-item" data-block>
                     <div className="cv-minimal-timeline-meta">

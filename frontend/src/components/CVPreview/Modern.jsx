@@ -71,14 +71,14 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
           <div className="cv-modern-col">
             {summary && (
               <section className="cv-modern-section">
-                <h2 className="cv-modern-section-title">{L.profile}</h2>
+                <h2 className="cv-modern-section-title" data-block>{L.profile}</h2>
                 <p className="cv-modern-summary">{summary}</p>
               </section>
             )}
 
             {experience?.length > 0 && (
               <section className="cv-modern-section">
-                <h2 className="cv-modern-section-title">{L.experience}</h2>
+                <h2 className="cv-modern-section-title" data-block>{L.experience}</h2>
                 {experience.map((exp, i) => (
                   <div key={exp.id || i} className="cv-modern-exp-item" data-block>
                     <div className="cv-modern-exp-header">
@@ -97,7 +97,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
           <div className="cv-modern-col">
             {skillCategories.some(({ key }) => skills[key]?.length > 0) && (
               <section className="cv-modern-section">
-                <h2 className="cv-modern-section-title">{L.skills}</h2>
+                <h2 className="cv-modern-section-title" data-block>{L.skills}</h2>
                 {skillCategories.map(({ key, label }) =>
                   skills[key]?.length > 0 ? (
                     <div key={key} className="cv-modern-skill-category">
@@ -118,7 +118,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
 
             {education?.length > 0 && (
               <section className="cv-modern-section">
-                <h2 className="cv-modern-section-title">{L.education}</h2>
+                <h2 className="cv-modern-section-title" data-block>{L.education}</h2>
                 {education.map((edu, i) => (
                   <div key={edu.id || i} className="cv-modern-edu-item" data-block>
                     <div className="cv-modern-edu-institution">{edu.institution}</div>
@@ -131,7 +131,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
 
             {certificates?.length > 0 && (
               <section className="cv-modern-section">
-                <h2 className="cv-modern-section-title">{L.certificates}</h2>
+                <h2 className="cv-modern-section-title" data-block>{L.certificates}</h2>
                 {certificates.map((cert, i) => (
                   <div key={cert.id || i} className="cv-modern-cert-item" data-block>
                     <span className="cv-modern-cert-icon"><i className="fa-solid fa-award" /></span>
@@ -144,7 +144,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
               </section>
             )}
 
-            <section className="cv-modern-section">
+            <section className="cv-modern-section" data-block>
               <h2 className="cv-modern-section-title">{L.contact}</h2>
               {personal_info.phone && (
                 <div className="cv-modern-contact-item">
@@ -162,6 +162,18 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
                 <div className="cv-modern-contact-item">
                   <span className="cv-modern-contact-icon"><i className="fa-solid fa-location-dot" /></span>
                   <span>{personal_info.location}</span>
+                </div>
+              )}
+              {personal_info.linkedin && (
+                <div className="cv-modern-contact-item">
+                  <span className="cv-modern-contact-icon"><i className="fa-brands fa-linkedin" /></span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.linkedin}</span>
+                </div>
+              )}
+              {personal_info.github && (
+                <div className="cv-modern-contact-item">
+                  <span className="cv-modern-contact-icon"><i className="fa-brands fa-github" /></span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.github}</span>
                 </div>
               )}
             </section>
