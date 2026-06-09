@@ -179,7 +179,7 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
               <h4 className="cv-creative-sidebar-title">{L.skills}</h4>
               {skillCategories.map(({ key, label }) =>
                 skills[key]?.length > 0 ? (
-                  <div key={key} className="cv-creative-skill-group">
+                  <div key={key} className="cv-creative-skill-group" data-block>
                     <div className="cv-creative-skill-group-title">{label}</div>
                     <div className="cv-creative-skill-badges">
                       {skills[key].map((s, i) => (

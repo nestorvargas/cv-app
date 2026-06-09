@@ -95,7 +95,7 @@ export default function Classic({ cvData, lang, accentColor, bgColor, pageMinHei
             <h4 className="cv-classic-sidebar-title">{L.skills}</h4>
             {skillCategories.map(({ key, label }) =>
               skills[key]?.length > 0 ? (
-                <div key={key} className="cv-classic-skill-group">
+                <div key={key} className="cv-classic-skill-group" data-block>
                   <div className="cv-classic-skill-group-title">{label}</div>
                   <div className="cv-classic-skills-list">
                     {skills[key].map((s, i) => (

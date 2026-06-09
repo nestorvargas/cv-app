@@ -100,7 +100,7 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
                 <h2 className="cv-modern-section-title" data-block>{L.skills}</h2>
                 {skillCategories.map(({ key, label }) =>
                   skills[key]?.length > 0 ? (
-                    <div key={key} className="cv-modern-skill-category">
+                    <div key={key} className="cv-modern-skill-category" data-block>
                       <div className="cv-modern-skill-cat-label">{label}</div>
                       <div className="cv-modern-skill-dots">
                         {skills[key].map((s, i) => (

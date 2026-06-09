@@ -63,7 +63,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHei
             <div className="cv-minimal-sidebar-section">
               <h4 className="cv-minimal-sidebar-title">{L.skills}</h4>
               {allSkills.map((skill, i) => (
-                <div key={i} className="cv-minimal-skill-item">
+                <div key={i} className="cv-minimal-skill-item" data-block>
                   <div className="cv-minimal-skill-name">{skill}</div>
                   <div className="cv-minimal-skill-bar-wrap">
                     <div
@@ -80,7 +80,7 @@ export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHei
             <div className="cv-minimal-sidebar-section">
               <h4 className="cv-minimal-sidebar-title">{L.certificates}</h4>
               {certificates.map((cert, i) => (
-                <div key={cert.id || i} className="cv-minimal-cert-item">
+                <div key={cert.id || i} className="cv-minimal-cert-item" data-block>
                   {cert.year && <div className="cv-minimal-cert-year">{cert.year}</div>}
                   <div className="cv-minimal-cert-name">{cert.name}</div>
                   {cert.issuer && <div className="cv-minimal-cert-issuer">{cert.issuer}</div>}

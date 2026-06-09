@@ -104,7 +104,7 @@ export default function Executive({ cvData, lang, accentColor, bgColor, pageMinH
               <h4 className="cv-executive-sidebar-title">{L.skills}</h4>
               {skillCategories.map(({ key, label }) =>
                 skills[key]?.length > 0 ? (
-                  <div key={key} className="cv-executive-skill-group">
+                  <div key={key} className="cv-executive-skill-group" data-block>
                     <div className="cv-executive-skill-group-title">{label}</div>
                     <div className="cv-executive-skills-list">
                       {skills[key].map((s, i) => (

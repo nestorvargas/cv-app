@@ -1,69 +1,71 @@
 const puppeteer = require('puppeteer');
-const { pool } = require('../db');
-const { buildCvHtml } = require('../templates/cvTemplate');
-const { buildClassicHtml } = require('../templates/classicTemplate');
-const { buildModernHtml } = require('../templates/modernTemplate');
-const { buildExecutiveHtml } = require('../templates/executiveTemplate');
-const { buildCreativeHtml } = require('../templates/creativeTemplate');
-const { buildMinimalHtml } = require('../templates/minimalTemplate');
-const path = require('path');
-const fs = require('fs');
+const { PDFDocument } = require('pdf-lib');
+
+const FRONTEND_URL = process.env.FRONTEND_INTERNAL_URL || 'http://frontend:5173';
 
 async function generatePdf(req, res) {
   const { profileName, lang } = req.params;
+  let browser;
   try {
-    const result = await pool.query(
-      'SELECT * FROM cv_profiles WHERE profile_name = $1 AND language = $2',
-      [profileName, lang]
-    );
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'CV not found' });
-    }
-    const cvData = result.rows[0];
-
-    // If there is a profile image, embed it as base64
-    let imageBase64 = null;
-    if (cvData.profile_image) {
-      const imagePath = path.join(__dirname, '..', '..', cvData.profile_image);
-      if (fs.existsSync(imagePath)) {
-        const imageBuffer = fs.readFileSync(imagePath);
-        const ext = path.extname(cvData.profile_image).slice(1).replace('jpg', 'jpeg');
-        imageBase64 = `data:image/${ext};base64,${imageBuffer.toString('base64')}`;
-      }
-    }
-
     const tmpl = req.query.template || 'classic';
-    const accentColor = req.query.accentColor ? decodeURIComponent(req.query.accentColor) : undefined;
-    const bgColor = req.query.bgColor ? decodeURIComponent(req.query.bgColor) : undefined;
-    let html;
-    if (tmpl === 'modern')         html = buildModernHtml(cvData, imageBase64, accentColor, bgColor);
-    else if (tmpl === 'executive') html = buildExecutiveHtml(cvData, imageBase64, accentColor, bgColor);
-    else if (tmpl === 'creative')  html = buildCreativeHtml(cvData, imageBase64, accentColor, bgColor);
-    else if (tmpl === 'minimal')   html = buildMinimalHtml(cvData, imageBase64, accentColor, bgColor);
-    else                           html = buildClassicHtml(cvData, imageBase64, accentColor, bgColor);
+    const accentColor = req.query.accentColor ? decodeURIComponent(req.query.accentColor) : '';
+    const bgColor     = req.query.bgColor     ? decodeURIComponent(req.query.bgColor)     : '';
 
-    const browser = await puppeteer.launch({
+    // Build print URL — URLSearchParams handles encoding of '#' in colors
+    const qs = new URLSearchParams({ template: tmpl });
+    if (accentColor) qs.set('accentColor', accentColor);
+    if (bgColor)     qs.set('bgColor',     bgColor);
+    const printUrl = `${FRONTEND_URL}/print/${encodeURIComponent(profileName)}/${encodeURIComponent(lang)}?${qs}`;
+
+    browser = await puppeteer.launch({
       headless: true,
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    // Match the CSS pixel dimensions used by CVPagedViewer (794 × 1123)
+    await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
+    await page.goto(printUrl, { waitUntil: 'networkidle0', timeout: 30000 });
 
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-    });
+    // Wait until PrintPage signals it is ready (fonts loaded + layout stable)
+    await page.waitForFunction(() => window.__CV_READY__ === true, { timeout: 20000 });
+
+    const pageEls = await page.$$('.cv-page');
+    if (pageEls.length === 0) {
+      throw new Error('No CV pages found in print view');
+    }
+
+    // Screenshot each page element (captures the overflow:hidden clipped view)
+    const screenshots = [];
+    for (const el of pageEls) {
+      const buf = await el.screenshot({ type: 'png' });
+      screenshots.push(buf);
+    }
 
     await browser.close();
+    browser = null;
+
+    // Build a multi-page PDF from the screenshots
+    const pdfDoc = await PDFDocument.create();
+    const A4_W = 595.28;  // points
+    const A4_H = 841.89;
+
+    for (const pngBuf of screenshots) {
+      const img      = await pdfDoc.embedPng(pngBuf);
+      const pdfPage  = pdfDoc.addPage([A4_W, A4_H]);
+      pdfPage.drawImage(img, { x: 0, y: 0, width: A4_W, height: A4_H });
+    }
+
+    const pdfBytes = await pdfDoc.save();
 
     const filename = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.send(pdf);
+    res.send(Buffer.from(pdfBytes));
   } catch (err) {
-    console.error(err);
+    if (browser) await browser.close();
+    console.error('[pdfController]', err);
     res.status(500).json({ error: 'Failed to generate PDF' });
   }
 }

@@ -125,6 +125,7 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
       {pageOffsets.map((offset, i) => (
         <div
           key={i}
+          className="cv-page"
           style={{
             width: PAGE_W,
             height: PAGE_H,
