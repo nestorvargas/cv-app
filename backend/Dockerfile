@@ -8,8 +8,8 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm install
 COPY src/ ./src/
 RUN mkdir -p uploads
 
-CMD ["node", "src/index.js"]
+CMD ["npm", "run", "dev"]

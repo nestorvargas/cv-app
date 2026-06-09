@@ -28,6 +28,7 @@ services:
       NODE_ENV: development
       PORT: 3001
     volumes:
+      - ./backend/src:/app/src
       - ./backend/uploads:/app/uploads
     depends_on:
       postgres:
@@ -45,6 +46,7 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.js:/app/vite.config.js
     depends_on:
       - backend
     networks:
