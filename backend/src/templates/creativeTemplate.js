@@ -44,37 +44,44 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     `;
   };
 
-  const renderExperience = (exp) =>
-    exp.map(e => `
+  const renderExpItem = (e) => `
       <div class="exp-item">
         <div class="exp-header">
           <span class="exp-company">${e.company}</span>
           <span class="exp-period">${e.period}</span>
         </div>
         <div class="exp-position">${e.position}</div>
-        <div class="exp-desc">${e.description}</div>
-      </div>
-    `).join('');
+        <p class="exp-desc">${e.description}</p>
+      </div>`;
 
-  const renderEducation = (edu) =>
-    edu.map(e => `
+  const renderEduItem = (e) => `
       <div class="edu-item">
         <div class="edu-institution">${e.institution}</div>
         <div class="edu-degree">${e.degree}</div>
         ${e.period ? `<div class="edu-period">${e.period}</div>` : ''}
-      </div>
-    `).join('');
+      </div>`;
 
-  const renderCertificates = (certs) =>
-    certs.map(c => `
+  const renderCertItem = (c) => `
       <div class="cert-item">
         <span class="cert-icon"><i class="fa-solid fa-award"></i></span>
         <div class="cert-info">
           <div class="cert-name">${c.name}</div>
           <div class="cert-meta">${c.issuer}${c.year ? ' · ' + c.year : ''}</div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+
+  const renderSection = (title, items, renderItem) => {
+    if (!items?.length) return '';
+    const [first, ...rest] = items;
+    return `
+      <div class="section">
+        <div style="page-break-inside:avoid;break-inside:avoid;">
+          <div class="section-title">${title}</div>
+          ${renderItem(first)}
+        </div>
+        ${rest.map(renderItem).join('')}
+      </div>`;
+  };
 
   return `<!DOCTYPE html>
 <html>
@@ -83,7 +90,8 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
-  @page { margin: 10mm 0 8mm 0; }
+  @page { margin: 6mm 0 6mm 0; }
+  @page :first { margin: 0 0 6mm 0; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
@@ -322,6 +330,8 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
         ${personal_info.phone ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</span>` : ''}
         ${personal_info.email ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-solid fa-envelope"></i></span>${personal_info.email}</span>` : ''}
         ${personal_info.location ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</span>` : ''}
+        ${personal_info.linkedin ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-brands fa-linkedin"></i></span>${personal_info.linkedin}</span>` : ''}
+        ${personal_info.github ? `<span class="header-contact-item"><span class="header-contact-icon"><i class="fa-brands fa-github"></i></span>${personal_info.github}</span>` : ''}
       </div>
     </div>
   </div>
@@ -332,27 +342,15 @@ function buildCreativeHtml(cvData, imageBase64, accentColor = '#e94560', bgColor
     <div class="main">
       ${summary ? `
       <div class="section">
-        <div class="section-title">${labels.profile}</div>
-        <div class="summary-text">${summary}</div>
+        <div style="page-break-inside:avoid;break-inside:avoid;">
+          <div class="section-title">${labels.profile}</div>
+          <p class="summary-text">${summary}</p>
+        </div>
       </div>` : ''}
 
-      ${experience?.length > 0 ? `
-      <div class="section">
-        <div class="section-title">${labels.experience}</div>
-        ${renderExperience(experience)}
-      </div>` : ''}
-
-      ${education?.length > 0 ? `
-      <div class="section">
-        <div class="section-title">${labels.education}</div>
-        ${renderEducation(education)}
-      </div>` : ''}
-
-      ${certificates?.length > 0 ? `
-      <div class="section">
-        <div class="section-title">${labels.certificates}</div>
-        ${renderCertificates(certificates)}
-      </div>` : ''}
+      ${renderSection(labels.experience, experience, renderExpItem)}
+      ${renderSection(labels.education, education, renderEduItem)}
+      ${renderSection(labels.certificates, certificates, renderCertItem)}
     </div>
 
     <!-- RIGHT SIDEBAR (30%) -->

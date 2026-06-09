@@ -37,8 +37,7 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
       </div>
     `).join('');
 
-  const renderExperience = () =>
-    (experience || []).map((e, i) => `
+  const renderExpItem = (e, i, arr) => `
       <div class="timeline-row">
         <div class="timeline-meta">
           <div class="timeline-company">${e.company}</div>
@@ -46,17 +45,15 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
         </div>
         <div class="timeline-dot-wrap">
           <div class="timeline-dot"></div>
-          ${i < (experience.length - 1) ? '<div class="timeline-line"></div>' : ''}
+          ${i < arr.length - 1 ? '<div class="timeline-line"></div>' : ''}
         </div>
         <div class="timeline-content">
           <div class="timeline-position">${e.position}</div>
-          <div class="timeline-desc">${e.description}</div>
+          <p class="timeline-desc">${e.description}</p>
         </div>
-      </div>
-    `).join('');
+      </div>`;
 
-  const renderEducation = () =>
-    (education || []).map((e, i) => `
+  const renderEduItem = (e, i, arr) => `
       <div class="timeline-row">
         <div class="timeline-meta">
           <div class="timeline-company">${e.institution}</div>
@@ -64,13 +61,25 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
         </div>
         <div class="timeline-dot-wrap">
           <div class="timeline-dot"></div>
-          ${i < (education.length - 1) ? '<div class="timeline-line"></div>' : ''}
+          ${i < arr.length - 1 ? '<div class="timeline-line"></div>' : ''}
         </div>
         <div class="timeline-content">
           <div class="timeline-position">${e.degree}</div>
         </div>
-      </div>
-    `).join('');
+      </div>`;
+
+  const renderSection = (title, items, renderItem) => {
+    if (!items?.length) return '';
+    const [first, ...rest] = items;
+    return `
+      <div class="section">
+        <div style="page-break-inside:avoid;break-inside:avoid;">
+          <div class="section-title">${title}</div>
+          ${renderItem(first, 0, items)}
+        </div>
+        ${rest.map((item, i) => renderItem(item, i + 1, items)).join('')}
+      </div>`;
+  };
 
   return `<!DOCTYPE html>
 <html>
@@ -79,7 +88,8 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <style>
-  @page { margin: 10mm 0 8mm 0; }
+  @page { margin: 6mm 0 6mm 0; }
+  @page :first { margin: 0 0 6mm 0; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
@@ -193,7 +203,7 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
   .timeline-line { flex: 1; width: 1px; background: #e0e0e0; margin-top: 5px; }
   .timeline-content { padding-left: 8px; padding-top: 0; }
   .timeline-position { font-size: 12px; font-weight: 700; color: #2d2d2d; margin-bottom: 5px; line-height: 1.3; }
-  .timeline-desc { font-size: 11px; line-height: 1.65; color: #555; }
+  .timeline-desc { font-size: 11px; line-height: 1.65; color: #555; margin: 0; }
 </style>
 </head>
 <body>
@@ -212,7 +222,7 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
     ${summary ? `
     <div class="sidebar-section">
       <div class="sidebar-title">${labels.about}</div>
-      <div class="about-text">${summary}</div>
+      <p class="about-text">${summary}</p>
     </div>` : ''}
 
     ${allSkills.length > 0 ? `
@@ -239,21 +249,14 @@ function buildMinimalHtml(cvData, imageBase64, accentColor = '#2980b9', bgColor 
         ${personal_info.location ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-location-dot"></i></span>${personal_info.location}</div>` : ''}
         ${personal_info.phone    ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-phone"></i></span>${personal_info.phone}</div>` : ''}
         ${personal_info.email    ? `<div class="contact-item"><span class="contact-icon"><i class="fa-solid fa-envelope"></i></span><span style="word-break:break-all;">${personal_info.email}</span></div>` : ''}
+        ${personal_info.linkedin ? `<div class="contact-item"><span class="contact-icon"><i class="fa-brands fa-linkedin"></i></span><span style="word-break:break-all;">${personal_info.linkedin}</span></div>` : ''}
+        ${personal_info.github   ? `<div class="contact-item"><span class="contact-icon"><i class="fa-brands fa-github"></i></span><span style="word-break:break-all;">${personal_info.github}</span></div>` : ''}
       </div>
     </div>
 
     <div class="main-body">
-      ${experience?.length > 0 ? `
-      <div class="section">
-        <div class="section-title">${labels.experience}</div>
-        ${renderExperience()}
-      </div>` : ''}
-
-      ${education?.length > 0 ? `
-      <div class="section">
-        <div class="section-title">${labels.education}</div>
-        ${renderEducation()}
-      </div>` : ''}
+      ${renderSection(labels.experience, experience, renderExpItem)}
+      ${renderSection(labels.education, education, renderEduItem)}
     </div>
   </div>
 
