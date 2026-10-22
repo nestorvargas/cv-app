@@ -2,21 +2,42 @@ import axios from 'axios';
 
 const BASE = '/api/ai';
 
+// Human-readable message for a failed response (proxies may answer with HTML instead of JSON)
+async function errorMessage(res, fallback) {
+  const body = await res.json().catch(() => null);
+  if (body?.error) return body.error;
+  if (res.status === 401) return 'Tu sesión expiró. Vuelve a iniciar sesión.';
+  if (res.status === 413) return 'El archivo es demasiado grande.';
+  if (res.status === 429) return 'Hay muchas solicitudes en curso. Espera un momento e intenta de nuevo.';
+  if (res.status >= 500) return fallback;
+  return 'No se pudo completar la solicitud. Intenta de nuevo.';
+}
+
+// fetch() that turns network failures into a readable error
+async function request(url, options, fallback) {
+  try {
+    return await fetch(url, options);
+  } catch (err) {
+    if (err.name === 'AbortError') throw err;
+    throw new Error(`Sin conexión con el servidor. ${fallback}`);
+  }
+}
+
+const AI_DOWN = 'El asistente de IA no está disponible en este momento. Intenta de nuevo en unos minutos.';
+const IMPORT_DOWN = 'No se pudo importar la hoja de vida en este momento. Intenta de nuevo en unos minutos.';
+
 export const getAiStatus = () => axios.get(`${BASE}/status`);
 
 // Streams the assistant output; calls onChunk(text) as it arrives. Returns the full text.
 // The request can be cancelled with the AbortSignal.
 export async function streamAssist({ action, field, text, context, lang }, onChunk, signal) {
-  const res = await fetch(`${BASE}/assist`, {
+  const res = await request(`${BASE}/assist`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action, field, text, context, lang }),
     signal,
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Error ${res.status}`);
-  }
+  }, AI_DOWN);
+  if (!res.ok) throw new Error(await errorMessage(res, AI_DOWN));
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -49,11 +70,8 @@ export async function streamAssist({ action, field, text, context, lang }, onChu
 export async function importCvFromPdf(file, onEvent, signal) {
   const form = new FormData();
   form.append('file', file);
-  const res = await fetch(`${BASE}/import-cv`, { method: 'POST', body: form, signal });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Error ${res.status}`);
-  }
+  const res = await request(`${BASE}/import-cv`, { method: 'POST', body: form, signal }, IMPORT_DOWN);
+  if (!res.ok) throw new Error(await errorMessage(res, IMPORT_DOWN));
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';

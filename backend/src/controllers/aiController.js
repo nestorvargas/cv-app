@@ -4,6 +4,7 @@ const OLLAMA_URL = (process.env.OLLAMA_URL || '').replace(/\/+$/, '');
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.2:3b';
 
 const MAX_TEXT = 4000;
+const OLLAMA_CONNECT_TIMEOUT_MS = 15000;
 const MAX_PER_HOUR = 30;
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -151,6 +152,9 @@ async function assist(req, res) {
   const abort = new AbortController();
   // Stop generating on the server if the user cancels or leaves
   res.on('close', () => abort.abort());
+  // Fail fast when Ollama is unreachable (e.g. a firewall dropping packets) instead of hanging
+  let timedOut = false;
+  const connectTimer = setTimeout(() => { timedOut = true; abort.abort(); }, OLLAMA_CONNECT_TIMEOUT_MS);
 
   try {
     const upstream = await fetch(`${OLLAMA_URL}/api/chat`, {
@@ -165,6 +169,7 @@ async function assist(req, res) {
         options: { temperature: 0.4, num_predict: 700 },
       }),
     });
+    clearTimeout(connectTimer);
     if (!upstream.ok || !upstream.body) throw new Error(`Ollama HTTP ${upstream.status}`);
 
     res.writeHead(200, {
@@ -189,10 +194,12 @@ async function assist(req, res) {
     res.write('event: done\ndata: ""\n\n');
     res.end();
   } catch (err) {
-    if (abort.signal.aborted) return;
-    console.error('[ai]', err.message);
+    clearTimeout(connectTimer);
+    if (abort.signal.aborted && !timedOut) return; // the user cancelled
+    console.error('[ai]', timedOut ? 'Ollama did not respond in time' : err.message);
     if (!res.headersSent) {
-      res.status(502).json({ error: 'El asistente de IA no está disponible' });
+      // 503, not 502: Cloudflare replaces 502 bodies with its own page, losing this message
+      res.status(503).json({ error: 'El asistente de IA no está disponible en este momento. Intenta de nuevo en unos minutos.' });
     } else {
       res.write(`event: error\ndata: ${JSON.stringify('Se interrumpió la generación')}\n\n`);
       res.end();

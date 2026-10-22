@@ -275,7 +275,8 @@ async function labelExperience(paragraphs, signal) {
   const res = await fetch(`${OLLAMA_URL}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    signal,
+    // Give up after 90 s (or if the user leaves); the import then splits by paragraphs
+    signal: AbortSignal.any([signal, AbortSignal.timeout(90000)]),
     body: JSON.stringify({
       model: OLLAMA_MODEL,
       stream: false,
