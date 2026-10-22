@@ -58,6 +58,7 @@
 
   .editor-layout {
     height: calc(100vh - 64px - 48px);
+    height: calc(100dvh - 64px - 48px); /* exclude the mobile URL bar */
   }
 
   .editor-pane,

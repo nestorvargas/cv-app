@@ -12,3 +12,4 @@ cv_examples/*
 
 # Local credentials (never commit)
 secrets/
+.opencode

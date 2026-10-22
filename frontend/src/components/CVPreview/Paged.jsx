@@ -84,30 +84,15 @@ function computePageOffsets(contentBottom, { hard, medium, soft }, maxKeepGap) {
 /**
  * Measure page-break constraints inside `el` (the inner-div of page 0).
  *
- * The editor preview sits inside a CSS-zoom FitToWidth. Under zoom, rects are
- * snapped to device pixels, which at e.g. 0.5 adds ~2 CSS px of noise — enough
- * to open fake gaps between text lines (only ~5 px apart). So we temporarily
- * cancel the ancestor zoom on `el` and measure at 1:1, exactly like the PDF
- * print page. Done synchronously (no paint in between), and the box size is
- * restored before the ResizeObserver checks it, so it does not re-trigger.
+ * The editor preview sits inside a CSS-transform FitToWidth; rects are
+ * divided by that scale so offsets stay in unscaled CSS px, like the PDF
+ * print page.
  */
 function measureLayout(el) {
-  const ancestorScale = (el.offsetWidth && el.getBoundingClientRect().width / el.offsetWidth) || 1;
-  const prevZoom = el.style.zoom;
-  if (Math.abs(ancestorScale - 1) > 0.001) el.style.zoom = String(1 / ancestorScale);
-  try {
-    return measureUnzoomed(el);
-  } finally {
-    el.style.zoom = prevZoom;
-  }
-}
-
-function measureUnzoomed(el) {
   // getBoundingClientRect() deltas give positions relative to the inner-div,
   // which is position:absolute top:0 inside a non-scrolling clip box.
   const containerRect = el.getBoundingClientRect();
-  // Safety net for any residual scale (e.g. a CSS transform on an ancestor):
-  // keep offsets in unscaled CSS pixels.
+  // Undo the ancestor scale (FitToWidth transform): keep offsets in unscaled CSS pixels.
   const scale = (el.offsetWidth && containerRect.width / el.offsetWidth) || 1;
   const rel = r => {
     const top = (r.top - containerRect.top) / scale;
@@ -179,6 +164,10 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
     if (!el) return;
 
     const update = () => {
+      // Hidden (display:none pane) or scaled to nothing: rects are all 0 and
+      // would collapse the CV to one page. Keep the last result; the observer
+      // fires again once the pane is shown.
+      if (el.getBoundingClientRect().width === 0) return;
       const { contentBottom, ...constraints } = measureLayout(el);
       const options = KEEP_GAP_STEPS.map(g => computePageOffsets(contentBottom, constraints, g));
       const minPages = Math.min(...options.map(o => o.length));
@@ -256,7 +245,7 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
               style={{
                 position: 'absolute',
                 top: 0, left: 0, right: 0,
-                height: PAGE_INSET - 2, // leave 2px so zoom rounding never eats the first row
+                height: PAGE_INSET - 2, // leave 2px so scale rounding never eats the first row
                 background: overlayBg,
                 zIndex: 5,
                 pointerEvents: 'none',

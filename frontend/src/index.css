@@ -1,5 +1,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Stop mobile browsers from auto-enlarging text in blocks wider than the
+   viewport (the 794px A4 preview pages). */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
 body {
   font-family: var(--font-ui);
   background: #f0f2f5;
