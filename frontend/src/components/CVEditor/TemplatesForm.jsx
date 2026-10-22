@@ -182,6 +182,117 @@ const TEMPLATES = [
       </div>
     ),
   },
+  {
+    id: 'elegant',
+    name: 'Elegante',
+    description: 'Una columna con títulos en serif, encabezado centrado y líneas finas. Formal y sobria.',
+    defaultAccent: '#8a6d3b',
+    defaultBg: '#1f2a37',
+    thumbnail: (color, bg) => (
+      <div style={{ width: '100%', height: 120, background: 'white', borderRadius: 4, overflow: 'hidden', padding: '10px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ width: 20, height: 20, borderRadius: '50%', background: '#e5e7eb', boxShadow: `0 0 0 1.5px ${color}`, marginBottom: 4 }} />
+        <div style={{ width: '45%', height: 6, background: bg, borderRadius: 2, marginBottom: 3 }} />
+        <div style={{ width: '30%', height: 3, background: color, borderRadius: 1, marginBottom: 6 }} />
+        <div style={{ width: '100%', height: 1, background: '#e5e0d6', marginBottom: 6 }} />
+        {[0, 1].map(k => (
+          <div key={k} style={{ width: '100%', marginBottom: 5 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 3 }}>
+              <div style={{ width: '25%', height: 3.5, background: bg, borderRadius: 1 }} />
+              <div style={{ flex: 1, height: 1, background: color, opacity: 0.6 }} />
+            </div>
+            {[90, 80].map(w => <div key={w} style={{ width: `${w}%`, height: 2.5, background: '#ddd', borderRadius: 1, marginBottom: 2 }} />)}
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    id: 'timeline',
+    name: 'Línea de tiempo',
+    description: 'Encabezado con foto y la experiencia en una línea de tiempo vertical. Ideal para trayectorias con varios cargos.',
+    defaultAccent: '#0ea5e9',
+    defaultBg: '#0f172a',
+    thumbnail: (color, bg) => (
+      <div style={{ width: '100%', height: 120, background: 'white', borderRadius: 4, overflow: 'hidden' }}>
+        <div style={{ background: bg, padding: '8px 10px', display: 'flex', gap: 8, alignItems: 'center', borderBottom: `2px solid ${color}` }}>
+          <div style={{ width: 22, height: 22, borderRadius: 5, background: 'rgba(255,255,255,0.2)', border: `1.5px solid ${color}` }} />
+          <div style={{ flex: 1 }}>
+            <div style={{ width: '60%', height: 5, background: 'white', borderRadius: 2, marginBottom: 3 }} />
+            <div style={{ width: '40%', height: 3, background: color, borderRadius: 1 }} />
+          </div>
+        </div>
+        <div style={{ margin: '8px 12px 0 18px', borderLeft: '1.5px solid #e5e7eb', paddingLeft: 10 }}>
+          {[0, 1, 2].map(k => (
+            <div key={k} style={{ position: 'relative', marginBottom: 7 }}>
+              <div style={{ position: 'absolute', left: -14, top: 0, width: 6, height: 6, borderRadius: '50%', background: 'white', border: `1.5px solid ${color}` }} />
+              <div style={{ width: 22, height: 3, background: color, opacity: 0.5, borderRadius: 2, marginBottom: 2 }} />
+              <div style={{ width: `${70 - k * 8}%`, height: 3, background: '#cbd5e1', borderRadius: 1 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'compact',
+    name: 'Compacta',
+    description: 'Dos columnas densas con lateral claro a la derecha. Aprovecha el espacio: ideal para hojas de vida largas.',
+    defaultAccent: '#2563eb',
+    defaultBg: '#111827',
+    thumbnail: (color, bg) => (
+      <div style={{ width: '100%', height: 120, borderRadius: 4, overflow: 'hidden', display: 'flex', background: 'white' }}>
+        <div style={{ width: '67%', padding: '8px 10px', borderTop: `3px solid ${color}` }}>
+          <div style={{ width: '65%', height: 6, background: bg, borderRadius: 2, marginBottom: 3 }} />
+          <div style={{ width: '40%', height: 3, background: color, borderRadius: 1, marginBottom: 7 }} />
+          {[0, 1].map(k => (
+            <div key={k} style={{ marginBottom: 6 }}>
+              <div style={{ width: '35%', height: 2.5, background: bg, borderRadius: 1, marginBottom: 3, borderBottom: `1px solid ${color}` }} />
+              {[95, 88, 92].map(w => <div key={w} style={{ width: `${w}%`, height: 2, background: '#ddd', borderRadius: 1, marginBottom: 2 }} />)}
+            </div>
+          ))}
+        </div>
+        <div style={{ flex: 1, background: '#f3f5f8', padding: '8px 7px', borderTop: `3px solid ${bg}` }}>
+          <div style={{ width: '70%', aspectRatio: 1, borderRadius: 4, background: '#dfe3ea', marginBottom: 6 }} />
+          {[80, 60, 70, 55, 65].map((w, i) => (
+            <div key={i} style={{ display: 'flex', gap: 3, alignItems: 'center', marginBottom: 3 }}>
+              <div style={{ width: 3, height: 3, borderRadius: '50%', background: color }} />
+              <div style={{ width: `${w}%`, height: 2, background: '#cbd5e1', borderRadius: 1 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'corporate',
+    name: 'Corporativa',
+    description: 'Banda de color con foto superpuesta, franja de contacto y secciones con íconos. Moderna y profesional.',
+    defaultAccent: '#f59e0b',
+    defaultBg: '#1e3a5f',
+    thumbnail: (color, bg) => (
+      <div style={{ width: '100%', height: 120, background: 'white', borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
+        <div style={{ background: bg, height: 36, padding: '9px 10px', borderBottom: `2.5px solid ${color}` }}>
+          <div style={{ width: '45%', height: 6, background: 'white', borderRadius: 2, marginBottom: 3 }} />
+          <div style={{ width: '30%', height: 3, background: color, borderRadius: 1 }} />
+        </div>
+        <div style={{ position: 'absolute', right: 12, top: 18, width: 30, height: 30, borderRadius: '50%', background: '#e5e7eb', border: '2.5px solid white', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }} />
+        <div style={{ height: 9, background: '#f8fafc', borderBottom: '1px solid #e5e7eb' }} />
+        <div style={{ padding: '7px 10px' }}>
+          {[0, 1].map(k => (
+            <div key={k} style={{ marginBottom: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 3 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, opacity: 0.4 }} />
+                <div style={{ width: '25%', height: 3.5, background: bg, borderRadius: 1 }} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
+                {[0, 1].map(j => <div key={j} style={{ height: 9, background: '#f1f5f9', borderRadius: 2 }} />)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
 ];
 
 export default function TemplatesForm({ activeTemplate, onChange, templateColors = {}, onColorChange, templateBgColors = {}, onBgColorChange }) {

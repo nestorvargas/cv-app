@@ -206,6 +206,8 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
     overlayBg = 'linear-gradient(to right, #ffffff 70%, #f4f6f8 70%)';
   } else if (template === 'modern') {
     overlayBg = 'linear-gradient(to right, #ffffff 50%, #fafbfc 50%)';
+  } else if (template === 'compact') {
+    overlayBg = 'linear-gradient(to right, #ffffff 67%, #f3f5f8 67%)';
   } else {
     overlayBg = sidebarW > 0
       ? `linear-gradient(to right, ${bg} ${sidebarW}%, #ffffff ${sidebarW}%)`

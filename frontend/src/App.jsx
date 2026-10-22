@@ -24,6 +24,10 @@ export default function App({ user, onLogout }) {
     executive: '#8e44ad',
     creative:  '#e94560',
     minimal:   '#2980b9',
+    elegant:   '#8a6d3b',
+    timeline:  '#0ea5e9',
+    compact:   '#2563eb',
+    corporate: '#f59e0b',
   };
   const DEFAULT_BG_COLORS = {
     classic:   '#2c3e50',
@@ -31,6 +35,10 @@ export default function App({ user, onLogout }) {
     executive: '#2c3e50',
     creative:  '#1a1a2e',
     minimal:   '#3d3d3d',
+    elegant:   '#1f2a37',
+    timeline:  '#0f172a',
+    compact:   '#111827',
+    corporate: '#1e3a5f',
   };
 
   const loadPrefs = (profileName) => {

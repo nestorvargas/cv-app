@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+.cv-timeline-wrapper {
+  width: 794px;
+  flex-shrink: 0;
+  position: relative;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+.cv-timeline {
+  width: 794px;
+  flex: 1;
+  padding: 0 0 36px;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+/* Header band */
+.cv-timeline-header {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 34px 48px;
+  margin-bottom: 26px;
+  background: var(--cv-bg);
+  color: white;
+  border-bottom: 4px solid var(--cv-accent);
+}
+
+.cv-timeline-photo {
+  width: 104px;
+  height: 104px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 3px solid var(--cv-accent);
+}
+
+.cv-timeline-photo--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cv-timeline-identity {
+  min-width: 0;
+}
+
+.cv-timeline-name {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.cv-timeline-title {
+  margin: 6px 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cv-accent);
+}
+
+.cv-timeline-contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.cv-timeline-contact i {
+  color: var(--cv-accent);
+  margin-right: 6px;
+  font-size: 11px;
+}
+
+/* Sections */
+.cv-timeline-section {
+  padding: 0 48px;
+  margin-bottom: 20px;
+}
+
+.cv-timeline-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--cv-bg);
+}
+
+.cv-timeline-section-title i {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: white;
+  background: var(--cv-accent);
+}
+
+.cv-timeline-summary {
+  margin: 0;
+  text-align: justify;
+  color: #374151;
+}
+
+/* Vertical timeline */
+.cv-timeline-track {
+  position: relative;
+  margin-left: 12px;
+  padding-left: 26px;
+  border-left: 2px solid #e5e7eb;
+}
+
+.cv-timeline-entry {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.cv-timeline-entry:last-child {
+  padding-bottom: 2px;
+}
+
+.cv-timeline-dot {
+  position: absolute;
+  left: -34px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--cv-accent);
+}
+
+.cv-timeline-period {
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 1px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cv-accent);
+  background: color-mix(in srgb, var(--cv-accent) 12%, white);
+}
+
+.cv-timeline-entry-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.cv-timeline-entry-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.cv-timeline-entry-desc {
+  margin: 6px 0 0;
+  text-align: justify;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* Skills + certificates side by side */
+.cv-timeline-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.cv-timeline-columns > .cv-timeline-section:first-child {
+  padding-right: 18px;
+}
+
+.cv-timeline-columns > .cv-timeline-section:last-child {
+  padding-left: 18px;
+}
+
+.cv-timeline-columns > .cv-timeline-section:only-child {
+  grid-column: 1 / -1;
+  padding: 0 48px;
+}
+
+.cv-timeline-skill-group {
+  margin-bottom: 10px;
+}
+
+.cv-timeline-skill-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 5px;
+}
+
+.cv-timeline-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.cv-timeline-chips span {
+  padding: 2px 9px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cv-bg);
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+}
+
+.cv-timeline-cert {
+  padding: 6px 0 6px 12px;
+  border-left: 3px solid var(--cv-accent);
+  margin-bottom: 8px;
+}
+
+.cv-timeline-cert-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: #111827;
+}
+
+.cv-timeline-cert-meta {
+  font-size: 12px;
+  color: #6b7280;
+}
