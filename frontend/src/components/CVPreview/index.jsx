@@ -4,6 +4,7 @@ import Modern from './Modern.jsx';
 import Executive from './Executive.jsx';
 import Creative from './Creative.jsx';
 import Minimal from './Minimal.jsx';
+import Ats from './Ats.jsx';
 
 export default function CVPreview({ cvData, lang, template = 'classic', accentColor, bgColor, pageMinHeight }) {
   const p = { cvData, lang, accentColor, bgColor, pageMinHeight };
@@ -11,5 +12,6 @@ export default function CVPreview({ cvData, lang, template = 'classic', accentCo
   if (template === 'executive') return <Executive {...p} />;
   if (template === 'creative')  return <Creative  {...p} />;
   if (template === 'minimal')   return <Minimal   {...p} />;
+  if (template === 'ats')       return <Ats       {...p} />;
   return <Classic {...p} />;
 }

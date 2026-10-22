@@ -131,6 +131,23 @@ const TEMPLATES = [
     ),
   },
   {
+    id: 'ats',
+    name: 'ATS / IA',
+    description: 'Una columna, sin iconos ni gráficos. El PDF se genera con texto real (no captura de pantalla) para que lo puedan leer sistemas ATS e IA de selección.',
+    defaultAccent: '#2c3e50',
+    defaultBg: '#ffffff',
+    thumbnail: (color) => (
+      <div style={{ width: '100%', height: 120, background: 'white', borderRadius: 4, overflow: 'hidden', padding: '10px 12px' }}>
+        <div style={{ width: '55%', height: 7, background: '#222', borderRadius: 2, marginBottom: 4 }} />
+        <div style={{ width: '70%', height: 3, background: '#999', borderRadius: 1, marginBottom: 8 }} />
+        <div style={{ width: '40%', height: 3, background: color, borderRadius: 1, borderBottom: `1.5px solid #222`, paddingBottom: 3, marginBottom: 6 }} />
+        {[1,2,3].map(n => <div key={n} style={{ width: `${85 - n * 6}%`, height: 2.5, background: '#ccc', borderRadius: 1, marginBottom: 3 }} />)}
+        <div style={{ width: '40%', height: 3, background: color, borderRadius: 1, marginTop: 8, marginBottom: 6 }} />
+        {[1,2,3].map(n => <div key={n} style={{ width: `${80 - n * 5}%`, height: 2.5, background: '#ccc', borderRadius: 1, marginBottom: 3 }} />)}
+      </div>
+    ),
+  },
+  {
     id: 'minimal',
     name: 'Minimal',
     description: 'Sidebar oscuro con barras de habilidades. Timeline de dos columnas para experiencia.',

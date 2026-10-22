@@ -1,17 +1,22 @@
 # Templates
 
-There are **5 active templates** (plus 1 legacy). Each exists as a pair: React preview and Node.js PDF generator.
+There are **6 active templates** (plus 1 legacy). Each has a React preview component.
+
+**Important:** `backend/src/templates/*.js` (`classicTemplate.js`, `modernTemplate.js`, etc.) are **dead code** —
+nothing in `pdfController.js` requires them. All PDF generation is driven by the frontend preview components,
+rendered through Puppeteer at `/print/:profileName/:lang` (see "PDF Generation" in `docs/api.md`).
 
 ## Available templates
 
-| Name       | Preview (frontend)                                        | PDF (backend)                                   | Layout summary                                             |
-|------------|-----------------------------------------------------------|-------------------------------------------------|------------------------------------------------------------|
-| `classic`  | `CVPreview/Classic.jsx` + `classic.css`                   | `templates/classicTemplate.js`                  | 35% dark sidebar-left, 65% main-right, gradient accent     |
-| `modern`   | `CVPreview/Modern.jsx` + `modern.css`                     | `templates/modernTemplate.js`                   | Full-width dark header, 50/50 two-column body              |
-| `executive`| `CVPreview/Executive.jsx` + `executive.css`               | `templates/executiveTemplate.js`                | Centered header, 30% dark sidebar-left, 70% main-right     |
-| `creative` | `CVPreview/Creative.jsx` + `creative.css`                 | `templates/creativeTemplate.js`                 | Header + inline contacts, 70% main-left, 30% sidebar-right |
-| `minimal`  | `CVPreview/Minimal.jsx` + `minimal.css`                   | `templates/minimalTemplate.js`                  | 29% dark sidebar-left, 71% main-right, timeline experience |
-| *(legacy)* | —                                                         | `templates/cvTemplate.js`                       | Same layout as classic, hardcoded colors, no accents       |
+| Name       | Preview (frontend)                                        | Layout summary                                             |
+|------------|-------------------------------------------------------------|------------------------------------------------------------|
+| `classic`  | `CVPreview/Classic.jsx` + `classic.css`                   | 35% dark sidebar-left, 65% main-right, gradient accent     |
+| `modern`   | `CVPreview/Modern.jsx` + `modern.css`                     | Full-width dark header, 50/50 two-column body              |
+| `executive`| `CVPreview/Executive.jsx` + `executive.css`               | Centered header, 30% dark sidebar-left, 70% main-right     |
+| `creative` | `CVPreview/Creative.jsx` + `creative.css`                 | Header + inline contacts, 70% main-left, 30% sidebar-right |
+| `minimal`  | `CVPreview/Minimal.jsx` + `minimal.css`                   | 29% dark sidebar-left, 71% main-right, timeline experience |
+| `ats`      | `CVPreview/Ats.jsx` + `ats.css`                            | Single column, no icons/photo/sidebar. **Only template whose PDF has real selectable text** — see below. |
+| *(legacy)* | —                                                         | Unused `templates/cvTemplate.js`, same layout as classic    |
 
 ## Common features (all templates)
 
@@ -71,21 +76,27 @@ This ensures the colored background extends to the full content height regardles
 | modern    | — (no sidebar)| `undefined → 0`    |
 | creative  | — (no sidebar)| `undefined → 0`    |
 
-## PDF template function signature
+## `ats` template: real-text PDF path
 
-```js
-function buildXxxHtml(cvData, imageBase64, accentColor, bgColor) {
-  // Returns an HTML string with full <html><head><style>...</style></head><body>...</body></html>
-}
-```
+Every template except `ats` produces its PDF by **screenshotting** the rendered preview (PNG images assembled
+into a PDF via `pdf-lib`) — the resulting file has no selectable/extractable text, which makes it invisible to
+ATS software and AI resume screeners regardless of how the layout looks.
 
-## Known discrepancies
+`ats` is the exception, wired specifically to be machine-readable:
 
-PDF and preview templates have known visual differences. Key areas:
+- **Preview** (`PrintPage.jsx`): when `template === 'ats'`, renders `CVTemplateRenderer` directly in normal
+  document flow, instead of wrapping it in `CVPagedViewer`'s screenshot-oriented synthetic pager.
+- **PDF** (`pdfController.js`): when `tmpl === 'ats'`, calls `page.emulateMediaType('print')` and
+  `page.pdf({ format: 'A4', printBackground: true })` — Chromium's native PDF export, which embeds real text.
+  Pagination is handled by `ats.css`'s `@media print { @page { size: A4 } }` plus `break-inside: avoid` on
+  `[data-block]` elements, not by JS-computed page offsets.
+- **Design constraints that follow from this**: no icons (icon fonts extract as garbled private-use-area
+  characters), no photo, no colored sidebar — single column, plain text labels only, so both the visual layout
+  and the underlying text run in the same left-to-right, top-to-bottom reading order.
 
-- **Image sizes**: Most templates use slightly different dimensions in PDF vs preview
-- **Font scaling**: Backend uses `pt` units, frontend uses `px` (1pt ≈ 1.333px)
-- **Section labels**: Some labels differ (e.g., skills "DevOps" vs "DevOps & Herramientas")
-- **Header padding**: Minor spacing differences in classic and modern
+## Known discrepancies (screenshot-based templates)
 
-See `.claude/agents/cv-pdf-sync.md` for the complete diff table.
+The screenshot-based templates (all except `ats`) can still show minor preview-vs-PDF differences since capture
+timing/scaling can drift from the on-screen render. See `.claude/agents/cv-pdf-sync.md` for the diff table.
+Note: that agent's references to `backend/src/templates/*.js` describe dead code (see top of this file) — the
+actual source of truth for every PDF (`ats` included) is the frontend preview component.

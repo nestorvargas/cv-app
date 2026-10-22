@@ -45,12 +45,19 @@ function computePageOffsets(totalHeight, blocks) {
 
     let breakPoint;
     if (collision) {
-      // Move the cut up to just before the colliding block's top so the block
-      // starts fresh on the next page.
-      // Guard: if the block is larger than EFFECTIVE_H the moved breakPoint
-      // would never advance past it — fall back to rawBreak to prevent an
-      // infinite loop.
-      const candidate = collision.top;
+      // Move the cut up to just before the colliding block's top. Then
+      // cascade: the moved position may itself land inside another block
+      // (e.g. a sidebar block that straddles the same boundary), so keep
+      // moving up until the candidate is in a clear gap.
+      // Guard: fall back to rawBreak if cascading would produce a
+      // zero-height page (candidate <= last offset) or the block is
+      // taller than EFFECTIVE_H.
+      let candidate = collision.top;
+      for (let i = 0; i < sorted.length; i++) {
+        const inner = sorted.find(b => b.top < candidate && b.bottom > candidate);
+        if (!inner) break;
+        candidate = inner.top;
+      }
       breakPoint = candidate > offsets[offsets.length - 1] ? candidate : rawBreak;
     } else {
       breakPoint = rawBreak;
@@ -113,7 +120,7 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
   if (template === 'creative') {
     overlayBg = 'linear-gradient(to right, #ffffff 70%, #f4f6f8 70%)';
   } else if (template === 'modern') {
-    overlayBg = '#ffffff';
+    overlayBg = 'linear-gradient(to right, #ffffff 50%, #fafbfc 50%)';
   } else {
     overlayBg = sidebarW > 0
       ? `linear-gradient(to right, ${bg} ${sidebarW}%, #ffffff ${sidebarW}%)`

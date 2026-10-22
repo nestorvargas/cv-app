@@ -173,6 +173,18 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
                   <span>{personal_info.location}</span>
                 </div>
               )}
+              {personal_info.linkedin && (
+                <div className="cv-creative-contact-item">
+                  <span className="cv-creative-contact-icon"><i className="fa-brands fa-linkedin" /></span>
+                  <span style={{ wordBreak: 'break-all' }}>{personal_info.linkedin}</span>
+                </div>
+              )}
+              {personal_info.github && (
+                <div className="cv-creative-contact-item">
+                  <span className="cv-creative-contact-icon"><i className="fa-brands fa-github" /></span>
+                  <span>{personal_info.github}</span>
+                </div>
+              )}
             </div>
 
             <div className="cv-creative-sidebar-section">

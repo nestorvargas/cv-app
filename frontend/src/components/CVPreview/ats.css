@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ATS/AI-optimized template: single column, no icons, no sidebar graphics.
+   When exported via the real-text PDF path (pdfController.js `tmpl === 'ats'`)
+   the browser paginates this with @media print + break-inside, not the
+   screenshot-based synthetic pager used by the other templates. */
+
+.cv-ats-wrapper {
+  width: 794px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  background: #ffffff;
+  color: #1a1a1a;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 44px 52px;
+}
+
+@media print {
+  @page { size: A4; margin: 0; }
+  [data-block] { break-inside: avoid; page-break-inside: avoid; }
+}
+
+.cv-ats-header { margin-bottom: 22px; }
+
+.cv-ats-name {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 4px;
+  color: #111;
+}
+
+.cv-ats-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.cv-ats-contact-line {
+  font-size: 12.5px;
+  color: #333;
+}
+
+.cv-ats-contact-line span:not(:last-child)::after {
+  content: ' | ';
+  color: #999;
+}
+
+.cv-ats-section {
+  margin-bottom: 18px;
+}
+
+.cv-ats-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--cv-accent, #2c3e50);
+  border-bottom: 1.5px solid #1a1a1a;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.cv-ats-summary {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #222;
+}
+
+.cv-ats-exp-item,
+.cv-ats-edu-item,
+.cv-ats-cert-item {
+  margin-bottom: 13px;
+}
+
+.cv-ats-exp-item:last-child,
+.cv-ats-edu-item:last-child,
+.cv-ats-cert-item:last-child {
+  margin-bottom: 0;
+}
+
+.cv-ats-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #111;
+}
+
+.cv-ats-item-period {
+  font-size: 12px;
+  font-weight: 500;
+  color: #444;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cv-ats-exp-desc {
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: #222;
+  margin-top: 4px;
+}
+
+.cv-ats-skills-row {
+  font-size: 12.5px;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.cv-ats-skills-row:last-child {
+  margin-bottom: 0;
+}
+
+.cv-ats-skills-label {
+  font-weight: 700;
+}

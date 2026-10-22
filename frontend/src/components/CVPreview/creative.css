@@ -118,7 +118,7 @@
 .cv-creative-body {
   display: flex;
   flex: 1;
-  align-items: start;
+  align-items: stretch;
 }
 
 /* LEFT MAIN (70%) */

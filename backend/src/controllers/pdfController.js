@@ -26,10 +26,29 @@ async function generatePdf(req, res) {
     const page = await browser.newPage();
     // Match the CSS pixel dimensions used by CVPagedViewer (794 × 1123)
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
+    if (tmpl === 'ats') await page.emulateMediaType('print');
     await page.goto(printUrl, { waitUntil: 'networkidle0', timeout: 30000 });
 
     // Wait until PrintPage signals it is ready (fonts loaded + layout stable)
     await page.waitForFunction(() => window.__CV_READY__ === true, { timeout: 20000 });
+
+    const filename = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
+
+    if (tmpl === 'ats') {
+      // Real-text PDF: renders the actual document flow (no screenshots), so the
+      // output has selectable, extractable text that ATS/AI parsers can read.
+      const pdfBytes = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '0', bottom: '0', left: '0', right: '0' },
+      });
+      await browser.close();
+      browser = null;
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.send(Buffer.from(pdfBytes));
+      return;
+    }
 
     const pageEls = await page.$$('.cv-page');
     if (pageEls.length === 0) {
@@ -59,7 +78,6 @@ async function generatePdf(req, res) {
 
     const pdfBytes = await pdfDoc.save();
 
-    const filename = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send(Buffer.from(pdfBytes));

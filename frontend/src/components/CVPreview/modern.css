@@ -100,7 +100,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   flex: 1;
-  align-items: start;
+  align-items: stretch;
 }
 
 .cv-modern-col {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CVPagedViewer from './components/CVPreview/Paged.jsx';
+import CVTemplateRenderer from './components/CVPreview/index.jsx';
 import { getCv } from './api/cvApi.js';
 
 export default function PrintPage() {
@@ -49,13 +50,26 @@ export default function PrintPage() {
         padding: 0,
       }}
     >
-      <CVPagedViewer
-        cvData={cvData}
-        lang={lang}
-        template={template}
-        accentColor={accentColor}
-        bgColor={bgColor}
-      />
+      {template === 'ats' ? (
+        // Real-text PDF path: rendered as normal document flow so Chromium's
+        // print engine paginates it natively (see pdfController.js `page.pdf()`
+        // branch), instead of the screenshot-based synthetic pager below.
+        <CVTemplateRenderer
+          cvData={cvData}
+          lang={lang}
+          template={template}
+          accentColor={accentColor}
+          bgColor={bgColor}
+        />
+      ) : (
+        <CVPagedViewer
+          cvData={cvData}
+          lang={lang}
+          template={template}
+          accentColor={accentColor}
+          bgColor={bgColor}
+        />
+      )}
     </div>
   );
 }
