@@ -11,6 +11,8 @@ const pdfRoutes = require('./routes/pdf');
 const uploadRoutes = require('./routes/upload');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
+const aiRoutes = require('./routes/ai');
+const catalogRoutes = require('./routes/catalog');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,6 +33,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/cv', requireAuth, cvRoutes);
 app.use('/api/pdf', requireAuth, pdfRoutes);
 app.use('/api/upload', requireAuth, uploadRoutes);
+app.use('/api/ai', requireAuth, aiRoutes);
+app.use('/api/catalog', requireAuth, catalogRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 

@@ -31,6 +31,9 @@ services:
       # Initial admin, only created while the users table is empty (local dev only)
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: admin1234
+      # AI assistant (Ollama). Set OLLAMA_URL in a root .env (gitignored), e.g. the server-ia Tailscale URL
+      OLLAMA_URL: ${OLLAMA_URL:-}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
     volumes:
       - ./backend/src:/app/src
       - ./backend/uploads:/app/uploads
