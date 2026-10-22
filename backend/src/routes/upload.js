@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const { requireProfileAccess } = require('../middleware/auth');
 const { uploadImage } = require('../controllers/uploadController');
 
 const storage = multer.diskStorage({
@@ -21,6 +22,7 @@ const upload = multer({
   },
 });
 
-router.post('/image', upload.single('image'), uploadImage);
+// Access is checked before multer so files for foreign profiles are never written
+router.post('/image', requireProfileAccess(req => req.query.profileName), upload.single('image'), uploadImage);
 
 module.exports = router;

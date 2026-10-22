@@ -1,3 +1,4 @@
+const { pool } = require('../db');
 const { findSessionUser, getSessionToken } = require('../lib/auth');
 
 async function requireAuth(req, res, next) {
@@ -19,4 +20,23 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin };
+// Admins can access every CV; other users only the ones they own.
+// Answers 404 (not 403) so CVs of other users are not revealed.
+function requireProfileAccess(getProfileName) {
+  return async (req, res, next) => {
+    if (req.user.role === 'admin') return next();
+    try {
+      const { rows } = await pool.query(
+        'SELECT 1 FROM cv_profiles WHERE profile_name = $1 AND owner_id = $2 LIMIT 1',
+        [getProfileName(req), req.user.id]
+      );
+      if (rows.length === 0) return res.status(404).json({ error: 'CV not found' });
+      next();
+    } catch (err) {
+      console.error('[auth]', err);
+      res.status(500).json({ error: 'Auth error' });
+    }
+  };
+}
+
+module.exports = { requireAuth, requireAdmin, requireProfileAccess };

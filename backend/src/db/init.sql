@@ -228,3 +228,8 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON sessions (user_id);
+
+-- CV ownership: each user sees their own CVs; admins see all.
+-- Profiles without owner (seed data, or whose owner was deleted) are admin-only.
+ALTER TABLE cv_profiles ADD COLUMN IF NOT EXISTS owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS cv_profiles_owner_id_idx ON cv_profiles (owner_id);

@@ -412,6 +412,26 @@
   cursor: default;
 }
 
+.cv-card-owner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+.cv-card-owner select {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #e2e8ee;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: #2c3e50;
+}
+
 /* ── Narrow screens ── */
 @media (max-width: 640px) {
   .cv-index-header-inner {

@@ -1,11 +1,16 @@
 const { pool } = require('../db');
 
 async function listProfiles(req, res) {
+  const isAdmin = req.user.role === 'admin';
   try {
+    // Admins see every CV (with its owner); other users only their own
     const result = await pool.query(
-      `SELECT DISTINCT ON (profile_name) profile_name, profile_label, personal_info, language
-       FROM cv_profiles WHERE language = 'es'
-       ORDER BY profile_name ASC`
+      `SELECT DISTINCT ON (p.profile_name) p.profile_name, p.profile_label, p.personal_info, p.language,
+              p.owner_id, u.username AS owner_username
+       FROM cv_profiles p LEFT JOIN users u ON u.id = p.owner_id
+       WHERE p.language = 'es' AND ($1 OR p.owner_id = $2)
+       ORDER BY p.profile_name ASC`,
+      [isAdmin, req.user.id]
     );
     res.json(result.rows);
   } catch (err) {
@@ -80,10 +85,10 @@ async function createProfile(req, res) {
   const basePersonal = { name: 'Nombre Apellido', title: profile_label, phone: '', email: '', location: '' };
   try {
     await pool.query(
-      `INSERT INTO cv_profiles (language, profile_name, profile_label, personal_info, summary, experience, education, skills, certificates)
-       VALUES ($1, $2, $3, $4::jsonb, $5, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb),
-              ($6, $2, $3, $4::jsonb, $5, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb)`,
-      ['es', slug, profile_label, JSON.stringify(basePersonal), '', 'en']
+      `INSERT INTO cv_profiles (language, profile_name, profile_label, personal_info, summary, experience, education, skills, certificates, owner_id)
+       VALUES ($1, $2, $3, $4::jsonb, $5, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb, $7),
+              ($6, $2, $3, $4::jsonb, $5, '[]'::jsonb, '[]'::jsonb, '{}'::jsonb, '[]'::jsonb, $7)`,
+      ['es', slug, profile_label, JSON.stringify(basePersonal), '', 'en', req.user.id]
     );
     res.json({ profile_name: slug, profile_label });
   } catch (err) {
@@ -109,4 +114,28 @@ async function deleteProfile(req, res) {
   }
 }
 
-module.exports = { listProfiles, getCv, updateCv, createProfile, deleteProfile };
+// Admin only: assign a CV (both languages) to a user, or null to leave it admin-only
+async function setProfileOwner(req, res) {
+  const { profileName } = req.params;
+  const { ownerId } = req.body || {};
+  if (ownerId !== null && !Number.isInteger(ownerId)) {
+    return res.status(400).json({ error: 'ownerId must be a user id or null' });
+  }
+  try {
+    if (ownerId !== null) {
+      const user = await pool.query('SELECT 1 FROM users WHERE id = $1', [ownerId]);
+      if (user.rows.length === 0) return res.status(400).json({ error: 'Usuario no encontrado' });
+    }
+    const result = await pool.query(
+      'UPDATE cv_profiles SET owner_id = $1, updated_at = NOW() WHERE profile_name = $2',
+      [ownerId, profileName]
+    );
+    if (result.rowCount === 0) return res.status(404).json({ error: 'CV not found' });
+    res.json({ profile_name: profileName, owner_id: ownerId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
+}
+
+module.exports = { listProfiles, getCv, updateCv, createProfile, deleteProfile, setProfileOwner };

@@ -7,6 +7,8 @@ export const getCv = (profileName, lang) => axios.get(`${BASE}/cv/${profileName}
 export const updateCv = (profileName, lang, data) => axios.put(`${BASE}/cv/${profileName}/${lang}`, data);
 export const createProfile = (data) => axios.post(`${BASE}/cv`, data);
 export const deleteProfile = (profileName) => axios.delete(`${BASE}/cv/${profileName}`);
+export const setProfileOwner = (profileName, ownerId) =>
+  axios.put(`${BASE}/cv/${profileName}/owner`, { ownerId });
 
 export const downloadPdf = async (profileName, lang, template = 'classic', accentColor, bgColor) => {
   const params = new URLSearchParams({ template });

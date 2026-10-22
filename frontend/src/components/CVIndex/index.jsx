@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { listProfiles, createProfile, deleteProfile } from '../../api/cvApi.js';
+import { listProfiles, createProfile, deleteProfile, setProfileOwner } from '../../api/cvApi.js';
+import { listUsers } from '../../api/authApi.js';
 import UserMenu from '../Auth/UserMenu.jsx';
 import './index.css';
 
@@ -24,6 +25,8 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
   const [newLabel, setNewLabel] = useState('');
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
+  const [users, setUsers] = useState([]); // admin only: owner choices
+  const isAdmin = user?.role === 'admin';
 
   const load = async () => {
     setLoading(true);
@@ -38,6 +41,20 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
   };
 
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    listUsers().then(res => setUsers(res.data)).catch(console.error);
+  }, [isAdmin]);
+
+  const handleOwnerChange = async (profileName, value) => {
+    try {
+      await setProfileOwner(profileName, value === '' ? null : Number(value));
+      load();
+    } catch (e) {
+      alert(e.response?.data?.error || 'Error al asignar el propietario');
+    }
+  };
 
   const handleCreate = async () => {
     if (!newLabel.trim()) return;
@@ -92,7 +109,7 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
 
       <main className="cv-index-main">
         <div className="cv-index-section-header">
-          <h2 className="cv-index-section-title">Mis CVs</h2>
+          <h2 className="cv-index-section-title">{isAdmin ? 'Todos los CVs' : 'Mis CVs'}</h2>
           <button className="cv-index-add-btn" onClick={() => setShowModal(true)}>
             <i className="fa-solid fa-plus" /> Nuevo CV
           </button>
@@ -135,6 +152,21 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
                       {profile.personal_info?.name || '—'}
                     </p>
                     <p className="cv-card-role">{profile.personal_info?.title || '—'}</p>
+                    {isAdmin && (
+                      <label className="cv-card-owner">
+                        <i className="fa-solid fa-user-lock" />
+                        <select
+                          value={profile.owner_id ?? ''}
+                          onChange={e => handleOwnerChange(profile.profile_name, e.target.value)}
+                          title="Usuario que puede ver y editar este CV"
+                        >
+                          <option value="">Sin asignar (solo admins)</option>
+                          {users.map(u => (
+                            <option key={u.id} value={u.id}>{u.username}</option>
+                          ))}
+                        </select>
+                      </label>
+                    )}
                   </div>
 
                   <div className="cv-card-divider" />
