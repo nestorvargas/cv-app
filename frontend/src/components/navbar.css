@@ -1,0 +1,28 @@
+.nav-brand-text {
+  min-width: 0;
+}
+
+.nav-brand-text > div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Narrow screens: icon-only buttons so the bar fits */
+@media (max-width: 900px) {
+  .app-navbar {
+    padding: 0 12px !important;
+    gap: 8px !important;
+  }
+
+  .app-navbar .nav-label,
+  .app-navbar .nav-brand-icon,
+  .app-navbar .user-menu-trigger span {
+    display: none !important;
+  }
+
+  .app-navbar button {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+  }
+}

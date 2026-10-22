@@ -91,13 +91,16 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
       // page-div (skipping the inner-div) and produced wrong values.
       // The inner-div is position:absolute top:0 inside an overflow:hidden
       // container that never scrolls, so its rect.top is a stable anchor.
-      const containerTop = el.getBoundingClientRect().top;
+      const containerRect = el.getBoundingClientRect();
+      // Rects are in screen pixels: undo any ancestor zoom/scale (e.g. the
+      // fit-to-width preview) so offsets stay in unscaled CSS pixels.
+      const scale = (el.offsetWidth && containerRect.width / el.offsetWidth) || 1;
 
       const blockEls = el.querySelectorAll('[data-block]');
       const blocks = Array.from(blockEls).map(b => {
         const bRect = b.getBoundingClientRect();
-        const top = bRect.top - containerTop;
-        return { top, bottom: top + bRect.height };
+        const top = (bRect.top - containerRect.top) / scale;
+        return { top, bottom: top + bRect.height / scale };
       });
 
       setPageOffsets(computePageOffsets(h, blocks));

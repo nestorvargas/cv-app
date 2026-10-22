@@ -23,9 +23,11 @@ export default function AuthGate({ children }) {
 
   if (user === undefined) {
     return (
-      <div className="cv-index-loading">
-        <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 10 }} />
-        Cargando...
+      <div className="cv-index app-bg">
+        <div className="cv-index-loading">
+          <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 10 }} />
+          Cargando...
+        </div>
       </div>
     );
   }

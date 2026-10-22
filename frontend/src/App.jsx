@@ -4,6 +4,8 @@ import CVEditor from './components/CVEditor/index.jsx';
 import CVPagedViewer from './components/CVPreview/Paged.jsx';
 import CVIndex from './components/CVIndex/index.jsx';
 import UsersPage from './components/Auth/UsersPage.jsx';
+import FitToWidth from './components/CVPreview/FitToWidth.jsx';
+import './editor-layout.css';
 import { getCv, updateCv } from './api/cvApi.js';
 
 export default function App({ user, onLogout }) {
@@ -14,6 +16,7 @@ export default function App({ user, onLogout }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
+  const [mobileView, setMobileView] = useState('edit'); // narrow screens show one pane at a time
   const DEFAULT_COLORS = {
     classic:   '#1abc9c',
     modern:    '#e67e22',
@@ -148,14 +151,25 @@ export default function App({ user, onLogout }) {
         accentColor={templateColors[template]}
         bgColor={templateBgColors[template]}
       />
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden', height: 'calc(100vh - 64px)' }}>
+      <div className="editor-view-toggle">
+        {[['edit', 'fa-pen-to-square', 'Editar'], ['preview', 'fa-eye', 'Vista previa']].map(([id, icon, label]) => (
+          <button
+            key={id}
+            className={mobileView === id ? 'active' : ''}
+            onClick={() => setMobileView(id)}
+          >
+            <i className={`fa-solid ${icon}`} /> {label}
+          </button>
+        ))}
+      </div>
+      <div className={`editor-layout editor-layout--${mobileView}`}>
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
             <p style={{ color: '#666', fontSize: 18 }}>Cargando CV...</p>
           </div>
         ) : cvData ? (
           <>
-            <div style={{ width: '45%', overflowY: 'auto', borderRight: '1px solid #dee2e6', background: '#fff' }}>
+            <div className="editor-pane">
               <CVEditor
                 cvData={cvData}
                 onChange={handleChange}
@@ -170,8 +184,10 @@ export default function App({ user, onLogout }) {
                 onBgColorChange={(tmpl, color) => setTemplateBgColors(prev => ({ ...prev, [tmpl]: color }))}
               />
             </div>
-            <div style={{ width: '55%', overflowY: 'auto', background: '#3a3a3a', padding: '32px 20px 48px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
-              <CVPagedViewer cvData={cvData} lang={lang} template={template} accentColor={templateColors[template]} bgColor={templateBgColors[template]} />
+            <div className="preview-pane">
+              <FitToWidth width={794} gap={28}>
+                <CVPagedViewer cvData={cvData} lang={lang} template={template} accentColor={templateColors[template]} bgColor={templateBgColors[template]} />
+              </FitToWidth>
             </div>
           </>
         ) : (

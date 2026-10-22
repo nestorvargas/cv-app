@@ -1,0 +1,72 @@
+/* ── Editor: form pane + live preview pane ── */
+.editor-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: calc(100vh - 64px);
+}
+
+.editor-pane {
+  width: 45%;
+  overflow-y: auto;
+  border-right: 1px solid #dee2e6;
+  background: #fff;
+}
+
+.preview-pane {
+  width: 55%;
+  overflow-y: auto;
+  background: #16233d;
+  padding: 32px 20px 48px;
+}
+
+.editor-view-toggle {
+  display: none;
+}
+
+/* Narrow screens: one pane at a time, switched by the toggle bar */
+@media (max-width: 900px) {
+  .editor-view-toggle {
+    display: flex;
+    gap: 4px;
+    padding: 6px;
+    background: #0f1f3d;
+    flex-shrink: 0;
+  }
+
+  .editor-view-toggle button {
+    flex: 1;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .editor-view-toggle button.active {
+    background: #2f74e8;
+    color: white;
+  }
+
+  .editor-layout {
+    height: calc(100vh - 64px - 48px);
+  }
+
+  .editor-pane,
+  .preview-pane {
+    width: 100%;
+    border-right: none;
+  }
+
+  .preview-pane {
+    padding: 16px 12px 32px;
+  }
+
+  .editor-layout--edit .preview-pane,
+  .editor-layout--preview .editor-pane {
+    display: none;
+  }
+}

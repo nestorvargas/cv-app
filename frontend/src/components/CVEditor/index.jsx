@@ -29,11 +29,10 @@ export default function CVEditor({ cvData, onChange, lang, profileName, onRefres
         display: 'flex',
         borderBottom: '2px solid #e9ecef',
         background: '#f8f9fa',
-        overflowX: 'auto',
+        flexWrap: 'wrap',
         flexShrink: 0,
         padding: '6px 8px 0',
         gap: 2,
-        scrollbarWidth: 'none',
       }}>
         {TABS.map(tab => {
           const active = activeTab === tab.id;

@@ -8,10 +8,13 @@ const PROFILE_META = {
   'desarrollador': { faIcon: 'fa-laptop-code', color: '#27ae60' },
   'lider-tecnico': { faIcon: 'fa-chess-king',  color: '#e67e22' },
 };
-const DEFAULT_META = { faIcon: 'fa-file-lines', color: '#636e72' };
+// Custom profiles get a stable color derived from their slug
+const CUSTOM_COLORS = ['#2f74e8', '#8e44ad', '#16a085', '#c0392b', '#d35400', '#2c3e94', '#0e7c86'];
 
 function getProfileMeta(profileName) {
-  return PROFILE_META[profileName] || DEFAULT_META;
+  if (PROFILE_META[profileName]) return PROFILE_META[profileName];
+  const hash = [...profileName].reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) >>> 0, 0);
+  return { faIcon: 'fa-file-lines', color: CUSTOM_COLORS[hash % CUSTOM_COLORS.length] };
 }
 
 export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
@@ -63,7 +66,7 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
   };
 
   return (
-    <div className="cv-index">
+    <div className="cv-index app-bg">
       <header className="cv-index-header">
         <div className="cv-index-header-inner">
           <div className="cv-index-logo">
@@ -72,7 +75,7 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
             </div>
             <div>
               <h1 className="cv-index-title">CV Manager</h1>
-              <p className="cv-index-subtitle">Nestor Fabian Vargas Ferrucho</p>
+              <p className="cv-index-subtitle">App para crear hojas de vida</p>
             </div>
           </div>
           <div className="cv-index-header-right">

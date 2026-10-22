@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { downloadPdf } from '../api/cvApi.js';
 import UserMenu from './Auth/UserMenu.jsx';
+import './navbar.css';
 
-export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, template, profileName, profileLabel, onBack, user, onLogout, accentColor, bgColor }) {
+export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, cvData, template, profileName, profileLabel, onBack, user, onLogout, accentColor, bgColor }) {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -18,9 +19,10 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
   };
 
   return (
-    <nav style={{
+    <nav className="app-navbar" style={{
       height: 64,
-      background: 'linear-gradient(135deg, #1a252f 0%, #2c3e50 100%)',
+      background: '#0f1f3d',
+      borderBottom: '1px solid rgba(120, 170, 255, 0.15)',
       color: 'white',
       display: 'flex',
       alignItems: 'center',
@@ -32,7 +34,7 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
       gap: 16,
     }}>
       {/* Left: back + brand */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
         {onBack && (
           <button
             onClick={onBack}
@@ -53,11 +55,11 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
             onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
           >
-            <i className="fa-solid fa-arrow-left" style={{ fontSize: 12 }} /> Volver
+            <i className="fa-solid fa-arrow-left" style={{ fontSize: 12 }} /> <span className="nav-label">Volver</span>
           </button>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <div className="nav-brand-icon" style={{
             width: 36,
             height: 36,
             background: 'rgba(255,255,255,0.1)',
@@ -71,17 +73,19 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
           }}>
             <i className="fa-solid fa-id-card" />
           </div>
-          <div>
+          <div className="nav-brand-text">
             <div style={{ fontWeight: 700, fontSize: 15, lineHeight: 1.2 }}>
               {profileLabel || 'CV Editor'}
             </div>
-            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11 }}>Nestor Fabian Vargas</div>
+            {cvData?.personal_info?.name && (
+              <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11 }}>{cvData.personal_info.name}</div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
 
         {saveMsg && (
           <span style={{
@@ -112,7 +116,7 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
               key={l}
               onClick={() => onLangToggle(l)}
               style={{
-                background: lang === l ? '#3498db' : 'transparent',
+                background: lang === l ? '#2f74e8' : 'transparent',
                 color: lang === l ? 'white' : '#95a5a6',
                 padding: '6px 14px',
                 borderRadius: 7,
@@ -122,13 +126,13 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 letterSpacing: '0.5px',
-                boxShadow: lang === l ? '0 2px 6px rgba(52,152,219,0.4)' : 'none',
+                boxShadow: lang === l ? '0 2px 6px rgba(47,116,232,0.4)' : 'none',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 5,
               }}
             >
-              {l === 'es' ? '🇨🇴 ES' : '🇺🇸 EN'}
+              {l.toUpperCase()}
             </button>
           ))}
         </div>
@@ -154,7 +158,7 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
           }}
         >
           <i className={`fa-solid ${saving ? 'fa-spinner fa-spin' : 'fa-floppy-disk'}`} />
-          {saving ? 'Guardando...' : 'Guardar'}
+          <span className="nav-label">{saving ? 'Guardando...' : 'Guardar'}</span>
         </button>
 
         {/* Download PDF */}
@@ -180,7 +184,7 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
           onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(231,76,60,0.4)'}
         >
           <i className={`fa-solid ${downloading ? 'fa-spinner fa-spin' : 'fa-file-arrow-down'}`} />
-          {downloading ? 'Generando...' : 'Descargar PDF'}
+          <span className="nav-label">{downloading ? 'Generando...' : 'Descargar PDF'}</span>
         </button>
 
         <UserMenu user={user} onLogout={onLogout} />

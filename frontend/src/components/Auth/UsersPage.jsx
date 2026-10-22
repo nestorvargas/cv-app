@@ -111,7 +111,7 @@ export default function UsersPage({ user, onBack, onLogout }) {
   };
 
   return (
-    <div className="cv-index">
+    <div className="cv-index app-bg">
       <header className="cv-index-header">
         <div className="cv-index-header-inner">
           <div className="cv-index-logo">
