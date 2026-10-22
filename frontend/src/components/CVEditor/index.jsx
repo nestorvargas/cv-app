@@ -8,7 +8,9 @@ import ImageUpload from './ImageUpload.jsx';
 import TemplatesForm from './TemplatesForm.jsx';
 import CertificatesForm from './CertificatesForm.jsx';
 import SectionTips from './SectionTips.jsx';
+import ReferencesForm from './ReferencesForm.jsx';
 import { AREAS, getArea, getSkillLabels } from './areas.js';
+import { getChecks, countSkills, getCompleteness } from './completeness.js';
 import './editor.css';
 
 const TABS = [
@@ -19,39 +21,16 @@ const TABS = [
   { id: 'education',    icon: 'fa-graduation-cap',   label: 'Educación' },
   { id: 'skills',       icon: 'fa-code',             label: 'Habilidades' },
   { id: 'certificates', icon: 'fa-award',            label: 'Certificados' },
+  { id: 'references',   icon: 'fa-address-book',     label: 'Referencias' },
   { id: 'templates',    icon: 'fa-palette',          label: 'Plantillas' },
 ];
-
-// Skills hold arrays per category (other keys, like custom labels, are ignored)
-const countSkills = skills =>
-  Object.values(skills || {}).reduce((n, v) => n + (Array.isArray(v) ? v.length : 0), 0);
-
-// Completeness checks, in the order the tip suggests them
-function getChecks(cv, isEn) {
-  const p = cv.personal_info || {};
-  const skillsCount = countSkills(cv.skills);
-  const experience = cv.experience || [];
-  return [
-    { tab: 'personal', done: !!(p.name && p.title && p.email && p.phone),
-      tip: isEn ? 'Complete name, title, email and phone' : 'Completa nombre, título, correo y teléfono' },
-    { tab: 'summary', done: (cv.summary || '').length >= 400,
-      tip: isEn ? 'Write a summary of at least 400 characters' : 'Escribe un perfil de al menos 400 caracteres' },
-    { tab: 'experience', done: experience.some(e => e.position && e.description),
-      tip: isEn ? 'Add your work experience' : 'Agrega tu experiencia laboral' },
-    { tab: 'education', done: (cv.education || []).length > 0,
-      tip: isEn ? 'Add your education' : 'Agrega tu educación' },
-    { tab: 'skills', done: skillsCount >= 6,
-      tip: isEn ? 'Add at least 6 skills' : 'Agrega al menos 6 habilidades' },
-    { tab: 'photo', done: !!cv.profile_image,
-      tip: isEn ? 'Upload a profile photo' : 'Sube una foto de perfil' },
-  ];
-}
 
 function getBadge(tab, cv, checks) {
   const count = {
     experience: cv.experience?.length,
     education: cv.education?.length,
     certificates: cv.certificates?.length,
+    references: cv.personal_references?.length,
     skills: countSkills(cv.skills),
   }[tab];
   const check = checks.find(c => c.tab === tab);
@@ -64,8 +43,7 @@ export default function CVEditor({ isAdmin, cvData, onChange, lang, profileName,
   const [activeTab, setActiveTab] = useState('personal');
   const isEn = lang === 'en';
   const checks = getChecks(cvData, isEn);
-  const doneCount = checks.filter(c => c.done).length;
-  const percent = Math.round((doneCount / checks.length) * 100);
+  const percent = getCompleteness(cvData);
   const nextStep = checks.find(c => !c.done);
   const area = getArea(cvData);
   const skillLabels = getSkillLabels(cvData, lang);
@@ -152,6 +130,7 @@ export default function CVEditor({ isAdmin, cvData, onChange, lang, profileName,
             area={area}
             onAreaChange={handleAreaChange}
             isAdmin={isAdmin}
+            profileName={profileName}
           />
         )}
         {activeTab === 'summary' && (
@@ -199,8 +178,17 @@ export default function CVEditor({ isAdmin, cvData, onChange, lang, profileName,
             lang={lang}
           />
         )}
+        {activeTab === 'references' && (
+          <ReferencesForm
+            items={cvData.personal_references || []}
+            onChange={(val) => onChange('personal_references', val)}
+            lang={lang}
+          />
+        )}
         {activeTab === 'templates' && (
           <TemplatesForm
+            cvData={cvData}
+            lang={lang}
             activeTemplate={activeTemplate}
             onChange={onTemplateChange}
             templateColors={templateColors}

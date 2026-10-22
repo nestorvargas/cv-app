@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { listProfiles, createProfile, deleteProfile, setProfileOwner } from '../../api/cvApi.js';
+import { listProfiles, createProfile, deleteProfile, setProfileOwner, cloneProfile } from '../../api/cvApi.js';
 import { listUsers } from '../../api/authApi.js';
-import UserMenu from '../Auth/UserMenu.jsx';
+import AppShell from '../AppShell/index.jsx';
+import { getCompleteness } from '../CVEditor/completeness.js';
+import ImportCv from './ImportCv.jsx';
+import Pagination, { PAGE_SIZE } from '../Pagination/index.jsx';
 import './index.css';
 
 const PROFILE_META = {
@@ -18,7 +21,7 @@ function getProfileMeta(profileName) {
   return { faIcon: 'fa-file-lines', color: CUSTOM_COLORS[hash % CUSTOM_COLORS.length] };
 }
 
-export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
+export default function CVIndex({ onEdit, user, onLogout, onNavigate }) {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -27,6 +30,11 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
   const [error, setError] = useState('');
   const [users, setUsers] = useState([]); // admin only: owner choices
   const [search, setSearch] = useState('');
+  const [newMode, setNewMode] = useState('blank'); // blank | import
+  const [page, setPage] = useState(1);
+  const [cloneTarget, setCloneTarget] = useState(null); // { profile_name, label }
+  const [cloning, setCloning] = useState(false);
+  const [cloneError, setCloneError] = useState('');
   const isAdmin = user?.role === 'admin';
 
   const load = async () => {
@@ -90,44 +98,65 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
     : profiles;
   const people = new Set(profiles.map(p => p.personal_info?.name).filter(Boolean)).size;
 
+  // Pagination over the filtered list (the page is clamped if the list shrinks)
+  const pages = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pages);
+  const pageItems = visible.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const rangeFrom = visible.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const rangeTo = Math.min(currentPage * PAGE_SIZE, visible.length);
+  const changePage = (n) => {
+    setPage(n);
+    document.querySelector('.cv-toolbar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const avgProgress = profiles.length
+    ? Math.round(profiles.reduce((n, p) => n + getCompleteness(p.progress?.es), 0) / profiles.length)
+    : 0;
   const STATS = [
     { icon: 'fa-layer-group', value: profiles.length, label: profiles.length === 1 ? 'Hoja de vida' : 'Hojas de vida' },
     { icon: 'fa-language', value: profiles.length * 2, label: 'Versiones ES / EN' },
+    { icon: 'fa-chart-pie', value: `${avgProgress}%`, label: 'Avance promedio' },
     { icon: 'fa-user-group', value: people, label: people === 1 ? 'Persona' : 'Personas' },
   ];
 
+  const openNew = (mode) => { setNewMode(mode); setShowModal(true); };
+
+  const openClone = (profile) => {
+    setCloneError('');
+    setCloneTarget({ profile_name: profile.profile_name, label: `${profile.profile_label} (copia)` });
+  };
+
+  const handleClone = async () => {
+    if (!cloneTarget?.label.trim()) return;
+    setCloning(true);
+    setCloneError('');
+    try {
+      const res = await cloneProfile(cloneTarget.profile_name, cloneTarget.label.trim());
+      setCloneTarget(null);
+      load();
+      onEdit(res.data.profile_name, res.data.profile_label, 'es');
+    } catch (e) {
+      setCloneError(e.response?.data?.error || 'No se pudo clonar la hoja de vida');
+    } finally {
+      setCloning(false);
+    }
+  };
+
   return (
-    <div className="cv-index app-bg">
-      <header className="cv-index-header">
-        <div className="cv-index-header-inner">
-          <div className="cv-index-logo">
-            <div className="cv-index-logo-icon">
-              <i className="fa-solid fa-id-card" />
-            </div>
-            <div>
-              <h1 className="cv-index-title">CV Manager</h1>
-              <p className="cv-index-subtitle">App para crear hojas de vida</p>
-            </div>
-          </div>
-          <div className="cv-index-header-right">
-            <UserMenu user={user} onLogout={onLogout} onManageUsers={onManageUsers} />
-          </div>
-        </div>
-      </header>
-
-      <main className="cv-index-main">
-        <div className="cv-hero">
-          <div>
-            <p className="cv-hero-eyebrow">Hola, {user?.username}</p>
-            <h2 className="cv-index-section-title">
-              {isAdmin ? <>Todas las <span className="gradient-text">hojas de vida</span></> : <>Tus <span className="gradient-text">hojas de vida</span></>}
-            </h2>
-          </div>
-          <button className="cv-index-add-btn" onClick={() => setShowModal(true)}>
-            <i className="fa-solid fa-plus" /> Nuevo CV
-          </button>
-        </div>
-
+    <AppShell
+      user={user}
+      active="index"
+      onNavigate={onNavigate}
+      onLogout={onLogout}
+      onNew={openNew}
+      subtitle={`Hola, ${user?.username}`}
+      title={isAdmin ? 'Todas las hojas de vida' : 'Tus hojas de vida'}
+      actions={
+        <button className="cv-index-add-btn" onClick={() => openNew('blank')}>
+          <i className="fa-solid fa-plus" /> <span className="shell-hide-sm">Nuevo CV</span>
+        </button>
+      }
+    >
         {!loading && profiles.length > 0 && (
           <div className="cv-stats">
             {STATS.map(stat => (
@@ -161,12 +190,14 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
                   type="search"
                   placeholder="Buscar por perfil, nombre o cargo..."
                   value={search}
-                  onChange={e => setSearch(e.target.value)}
+                  onChange={e => { setSearch(e.target.value); setPage(1); }}
                   aria-label="Buscar hojas de vida"
                 />
               </div>
               <span className="cv-toolbar-count">
-                {visible.length} de {profiles.length}
+                {visible.length > PAGE_SIZE
+                  ? `${rangeFrom}–${rangeTo} de ${visible.length}`
+                  : `${visible.length} de ${profiles.length}`}
               </span>
             </div>
 
@@ -177,17 +208,24 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
               </div>
             ) : (
               <ul className="cv-list">
-                {visible.map((profile, i) => {
+                {pageItems.map((profile, i) => {
                   const meta = getProfileMeta(profile.profile_name);
                   const isDefault = ['desarrollador', 'devops-linux', 'lider-tecnico'].includes(profile.profile_name);
+                  const pct = { es: getCompleteness(profile.progress?.es), en: getCompleteness(profile.progress?.en) };
                   return (
                     <li
                       key={profile.profile_name}
                       className="cv-row"
                       style={{ '--row-color': meta.color, animationDelay: `${Math.min(i, 10) * 35}ms` }}
                     >
-                      <div className="cv-row-icon">
-                        <i className={`fa-solid ${meta.faIcon}`} />
+                      <div
+                        className="cv-row-progress"
+                        style={{ '--pct': pct.es }}
+                        title={`Completada: ES ${pct.es}% · EN ${pct.en}%`}
+                      >
+                        <div className="cv-row-icon">
+                          <i className={`fa-solid ${meta.faIcon}`} />
+                        </div>
                       </div>
 
                       <div className="cv-row-info">
@@ -196,6 +234,15 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
                           <span className="cv-row-name">{profile.personal_info?.name || '—'}</span>
                           {profile.personal_info?.title && <> · {profile.personal_info.title}</>}
                         </p>
+                        <div className="cv-row-pct">
+                          {['es', 'en'].map(l => (
+                            <span key={l} className={`cv-row-pct-item ${pct[l] === 100 ? 'is-done' : ''}`}>
+                              <span className="cv-row-pct-lang">{l.toUpperCase()}</span>
+                              <span className="cv-row-pct-bar"><span style={{ width: `${pct[l]}%` }} /></span>
+                              <span className="cv-row-pct-num">{pct[l]}%</span>
+                            </span>
+                          ))}
+                        </div>
                       </div>
 
                       {isAdmin && (
@@ -226,6 +273,14 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
                           ))}
                         </div>
                         <button
+                          className="cv-row-delete cv-row-clone"
+                          onClick={() => openClone(profile)}
+                          title="Clonar hoja de vida"
+                          aria-label="Clonar hoja de vida"
+                        >
+                          <i className="fa-regular fa-copy" />
+                        </button>
+                        <button
                           className="cv-row-delete"
                           onClick={() => handleDelete(profile.profile_name)}
                           disabled={isDefault}
@@ -239,46 +294,103 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
                 })}
               </ul>
             )}
+            <Pagination page={currentPage} total={visible.length} onChange={changePage} />
           </>
         )}
-      </main>
 
-      {showModal && (
-        <div className="cv-modal-overlay" onClick={() => setShowModal(false)}>
+      {cloneTarget && (
+        <div className="cv-modal-overlay" onClick={() => setCloneTarget(null)}>
           <div className="cv-modal" onClick={e => e.stopPropagation()}>
             <div className="cv-modal-icon">
-              <i className="fa-solid fa-file-circle-plus" />
+              <i className="fa-regular fa-copy" />
             </div>
-            <h3 className="cv-modal-title">Nuevo perfil de CV</h3>
-            <p className="cv-modal-desc">Dale un nombre al nuevo CV (ej: "Data Science", "Mobile Developer")</p>
+            <h3 className="cv-modal-title">Clonar hoja de vida</h3>
+            <p className="cv-modal-desc">
+              Se copian las versiones en español e inglés con todo su contenido. Ideal para adaptar la hoja de vida a otra oferta.
+            </p>
             <input
               className="cv-modal-input"
               type="text"
-              placeholder="Nombre del perfil..."
-              value={newLabel}
-              onChange={e => setNewLabel(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleCreate()}
+              value={cloneTarget.label}
+              onChange={e => setCloneTarget(t => ({ ...t, label: e.target.value }))}
+              onKeyDown={e => e.key === 'Enter' && handleClone()}
+              aria-label="Nombre de la copia"
               autoFocus
             />
-            {error && (
-              <p className="cv-modal-error">
-                <i className="fa-solid fa-circle-exclamation" /> {error}
-              </p>
+            {cloneError && (
+              <p className="cv-modal-error"><i className="fa-solid fa-circle-exclamation" /> {cloneError}</p>
             )}
             <div className="cv-modal-actions">
-              <button className="cv-modal-cancel" onClick={() => { setShowModal(false); setNewLabel(''); setError(''); }}>
-                Cancelar
-              </button>
-              <button className="cv-modal-confirm" onClick={handleCreate} disabled={creating || !newLabel.trim()}>
-                {creating
-                  ? <><i className="fa-solid fa-spinner fa-spin" /> Creando...</>
-                  : <><i className="fa-solid fa-check" /> Crear CV</>
-                }
+              <button className="cv-modal-cancel" onClick={() => setCloneTarget(null)}>Cancelar</button>
+              <button className="cv-modal-confirm" onClick={handleClone} disabled={cloning || !cloneTarget.label.trim()}>
+                {cloning
+                  ? <><i className="fa-solid fa-spinner fa-spin" /> Clonando...</>
+                  : <><i className="fa-regular fa-copy" /> Clonar y abrir</>}
               </button>
             </div>
           </div>
         </div>
       )}
-    </div>
+
+      {showModal && (
+        <div className="cv-modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="cv-modal" onClick={e => e.stopPropagation()}>
+            <div className="cv-modal-icon">
+              <i className={`fa-solid ${newMode === 'import' ? 'fa-file-import' : 'fa-file-circle-plus'}`} />
+            </div>
+            <h3 className="cv-modal-title">Nueva hoja de vida</h3>
+
+            <div className="cv-new-tabs" role="tablist">
+              <button role="tab" aria-selected={newMode === 'blank'} className={newMode === 'blank' ? 'active' : ''} onClick={() => setNewMode('blank')}>
+                <i className="fa-solid fa-file" /> En blanco
+              </button>
+              <button role="tab" aria-selected={newMode === 'import'} className={newMode === 'import' ? 'active' : ''} onClick={() => setNewMode('import')}>
+                <i className="fa-solid fa-file-pdf" /> Importar PDF
+              </button>
+            </div>
+
+            {newMode === 'import' ? (
+              <ImportCv
+                onImported={(result) => {
+                  setShowModal(false);
+                  setNewMode('blank');
+                  load();
+                  onEdit(result.profile_name, result.profile_label, 'es');
+                }}
+              />
+            ) : (
+              <>
+                <p className="cv-modal-desc">Dale un nombre al nuevo CV (ej: "Data Science", "Mobile Developer")</p>
+                <input
+                  className="cv-modal-input"
+                  type="text"
+                  placeholder="Nombre del perfil..."
+                  value={newLabel}
+                  onChange={e => setNewLabel(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleCreate()}
+                  autoFocus
+                />
+                {error && (
+                  <p className="cv-modal-error">
+                    <i className="fa-solid fa-circle-exclamation" /> {error}
+                  </p>
+                )}
+                <div className="cv-modal-actions">
+                  <button className="cv-modal-cancel" onClick={() => { setShowModal(false); setNewLabel(''); setError(''); }}>
+                    Cancelar
+                  </button>
+                  <button className="cv-modal-confirm" onClick={handleCreate} disabled={creating || !newLabel.trim()}>
+                    {creating
+                      ? <><i className="fa-solid fa-spinner fa-spin" /> Creando...</>
+                      : <><i className="fa-solid fa-check" /> Crear CV</>
+                    }
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </AppShell>
   );
 }

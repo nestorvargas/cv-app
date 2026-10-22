@@ -30,6 +30,19 @@ const OUTPUT_ONLY = {
   en: 'Reply only with the final text, without headings, quotes, bullet points or explanations.',
 };
 
+// Resume register: never first person. Spanish job descriptions use the nominal style
+// common in Colombian CVs ("Desarrollo de aplicaciones...", "Implementación de...").
+const STYLE = {
+  es: {
+    experience: 'Usa estilo nominal e impersonal: inicia cada frase con un sustantivo de acción (por ejemplo "Desarrollo de aplicaciones...", "Implementación de...", "Gestión de...", "Elaboración de..."). Nunca uses primera persona ni verbos conjugados como "desarrollé", "realicé", "lideré" o "yo".',
+    summary: 'Escribe en tercera persona implícita, empezando por el cargo o la profesión (por ejemplo "Desarrollador de aplicaciones con..."). Nunca uses primera persona ("soy", "yo", "mi", "desarrollé").',
+  },
+  en: {
+    experience: 'Use resume style without pronouns: start each sentence with a past-tense action verb ("Developed...", "Implemented..."). Never use "I", "my" or "me".',
+    summary: 'Write in implied third person, starting with the role (e.g. "Application developer with..."). Never use "I", "my" or "me".',
+  },
+};
+
 function clip(value, max) {
   return String(value || '').slice(0, max);
 }
@@ -51,8 +64,8 @@ function buildMessages({ action, field, text, context, lang }) {
   const L = lang === 'en' ? 'en' : 'es';
   const langName = L === 'en' ? 'English' : 'español';
   const system = L === 'en'
-    ? `You are an expert resume writer. Write in ${langName}, professional and concise, using action verbs, in implied third person (never start with "I am"). ${NO_INVENT.en} ${OUTPUT_ONLY.en}`
-    : `Eres un experto en redacción de hojas de vida. Escribe en ${langName}, con tono profesional y conciso, usando verbos de acción, en tercera persona implícita (nunca empieces con "Soy" ni uses "yo"). Respeta el género de la persona según el contexto. ${NO_INVENT.es} ${OUTPUT_ONLY.es}`;
+    ? `You are an expert resume writer. Write in ${langName}, professional and concise. ${STYLE.en[field === 'summary' ? 'summary' : 'experience']} ${NO_INVENT.en} ${OUTPUT_ONLY.en}`
+    : `Eres un experto en redacción de hojas de vida. Escribe en ${langName}, con tono profesional y conciso. ${STYLE.es[field === 'summary' ? 'summary' : 'experience']} Respeta el género de la persona según el contexto. ${NO_INVENT.es} ${OUTPUT_ONLY.es}`;
 
   const kind = field === 'summary'
     ? (L === 'en' ? 'professional summary' : 'perfil profesional')
@@ -82,6 +95,23 @@ function buildMessages({ action, field, text, context, lang }) {
       const sys = `Translate resume text to ${target}. Keep company names, product names and technologies unchanged. ${OUTPUT_ONLY.en}`;
       return [{ role: 'system', content: sys }, { role: 'user', content: text }];
     }
+    case 'template': {
+      // Recommend one template; the first line must name its id so the UI can apply it
+      const c = context || {};
+      const catalog = (Array.isArray(c.templates) ? c.templates : []).slice(0, 20)
+        .map(t => `- ${clip(t.id, 20)}: ${clip(t.description, 220)}`).join('\n');
+      const facts = [
+        `Área: ${clip(c.area, 60)}`,
+        `Cargo: ${clip(c.title, 160)}`,
+        `Experiencias: ${Number(c.experienceCount) || 0}, extensión total aprox. ${Number(c.textLength) || 0} caracteres`,
+        `Tiene foto: ${c.hasPhoto ? 'sí' : 'no'}`,
+      ].join('\n');
+      const offer = text ? `\nOferta a la que aplica:\n${text}` : '';
+      return [
+        { role: 'system', content: `Eres un asesor experto en hojas de vida. Recomiendas una plantilla de la lista según el perfil. Responde en español. La primera línea debe ser exactamente "Plantilla: <id>" con un id de la lista. Luego, en 2 o 3 oraciones, explica por qué. Si la oferta se postula por portales de empleo o menciona filtros, prioriza "ats". No uses viñetas ni markdown.` },
+        { role: 'user', content: `Plantillas disponibles:\n${catalog}\n\nPerfil:\n${facts}${offer}` },
+      ];
+    }
     case 'generate':
       user = L === 'en'
         ? `Write a professional summary (4 to 6 sentences, one paragraph) for this resume, based only on this information:\n\n${describeCv(context, L)}`
@@ -102,10 +132,10 @@ async function assist(req, res) {
   if (!OLLAMA_URL) return res.status(503).json({ error: 'Asistente de IA no configurado' });
 
   const { action, field, text = '', context = {}, lang = 'es' } = req.body || {};
-  if (!['improve', 'shorten', 'translate', 'generate'].includes(action)) {
+  if (!['improve', 'shorten', 'translate', 'generate', 'template'].includes(action)) {
     return res.status(400).json({ error: 'Acción no válida' });
   }
-  if (action !== 'generate' && !String(text).trim()) {
+  if (!['generate', 'template'].includes(action) && !String(text).trim()) {
     return res.status(400).json({ error: 'Escribe un texto primero' });
   }
   if (String(text).length > MAX_TEXT) {

@@ -95,6 +95,18 @@ const TIPS = {
       'If a certificate expires, include its validity year.',
     ],
   },
+  references: {
+    es: [
+      'Incluye 2 referencias laborales y 1 o 2 personales o familiares.',
+      'Avisa a tus referencias que podrían llamarlas.',
+      'Verifica que los teléfonos estén actualizados.',
+    ],
+    en: [
+      'Include 2 professional and 1 or 2 personal references.',
+      'Let your references know they may be contacted.',
+      'Double-check that phone numbers are up to date.',
+    ],
+  },
   templates: {
     es: [
       'Para enviar por portales de empleo usa la plantilla ATS: el texto es legible por máquinas.',

@@ -130,7 +130,7 @@
 /* Stats strip */
 .cv-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   margin-bottom: 22px;
 }
@@ -268,26 +268,8 @@
   border-bottom: none;
 }
 
-/* Accent bar on hover, in the profile color */
-.cv-row::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 14px;
-  bottom: 14px;
-  width: 3px;
-  border-radius: 0 3px 3px 0;
-  background: var(--row-color);
-  opacity: 0;
-  transition: opacity 0.18s;
-}
-
 .cv-row:hover {
   background: var(--glass-hover);
-}
-
-.cv-row:hover::before {
-  opacity: 1;
 }
 
 @keyframes cv-row-in {
@@ -642,11 +624,12 @@ select.cv-modal-input option {
   }
 
   .cv-row-info {
-    flex-basis: calc(100% - 56px);
+    flex-basis: calc(100% - 70px);
   }
 
+  /* Owner selector (admins) gets its own full-width line, actions go below */
   .cv-row-owner {
-    flex: 1;
+    flex-basis: 100%;
   }
 
   .cv-row-owner select {
@@ -664,4 +647,202 @@ select.cv-modal-input option {
   .cv-modal-overlay {
     animation: none;
   }
+}
+
+/* ── Completeness per CV ── */
+/* Ring around the icon shows the Spanish version's % */
+.cv-row-progress {
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 16px;
+  background: conic-gradient(var(--row-color) calc(var(--pct) * 1%), rgba(148, 178, 255, 0.14) 0);
+}
+
+.cv-row-progress .cv-row-icon {
+  box-shadow: none;
+}
+
+.cv-row-pct {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 7px;
+}
+
+.cv-row-pct-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--on-dark-muted);
+}
+
+.cv-row-pct-lang {
+  color: var(--on-dark-faint);
+  letter-spacing: 0.5px;
+}
+
+.cv-row-pct-bar {
+  width: 70px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(148, 178, 255, 0.14);
+  overflow: hidden;
+}
+
+.cv-row-pct-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--row-color);
+  transition: width 0.4s ease;
+}
+
+.cv-row-pct-item.is-done .cv-row-pct-num {
+  color: #6ee7b7;
+}
+
+/* ── New CV: blank / import tabs ── */
+.cv-new-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 6px 0 18px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+.cv-new-tabs button {
+  flex: 1;
+  justify-content: center;
+  background: transparent;
+  color: var(--on-dark-muted);
+  border-radius: 9px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.cv-new-tabs button.active {
+  background: var(--brand-grad);
+  color: white;
+}
+
+.import-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 26px 16px;
+  border: 2px dashed rgba(147, 197, 253, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.import-drop:hover,
+.import-drop.is-dragging {
+  border-color: #60a5fa;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.import-drop.has-file {
+  border-style: solid;
+  border-color: rgba(96, 165, 250, 0.6);
+}
+
+.import-drop i {
+  font-size: 28px;
+  color: #93c5fd;
+  margin-bottom: 4px;
+}
+
+.import-drop strong {
+  font-size: 14px;
+  color: white;
+  word-break: break-all;
+}
+
+.import-drop span {
+  font-size: 12.5px;
+  color: var(--on-dark-faint);
+}
+
+.import-hint {
+  margin-top: 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--on-dark-muted);
+}
+
+.import-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px 0 4px;
+}
+
+.import-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--on-dark-faint);
+}
+
+.import-step.is-active {
+  color: white;
+  font-weight: 700;
+}
+
+.import-step.is-done {
+  color: #6ee7b7;
+}
+
+.import-step-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.import-step.is-active .import-step-icon {
+  background: var(--brand-grad);
+  color: white;
+}
+
+.import-step.is-done .import-step-icon {
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.import-step .fa-circle {
+  font-size: 6px;
+}
+
+/* Inside the platform shell */
+@media (max-width: 1100px) {
+  .cv-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .shell-hide-sm {
+    display: none;
+  }
+}
+
+.cv-row-clone:hover:not(:disabled) {
+  background: rgba(96, 165, 250, 0.15);
+  color: #93c5fd;
 }

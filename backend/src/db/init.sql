@@ -312,3 +312,96 @@ INSERT INTO job_titles (area, title_es, title_en) VALUES
   ('general', 'Coordinador de Proyectos', 'Project Coordinator'),
   ('general', 'Docente', 'Teacher')
 ON CONFLICT (title_es) DO NOTHING;
+
+-- References (work / personal / family) for the traditional Colombian CV format
+ALTER TABLE cv_profiles ADD COLUMN IF NOT EXISTS personal_references JSONB NOT NULL DEFAULT '[]';
+
+-- More areas for the job titles catalog
+INSERT INTO job_titles (area, title_es, title_en) VALUES
+  ('health', 'Enfermero(a) Profesional', 'Registered Nurse'),
+  ('health', 'Auxiliar de Enfermería', 'Nursing Assistant'),
+  ('health', 'Médico General', 'General Practitioner'),
+  ('health', 'Regente de Farmacia', 'Pharmacy Technician'),
+  ('health', 'Fisioterapeuta', 'Physiotherapist'),
+  ('health', 'Bacteriólogo(a)', 'Clinical Laboratory Scientist'),
+  ('health', 'Psicólogo(a)', 'Psychologist'),
+  ('health', 'Nutricionista', 'Nutritionist'),
+  ('health', 'Odontólogo(a)', 'Dentist'),
+  ('health', 'Auxiliar de Odontología', 'Dental Assistant'),
+  ('education', 'Docente de Primaria', 'Primary School Teacher'),
+  ('education', 'Docente de Secundaria', 'Secondary School Teacher'),
+  ('education', 'Docente Universitario', 'University Lecturer'),
+  ('education', 'Coordinador Académico', 'Academic Coordinator'),
+  ('education', 'Orientador Escolar', 'School Counselor'),
+  ('education', 'Licenciado en Inglés', 'English Teacher'),
+  ('education', 'Tutor', 'Tutor'),
+  ('education', 'Diseñador Instruccional', 'Instructional Designer'),
+  ('sales', 'Asesor Comercial', 'Sales Advisor'),
+  ('sales', 'Ejecutivo de Ventas', 'Account Executive'),
+  ('sales', 'Gerente Comercial', 'Sales Manager'),
+  ('sales', 'Analista de Marketing', 'Marketing Analyst'),
+  ('sales', 'Especialista en Marketing Digital', 'Digital Marketing Specialist'),
+  ('sales', 'Community Manager', 'Community Manager'),
+  ('sales', 'Coordinador de Mercadeo', 'Marketing Coordinator'),
+  ('sales', 'Representante de Ventas', 'Sales Representative'),
+  ('sales', 'Key Account Manager', 'Key Account Manager'),
+  ('finance', 'Contador Público', 'Certified Public Accountant'),
+  ('finance', 'Analista Contable', 'Accounting Analyst'),
+  ('finance', 'Analista de Tesorería', 'Treasury Analyst'),
+  ('finance', 'Revisor Fiscal', 'Statutory Auditor'),
+  ('finance', 'Auditor Interno', 'Internal Auditor'),
+  ('finance', 'Analista de Costos', 'Cost Analyst'),
+  ('finance', 'Analista de Nómina', 'Payroll Analyst'),
+  ('finance', 'Asistente Contable', 'Accounting Assistant'),
+  ('finance', 'Director Financiero', 'Chief Financial Officer'),
+  ('design', 'Diseñador Gráfico', 'Graphic Designer'),
+  ('design', 'Diseñador UX/UI', 'UX/UI Designer'),
+  ('design', 'Diseñador Industrial', 'Industrial Designer'),
+  ('design', 'Fotógrafo', 'Photographer'),
+  ('design', 'Editor de Video', 'Video Editor'),
+  ('design', 'Ilustrador', 'Illustrator'),
+  ('design', 'Director de Arte', 'Art Director'),
+  ('design', 'Diseñador de Modas', 'Fashion Designer'),
+  ('legal', 'Abogado', 'Lawyer'),
+  ('legal', 'Abogado Laboral', 'Labor Lawyer'),
+  ('legal', 'Asesor Jurídico', 'Legal Advisor'),
+  ('legal', 'Analista Jurídico', 'Legal Analyst'),
+  ('legal', 'Dependiente Judicial', 'Paralegal'),
+  ('legal', 'Abogado Corporativo', 'Corporate Lawyer'),
+  ('construction', 'Arquitecto', 'Architect'),
+  ('construction', 'Ingeniero Civil', 'Civil Engineer'),
+  ('construction', 'Residente de Obra', 'Site Engineer'),
+  ('construction', 'Director de Obra', 'Construction Manager'),
+  ('construction', 'Maestro de Obra', 'Construction Foreman'),
+  ('construction', 'Dibujante Técnico', 'Draftsperson'),
+  ('construction', 'Modelador BIM', 'BIM Modeler'),
+  ('construction', 'Inspector de Obra', 'Construction Inspector'),
+  ('construction', 'Interventor de Obra', 'Construction Supervisor'),
+  ('logistics', 'Auxiliar de Bodega', 'Warehouse Assistant'),
+  ('logistics', 'Jefe de Bodega', 'Warehouse Manager'),
+  ('logistics', 'Analista de Inventarios', 'Inventory Analyst'),
+  ('logistics', 'Coordinador de Operaciones', 'Operations Coordinator'),
+  ('logistics', 'Conductor', 'Driver'),
+  ('logistics', 'Despachador', 'Dispatcher'),
+  ('logistics', 'Analista de Comercio Exterior', 'Foreign Trade Analyst'),
+  ('service', 'Asesor de Servicio al Cliente', 'Customer Service Representative'),
+  ('service', 'Agente de Call Center', 'Call Center Agent'),
+  ('service', 'Recepcionista', 'Receptionist'),
+  ('service', 'Cajero', 'Cashier'),
+  ('service', 'Mesero', 'Waiter'),
+  ('service', 'Cocinero', 'Cook'),
+  ('service', 'Chef', 'Chef'),
+  ('service', 'Auxiliar de Hotelería', 'Hospitality Assistant'),
+  ('service', 'Coordinador de Servicio al Cliente', 'Customer Service Coordinator')
+ON CONFLICT (title_es) DO NOTHING;
+
+-- Google sign-in: link users to their Google account
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS google_sub VARCHAR(64);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(200);
+CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower_key ON users (lower(email)) WHERE email IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_key ON users (google_sub) WHERE google_sub IS NOT NULL;
+
+-- Acceptance of terms and data policy (sign-up)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMP;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_version VARCHAR(20);

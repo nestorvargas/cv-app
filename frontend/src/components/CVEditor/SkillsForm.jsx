@@ -101,7 +101,8 @@ export default function SkillsForm({ data, onChange, lang, labels, area }) {
             </div>
             <TagInput
               values={values}
-              onChange={vals => onChange({ ...data, [cat]: vals })}
+              // Persist the visible category names so templates show the same labels as the form
+              onChange={vals => onChange({ ...data, _labels: data._labels || labels, [cat]: vals })}
               placeholder={isEn ? 'Add skill...' : 'Agregar habilidad...'}
             />
           </div>

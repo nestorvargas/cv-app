@@ -729,3 +729,90 @@
 .ed-combo-add:hover {
   background: #eff6ff;
 }
+
+/* ── Optional extra data (traditional format) ── */
+.ed-extra {
+  margin-top: 8px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+}
+
+.ed-extra.is-open {
+  border-style: solid;
+  border-color: var(--border);
+}
+
+.ed-extra-head {
+  width: 100%;
+  justify-content: space-between;
+  background: none;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.ed-extra-head i.fa-id-card {
+  color: #60a5fa;
+  margin-right: 6px;
+}
+
+.ed-extra.is-open .ed-item-chevron {
+  transform: rotate(180deg);
+}
+
+.ed-extra-body {
+  padding: 0 14px 4px;
+}
+
+/* ── Template advisor (AI) ── */
+.tpl-advisor {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(180deg, #f0f9ff, #f8fafc);
+}
+
+.tpl-advisor-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--primary);
+}
+
+.tpl-advisor-offer {
+  margin: 10px 0;
+  min-height: 70px;
+  font-size: 13px;
+}
+
+.tpl-advisor-pick {
+  font-size: 13.5px;
+  color: #1e3a8a;
+  margin-bottom: 6px;
+}
+
+.ed-signature {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.ed-signature img {
+  max-height: 64px;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+.ed-signature-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}

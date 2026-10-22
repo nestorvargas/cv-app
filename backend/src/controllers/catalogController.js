@@ -1,6 +1,6 @@
 const { pool } = require('../db');
 
-const AREAS = ['tech', 'engineering', 'business', 'general'];
+const AREAS = ['tech', 'engineering', 'business', 'health', 'education', 'sales', 'finance', 'design', 'legal', 'construction', 'logistics', 'service', 'general'];
 
 // Search job titles in the CV language; titles of the CV's area come first.
 async function searchTitles(req, res) {

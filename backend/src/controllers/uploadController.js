@@ -9,6 +9,8 @@ async function uploadImage(req, res) {
     return res.status(400).json({ error: 'profileName is required' });
   }
   const imageUrl = `/uploads/${req.file.filename}`;
+  // Signatures are stored in personal_info by the editor's normal save
+  if (req.query.kind === 'signature') return res.json({ url: imageUrl });
   try {
     await pool.query(
       `UPDATE cv_profiles SET profile_image = $1, updated_at = NOW() WHERE profile_name = $2`,
