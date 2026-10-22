@@ -34,5 +34,11 @@ export default function AuthGate({ children }) {
 
   if (!user) return <LoginPage onLogin={setUser} />;
 
+  // Logged-in screens are private: keep them out of search results
+  document.title = 'Mis hojas de vida | CV Manager';
+  if (!document.querySelector('meta[name="robots"][content="noindex"]')) {
+    document.querySelector('meta[name="robots"]')?.setAttribute('content', 'noindex');
+  }
+
   return children({ user, onLogout: handleLogout });
 }

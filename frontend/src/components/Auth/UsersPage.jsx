@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { listUsers, createUser, updateUser, deleteUser } from '../../api/authApi.js';
-import UserMenu from './UserMenu.jsx';
+import AppShell from '../AppShell/index.jsx';
+import Pagination, { PAGE_SIZE } from '../Pagination/index.jsx';
 import './auth.css';
 
 const ROLE_LABELS = { admin: 'Administrador', editor: 'Editor' };
@@ -81,10 +82,11 @@ function UserModal({ mode, target, onClose, onSaved }) {
   );
 }
 
-export default function UsersPage({ user, onBack, onLogout }) {
+export default function UsersPage({ user, onNavigate, onLogout }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null); // { mode, target }
+  const [page, setPage] = useState(1);
 
   const load = async () => {
     setLoading(true);
@@ -110,34 +112,24 @@ export default function UsersPage({ user, onBack, onLogout }) {
     }
   };
 
+  // 20 users per page; the page is clamped if users are deleted
+  const currentPage = Math.min(page, Math.max(1, Math.ceil(users.length / PAGE_SIZE)));
+  const pageUsers = users.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   return (
-    <div className="cv-index app-bg">
-      <header className="cv-index-header">
-        <div className="cv-index-header-inner">
-          <div className="cv-index-logo">
-            <button className="users-back" onClick={onBack} title="Volver">
-              <i className="fa-solid fa-arrow-left" />
-            </button>
-            <div>
-              <h1 className="cv-index-title">Usuarios</h1>
-              <p className="cv-index-subtitle">Acceso al CV Manager</p>
-            </div>
-          </div>
-          <UserMenu user={user} onLogout={onLogout} />
-        </div>
-      </header>
-
-      <main className="cv-index-main">
-        <div className="cv-hero">
-          <div>
-            <p className="cv-hero-eyebrow">{users.length} usuario{users.length !== 1 ? 's' : ''}</p>
-            <h2 className="cv-index-section-title">Gestión de <span className="gradient-text">usuarios</span></h2>
-          </div>
-          <button className="cv-index-add-btn" onClick={() => setModal({ mode: 'create' })}>
-            <i className="fa-solid fa-user-plus" /> Nuevo usuario
-          </button>
-        </div>
-
+    <AppShell
+      user={user}
+      active="users"
+      onNavigate={onNavigate}
+      onLogout={onLogout}
+      subtitle={`${users.length} usuario${users.length !== 1 ? 's' : ''}`}
+      title="Gestión de usuarios"
+      actions={
+        <button className="cv-index-add-btn" onClick={() => setModal({ mode: 'create' })}>
+          <i className="fa-solid fa-user-plus" /> <span className="shell-hide-sm">Nuevo usuario</span>
+        </button>
+      }
+    >
         {loading ? (
           <div className="cv-index-loading">
             <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 10 }} />
@@ -155,7 +147,7 @@ export default function UsersPage({ user, onBack, onLogout }) {
                 </tr>
               </thead>
               <tbody>
-                {users.map(u => (
+                {pageUsers.map(u => (
                   <tr key={u.id}>
                     <td>
                       <div className="users-user">
@@ -182,7 +174,9 @@ export default function UsersPage({ user, onBack, onLogout }) {
             </table>
           </div>
         )}
-      </main>
+        {!loading && (
+          <Pagination page={currentPage} total={users.length} onChange={setPage} />
+        )}
 
       {modal && (
         <UserModal
@@ -192,6 +186,6 @@ export default function UsersPage({ user, onBack, onLogout }) {
           onSaved={() => { setModal(null); load(); }}
         />
       )}
-    </div>
+    </AppShell>
   );
 }

@@ -45,7 +45,7 @@ async function login(req, res) {
   }
   try {
     const result = await pool.query(
-      'SELECT id, username, role, password_hash FROM users WHERE username = $1',
+      'SELECT id, username, role, password_hash, (google_sub IS NOT NULL) AS google FROM users WHERE username = $1',
       [username.trim()]
     );
     const user = result.rows[0];
@@ -57,7 +57,7 @@ async function login(req, res) {
     await pool.query('DELETE FROM sessions WHERE expires_at <= NOW()');
     const { token, expiresAt } = await createSession(user.id);
     res.cookie(SESSION_COOKIE, token, { ...sessionCookieOptions(), expires: expiresAt });
-    res.json({ id: user.id, username: user.username, role: user.role });
+    res.json({ id: user.id, username: user.username, role: user.role, google: user.google });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Login error' });

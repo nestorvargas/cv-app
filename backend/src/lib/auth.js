@@ -41,7 +41,7 @@ async function createSession(userId) {
 async function findSessionUser(token) {
   if (!token) return null;
   const result = await pool.query(
-    `SELECT u.id, u.username, u.role
+    `SELECT u.id, u.username, u.role, (u.google_sub IS NOT NULL) AS google
      FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = $1 AND s.expires_at > NOW()`,
     [hashToken(token)]

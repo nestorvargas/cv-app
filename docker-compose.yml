@@ -34,6 +34,8 @@ services:
       # AI assistant (Ollama). Set OLLAMA_URL in a root .env (gitignored), e.g. the server-ia Tailscale URL
       OLLAMA_URL: ${OLLAMA_URL:-}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2:3b}
+      # Google sign-in (OAuth web client ID). Empty = Google button hidden
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
     volumes:
       - ./backend/src:/app/src
       - ./backend/uploads:/app/uploads
@@ -54,6 +56,7 @@ services:
       - ./frontend/src:/app/src
       - ./frontend/index.html:/app/index.html
       - ./frontend/vite.config.js:/app/vite.config.js
+      - ./frontend/public:/app/public
     depends_on:
       - backend
     networks:

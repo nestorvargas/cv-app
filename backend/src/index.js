@@ -34,7 +34,7 @@ app.use('/api/cv', requireAuth, cvRoutes);
 app.use('/api/pdf', requireAuth, pdfRoutes);
 app.use('/api/upload', requireAuth, uploadRoutes);
 app.use('/api/ai', requireAuth, aiRoutes);
-app.use('/api/catalog', requireAuth, catalogRoutes);
+app.use('/api/catalog', catalogRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 

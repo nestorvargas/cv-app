@@ -3,6 +3,9 @@ import axios from 'axios';
 const BASE = '/api';
 
 export const getMe = () => axios.get(`${BASE}/auth/me`);
+export const getAuthConfig = () => axios.get(`${BASE}/auth/config`);
+export const googleLogin = (credential) => axios.post(`${BASE}/auth/google`, { credential });
+export const googleRegister = (data) => axios.post(`${BASE}/auth/google/register`, data);
 export const login = (username, password) => axios.post(`${BASE}/auth/login`, { username, password });
 export const logout = () => axios.post(`${BASE}/auth/logout`);
 export const changePassword = (currentPassword, newPassword) =>

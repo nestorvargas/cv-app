@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { changePassword } from '../../api/authApi.js';
 import './auth.css';
 
-function ChangePasswordModal({ onClose }) {
+export function ChangePasswordModal({ onClose }) {
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -105,15 +106,23 @@ export default function UserMenu({ user, onLogout, onManageUsers }) {
               <i className="fa-solid fa-users-gear" /> Usuarios
             </button>
           )}
-          <button className="user-menu-item" onClick={() => { setOpen(false); setShowPassword(true); }}>
-            <i className="fa-solid fa-key" /> Cambiar contraseña
-          </button>
+          {user.google ? (
+            // Google accounts sign in with Google only: there is no password to change
+            <div className="user-menu-note">
+              <i className="fa-brands fa-google" /> Cuenta de Google
+            </div>
+          ) : (
+            <button className="user-menu-item" onClick={() => { setOpen(false); setShowPassword(true); }}>
+              <i className="fa-solid fa-key" /> Cambiar contraseña
+            </button>
+          )}
           <button className="user-menu-item user-menu-item--danger" onClick={() => { setOpen(false); onLogout(); }}>
             <i className="fa-solid fa-right-from-bracket" /> Cerrar sesión
           </button>
         </div>
       )}
-      {showPassword && <ChangePasswordModal onClose={() => setShowPassword(false)} />}
+      {/* Portal: the menu lives in a sticky blurred header, which would clip a fixed overlay */}
+      {showPassword && createPortal(<ChangePasswordModal onClose={() => setShowPassword(false)} />, document.body)}
     </div>
   );
 }

@@ -9,3 +9,6 @@ cv_examples/*
 .env.*
 !.env.example
 !.env.prod.example
+
+# Local credentials (never commit)
+secrets/

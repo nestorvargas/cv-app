@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /print/
+Disallow: /uploads/
+
+Sitemap: https://cv.nestordevelop.online/sitemap.xml

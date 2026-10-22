@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { login } from '../../api/authApi.js';
+import { login, getAuthConfig, googleLogin } from '../../api/authApi.js';
+import GoogleButton from './GoogleButton.jsx';
+import GoogleRegister from './GoogleRegister.jsx';
 import './auth.css';
 
 const STEPS = [
-  { icon: 'fa-pen-to-square', title: 'Completa tus datos', text: 'Perfil, experiencia, educación y habilidades en un formulario guiado, con consejos en cada sección.' },
-  { icon: 'fa-wand-magic-sparkles', title: 'Mejóralo con IA', text: 'El asistente redacta, mejora, acorta y traduce tus textos sin inventar información.' },
-  { icon: 'fa-file-arrow-down', title: 'Descarga y postúlate', text: 'Elige una plantilla, revisa la vista previa y descarga tu PDF en español o inglés.' },
+  { icon: 'fa-user-plus', title: 'Crea tu cuenta', text: 'Regístrate con Google en un clic: tu nombre, correo y foto se llenan solos. Elige tu área y tu cargo.' },
+  { icon: 'fa-wand-magic-sparkles', title: 'Complétala con IA', text: 'Formulario guiado con consejos y porcentaje de avance. El asistente redacta, mejora y traduce sin inventar información.' },
+  { icon: 'fa-file-arrow-down', title: 'Descarga y postúlate', text: 'Elige entre 12 plantillas, revisa la vista previa y descarga tu PDF en español o inglés.' },
 ];
 
 const FEATURES = [
-  { icon: 'fa-wand-magic-sparkles', title: 'Asistente de IA privado', text: 'Corre en un servidor propio: tus datos no salen a servicios externos.' },
-  { icon: 'fa-language', title: 'Español e inglés', text: 'Mantén las dos versiones de cada hoja de vida y tradúcelas con un clic.' },
-  { icon: 'fa-palette', title: '6 plantillas', text: 'Diseños visuales y una plantilla ATS con texto legible por los filtros de selección.' },
+  { icon: 'fa-wand-magic-sparkles', title: 'Asistente de IA privado', text: 'Mejora, acorta y traduce tus textos, y te recomienda la plantilla ideal. Corre en un servidor propio.' },
+  { icon: 'fa-palette', title: '12 plantillas', text: 'Diseños visuales, el formato tradicional colombiano y 2 plantillas ATS con texto legible por los filtros de selección.' },
+  { icon: 'fa-file-signature', title: 'Formato tradicional', text: 'La hoja de vida clásica con datos personales, referencias laborales y familiares, y firma.' },
+  { icon: 'fa-shapes', title: '13 áreas profesionales', text: 'Categorías, campos y consejos adaptados a tecnología, salud, ingeniería, docencia, ventas y más.' },
+  { icon: 'fa-briefcase', title: 'Más de 140 cargos', text: 'Elige tu título profesional de una base de cargos por área, o escribe el tuyo.' },
+  { icon: 'fa-chart-pie', title: 'Avance de tu hoja de vida', text: 'Porcentaje de completitud en cada versión y el siguiente paso sugerido.' },
+  { icon: 'fa-language', title: 'Español e inglés', text: 'Mantén las dos versiones de cada hoja de vida y pásalas al otro idioma con la IA.' },
   { icon: 'fa-eye', title: 'Vista previa en vivo', text: 'Cada cambio se refleja al instante, con paginado real en hojas A4.' },
-  { icon: 'fa-briefcase', title: 'Base de cargos', text: 'Elige tu título profesional de un catálogo por área o escribe el tuyo.' },
   { icon: 'fa-layer-group', title: 'Varias versiones', text: 'Crea una hoja de vida por cada oferta y adapta el enfoque en minutos.' },
 ];
 
@@ -22,7 +27,7 @@ const DEMOS = [
   {
     field: 'Experiencia',
     before: 'hacia reportes y manejaba la base de datos de clientes',
-    after: 'Elaboré reportes de gestión y administré la base de datos de clientes, garantizando información confiable para la toma de decisiones.',
+    after: 'Elaboración de reportes de gestión y administración de la base de datos de clientes, garantizando información confiable para la toma de decisiones.',
   },
   {
     field: 'Perfil profesional',
@@ -32,7 +37,7 @@ const DEMOS = [
   {
     field: 'Experiencia',
     before: 'revisaba la calidad de los productos en el laboratorio',
-    after: 'Realicé análisis de calidad de materias primas y producto terminado, asegurando el cumplimiento de las Buenas Prácticas de Laboratorio.',
+    after: 'Análisis de calidad de materias primas y producto terminado, asegurando el cumplimiento de las Buenas Prácticas de Laboratorio.',
   },
 ];
 
@@ -112,6 +117,23 @@ function LoginModal({ onLogin, onClose }) {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [googleClientId, setGoogleClientId] = useState(null);
+  const [registration, setRegistration] = useState(null); // pending Google sign-up
+
+  useEffect(() => {
+    getAuthConfig().then(r => setGoogleClientId(r.data.googleClientId)).catch(() => {});
+  }, []);
+
+  const handleGoogle = async (credential) => {
+    setError('');
+    try {
+      const res = await googleLogin(credential);
+      if (res.data.needsRegistration) setRegistration(res.data);
+      else onLogin(res.data.user);
+    } catch (err) {
+      setError(err.response?.data?.error || 'No se pudo entrar con Google');
+    }
+  };
 
   useEffect(() => {
     const onKey = e => e.key === 'Escape' && onClose();
@@ -133,6 +155,14 @@ function LoginModal({ onLogin, onClose }) {
     }
   };
 
+  if (registration) {
+    return (
+      <div className="cv-modal-overlay" onMouseDown={onClose}>
+        <GoogleRegister registration={registration} onDone={onLogin} onCancel={onClose} />
+      </div>
+    );
+  }
+
   return (
     <div className="cv-modal-overlay" onMouseDown={onClose}>
       <form
@@ -148,7 +178,16 @@ function LoginModal({ onLogin, onClose }) {
         </button>
         <div className="auth-logo"><i className="fa-solid fa-id-card" /></div>
         <h2 className="auth-title" id="auth-title">Iniciar sesión</h2>
-        <p className="auth-subtitle">Ingresa con tu usuario para continuar</p>
+        <p className="auth-subtitle">
+          {googleClientId ? 'Entra o crea tu cuenta con Google en un clic' : 'Ingresa con tu usuario para continuar'}
+        </p>
+
+        {googleClientId && (
+          <>
+            <GoogleButton clientId={googleClientId} onCredential={handleGoogle} onError={setError} />
+            <div className="auth-divider"><span>o con tu usuario</span></div>
+          </>
+        )}
 
         <label className="auth-label" htmlFor="auth-username">Usuario</label>
         <div className="auth-input">
@@ -193,7 +232,14 @@ function LoginModal({ onLogin, onClose }) {
             : <><i className="fa-solid fa-right-to-bracket" /> Ingresar</>
           }
         </button>
-        <p className="auth-footnote">¿No tienes cuenta? Pídela a un administrador.</p>
+        <p className="auth-footnote">
+          {googleClientId
+            ? '¿Primera vez? Continúa con Google y crea tu cuenta.'
+            : '¿No tienes cuenta? Pídela a un administrador.'}
+          <br />
+          Al continuar aceptas los <a href="/terminos" target="_blank" rel="noreferrer">Términos</a> y
+          la <a href="/privacidad" target="_blank" rel="noreferrer">Política de datos</a>.
+        </p>
       </form>
     </div>
   );
@@ -241,7 +287,8 @@ export default function LoginPage({ onLogin }) {
               </a>
             </div>
             <ul className="landing-trust">
-              <li><i className="fa-solid fa-shield-halved" /> IA en servidor propio</li>
+              <li><i className="fa-brands fa-google" /> Registro con Google</li>
+              <li><i className="fa-solid fa-palette" /> 12 plantillas</li>
               <li><i className="fa-solid fa-robot" /> Compatible con ATS</li>
               <li><i className="fa-solid fa-language" /> ES / EN</li>
             </ul>
@@ -295,7 +342,7 @@ export default function LoginPage({ onLogin }) {
 
       <footer className="landing-footer">
         <div className="landing-container">
-          CV Manager · App para crear hojas de vida
+          CV Manager · App para crear hojas de vida · <a href="/terminos">Términos y condiciones</a> · <a href="/privacidad">Privacidad</a>
         </div>
       </footer>
 

@@ -28,6 +28,8 @@ export default function App({ user, onLogout }) {
     timeline:  '#0ea5e9',
     compact:   '#2563eb',
     corporate: '#f59e0b',
+    traditional: '#374151',
+    atsmodern: '#1d4ed8',
   };
   const DEFAULT_BG_COLORS = {
     classic:   '#2c3e50',
@@ -39,6 +41,8 @@ export default function App({ user, onLogout }) {
     timeline:  '#0f172a',
     compact:   '#111827',
     corporate: '#1e3a5f',
+    traditional: '#e5e7eb',
+    atsmodern: '#ffffff',
   };
 
   const loadPrefs = (profileName) => {
@@ -124,6 +128,7 @@ export default function App({ user, onLogout }) {
         education: cvData.education,
         skills: cvData.skills,
         certificates: cvData.certificates,
+        personal_references: cvData.personal_references,
         profile_image: cvData.profile_image,
         profile_label: activeProfile.profileLabel,
       });
@@ -167,11 +172,11 @@ export default function App({ user, onLogout }) {
   }, [dirty]);
 
   if (page === 'users') {
-    return <UsersPage user={user} onLogout={onLogout} onBack={() => setPage('index')} />;
+    return <UsersPage user={user} onLogout={onLogout} onNavigate={setPage} />;
   }
 
   if (page === 'index') {
-    return <CVIndex onEdit={handleEdit} user={user} onLogout={onLogout} onManageUsers={() => setPage('users')} />;
+    return <CVIndex onEdit={handleEdit} user={user} onLogout={onLogout} onNavigate={setPage} />;
   }
 
   return (
