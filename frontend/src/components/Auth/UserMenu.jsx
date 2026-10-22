@@ -86,14 +86,20 @@ export default function UserMenu({ user, onLogout, onManageUsers }) {
 
   return (
     <div className="user-menu" ref={ref}>
-      <button className="user-menu-trigger" onClick={() => setOpen(o => !o)}>
-        <i className="fa-solid fa-circle-user" />
-        <span>{user.username}</span>
+      <button className="user-menu-trigger" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        <span className="user-avatar">{user.username.charAt(0)}</span>
+        <span className="user-menu-username">{user.username}</span>
         <i className="fa-solid fa-chevron-down user-menu-caret" />
       </button>
       {open && (
         <div className="user-menu-dropdown">
-          <div className="user-menu-role">{user.role === 'admin' ? 'Administrador' : 'Editor'}</div>
+          <div className="user-menu-head">
+            <span className="user-avatar">{user.username.charAt(0)}</span>
+            <div>
+              <div className="user-menu-name">{user.username}</div>
+              <div className="user-menu-role">{user.role === 'admin' ? 'Administrador' : 'Editor'}</div>
+            </div>
+          </div>
           {user.role === 'admin' && onManageUsers && (
             <button className="user-menu-item" onClick={() => { setOpen(false); onManageUsers(); }}>
               <i className="fa-solid fa-users-gear" /> Usuarios

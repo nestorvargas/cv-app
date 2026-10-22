@@ -128,8 +128,11 @@ export default function UsersPage({ user, onBack, onLogout }) {
       </header>
 
       <main className="cv-index-main">
-        <div className="cv-index-section-header">
-          <h2 className="cv-index-section-title">{users.length} usuario{users.length !== 1 ? 's' : ''}</h2>
+        <div className="cv-hero">
+          <div>
+            <p className="cv-hero-eyebrow">{users.length} usuario{users.length !== 1 ? 's' : ''}</p>
+            <h2 className="cv-index-section-title">Gestión de <span className="gradient-text">usuarios</span></h2>
+          </div>
           <button className="cv-index-add-btn" onClick={() => setModal({ mode: 'create' })}>
             <i className="fa-solid fa-user-plus" /> Nuevo usuario
           </button>
@@ -155,12 +158,14 @@ export default function UsersPage({ user, onBack, onLogout }) {
                 {users.map(u => (
                   <tr key={u.id}>
                     <td>
-                      <i className="fa-solid fa-circle-user users-avatar" />
-                      {u.username}
-                      {u.id === user.id && <span className="users-you">tú</span>}
+                      <div className="users-user">
+                        <span className="user-avatar">{u.username.charAt(0)}</span>
+                        {u.username}
+                        {u.id === user.id && <span className="users-you">tú</span>}
+                      </div>
                     </td>
                     <td><span className={`users-role users-role--${u.role}`}>{ROLE_LABELS[u.role]}</span></td>
-                    <td>{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
+                    <td className="users-date">{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
                     <td className="users-actions">
                       <button className="users-action" title="Editar" onClick={() => setModal({ mode: 'edit', target: u })}>
                         <i className="fa-solid fa-pen" />
