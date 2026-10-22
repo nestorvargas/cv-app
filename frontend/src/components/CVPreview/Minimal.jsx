@@ -18,8 +18,6 @@ const LABELS = {
   },
 };
 
-const BAR_WIDTHS = [95, 88, 92, 85, 90, 80, 85, 78, 88, 82, 75, 90, 85, 80, 88];
-
 export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHeight }) {
   const { personal_info, summary, experience, education, skills, certificates, profile_image } = cvData;
   const L = LABELS[lang] || LABELS.es;
@@ -65,12 +63,6 @@ export default function Minimal({ cvData, lang, accentColor, bgColor, pageMinHei
               {allSkills.map((skill, i) => (
                 <div key={i} className="cv-minimal-skill-item" data-block>
                   <div className="cv-minimal-skill-name">{skill}</div>
-                  <div className="cv-minimal-skill-bar-wrap">
-                    <div
-                      className="cv-minimal-skill-bar-fill"
-                      style={{ width: `${BAR_WIDTHS[i % BAR_WIDTHS.length]}%` }}
-                    />
-                  </div>
                 </div>
               ))}
             </div>

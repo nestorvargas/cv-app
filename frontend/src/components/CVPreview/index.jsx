@@ -9,6 +9,8 @@ import Elegant from './Elegant.jsx';
 import Timeline from './Timeline.jsx';
 import Compact from './Compact.jsx';
 import Corporate from './Corporate.jsx';
+import Traditional from './Traditional.jsx';
+import AtsModern from './AtsModern.jsx';
 
 export default function CVPreview({ cvData, lang, template = 'classic', accentColor, bgColor, pageMinHeight }) {
   const p = { cvData, lang, accentColor, bgColor, pageMinHeight };
@@ -21,5 +23,7 @@ export default function CVPreview({ cvData, lang, template = 'classic', accentCo
   if (template === 'timeline')  return <Timeline  {...p} />;
   if (template === 'compact')   return <Compact   {...p} />;
   if (template === 'corporate') return <Corporate {...p} />;
+  if (template === 'traditional') return <Traditional {...p} />;
+  if (template === 'atsmodern') return <AtsModern {...p} />;
   return <Classic {...p} />;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import TemplateAdvisor from './TemplateAdvisor.jsx';
 
 const PRESET_COLORS = [
   '#1abc9c', '#3498db', '#e74c3c', '#e67e22', '#9b59b6',
@@ -148,6 +149,31 @@ const TEMPLATES = [
     ),
   },
   {
+    id: 'atsmodern',
+    name: 'ATS Moderna',
+    description: 'Compatible con ATS (texto real, una columna, sin íconos ni foto), con color de acento, fechas alineadas y habilidades en dos columnas.',
+    defaultAccent: '#1d4ed8',
+    defaultBg: '#ffffff',
+    thumbnail: (color) => (
+      <div style={{ width: '100%', height: 120, background: 'white', borderRadius: 4, overflow: 'hidden', padding: '10px 12px' }}>
+        <div style={{ width: '50%', height: 7, background: '#111', borderRadius: 2, marginBottom: 3 }} />
+        <div style={{ width: '35%', height: 3.5, background: color, borderRadius: 1, marginBottom: 3 }} />
+        <div style={{ width: '75%', height: 2.5, background: '#9ca3af', borderRadius: 1, marginBottom: 5 }} />
+        <div style={{ height: 2, background: color, marginBottom: 7 }} />
+        {[0, 1].map(k => (
+          <div key={k} style={{ marginBottom: 6 }}>
+            <div style={{ width: '30%', height: 3, background: color, borderRadius: 1, marginBottom: 4 }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+              <div style={{ width: '45%', height: 3, background: '#333', borderRadius: 1 }} />
+              <div style={{ width: '18%', height: 3, background: '#9ca3af', borderRadius: 1 }} />
+            </div>
+            {[85, 78].map(w => <div key={w} style={{ width: `${w}%`, height: 2.5, background: '#ddd', borderRadius: 1, marginBottom: 2 }} />)}
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
     id: 'minimal',
     name: 'Minimal',
     description: 'Sidebar oscuro con barras de habilidades. Timeline de dos columnas para experiencia.',
@@ -293,9 +319,32 @@ const TEMPLATES = [
       </div>
     ),
   },
+  {
+    id: 'traditional',
+    name: 'Tradicional (Colombia)',
+    description: 'Formato clásico de hoja de vida: portada con foto y datos personales, títulos en recuadro, referencias y firma con cédula. Usa los datos opcionales de la pestaña Personal y la pestaña Referencias.',
+    defaultAccent: '#374151',
+    defaultBg: '#e5e7eb',
+    thumbnail: (color, bg) => (
+      <div style={{ width: '100%', height: 120, background: 'white', borderRadius: 4, overflow: 'hidden', padding: 6 }}>
+        <div style={{ height: '100%', border: `2.5px double ${color}`, padding: '6px 14px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ width: '40%', height: 5, background: '#111', borderRadius: 1, marginBottom: 2 }} />
+          <div style={{ width: '55%', height: 3, background: '#555', borderRadius: 1, marginBottom: 4 }} />
+          <div style={{ width: 18, height: 23, background: '#d1d5db', marginBottom: 5 }} />
+          <div style={{ alignSelf: 'flex-start', width: '62%', height: 7, background: bg, border: `1.5px double ${color}`, marginBottom: 4 }} />
+          {[0, 1, 2].map(k => (
+            <div key={k} style={{ alignSelf: 'stretch', display: 'flex', gap: 6, marginBottom: 3 }}>
+              <div style={{ width: '38%', height: 2.5, background: '#333', borderRadius: 1 }} />
+              <div style={{ flex: 1, height: 2.5, background: '#bbb', borderRadius: 1 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
 ];
 
-export default function TemplatesForm({ activeTemplate, onChange, templateColors = {}, onColorChange, templateBgColors = {}, onBgColorChange }) {
+export default function TemplatesForm({ activeTemplate, onChange, templateColors = {}, onColorChange, templateBgColors = {}, onBgColorChange, cvData, lang }) {
   return (
     <div>
       <h3 style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 700, color: '#2c3e50' }}>
@@ -304,6 +353,8 @@ export default function TemplatesForm({ activeTemplate, onChange, templateColors
       <p style={{ margin: '0 0 20px', fontSize: 13, color: '#6c757d' }}>
         Elige el diseño y personaliza los colores de cada plantilla.
       </p>
+
+      {cvData && <TemplateAdvisor cvData={cvData} lang={lang} templates={TEMPLATES} onApply={onChange} />}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         {TEMPLATES.map((tmpl) => {

@@ -87,7 +87,9 @@
 
 /* Skills */
 .cv-minimal-skill-item {
-  margin-bottom: 8px;
+  margin-bottom: 7px;
+  padding-left: 10px;
+  border-left: 2px solid var(--cv-accent, #2980b9);
 }
 
 .cv-minimal-skill-name {
@@ -96,21 +98,9 @@
   color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 3px;
+  margin-bottom: 0;
 }
 
-.cv-minimal-skill-bar-wrap {
-  height: 3px;
-  background: rgba(255, 255, 255, 0.14);
-  border-radius: 2px;
-}
-
-.cv-minimal-skill-bar-fill {
-  height: 100%;
-  background: var(--cv-accent, #2980b9);
-  border-radius: 2px;
-  opacity: 0.85;
-}
 
 /* Certificates in sidebar */
 .cv-minimal-cert-item {

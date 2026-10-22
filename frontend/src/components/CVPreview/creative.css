@@ -8,7 +8,7 @@
   position: relative;
   /* Right sidebar subtle bg extends to full height.
      minHeight is injected as inline style by Paged.jsx (1123px per page). */
-  background: linear-gradient(to right, #ffffff 70%, #f4f6f8 70%);
+  background: linear-gradient(to right, #ffffff 70%, #e0e6ed 70%, #e0e6ed calc(70% + 1px), #f4f6f8 calc(70% + 1px));
   display: flex;
   flex-direction: column;
   box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
@@ -233,7 +233,6 @@
   width: 30%;
   background: transparent;
   padding: 24px 18px;
-  border-left: 1px solid #e0e6ed;
   display: flex;
   flex-direction: column;
 }

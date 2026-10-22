@@ -3,6 +3,9 @@ import CVPagedViewer from './components/CVPreview/Paged.jsx';
 import CVTemplateRenderer from './components/CVPreview/index.jsx';
 import { getCv } from './api/cvApi.js';
 
+// Templates printed as real text (native pagination) instead of page screenshots
+const REAL_TEXT_TEMPLATES = ['ats', 'atsmodern'];
+
 export default function PrintPage() {
   const parts = window.location.pathname.split('/').filter(Boolean);
   // URL pattern: /print/:profileName/:lang
@@ -50,7 +53,7 @@ export default function PrintPage() {
         padding: 0,
       }}
     >
-      {template === 'ats' ? (
+      {REAL_TEXT_TEMPLATES.includes(template) ? (
         // Real-text PDF path: rendered as normal document flow so Chromium's
         // print engine paginates it natively (see pdfController.js `page.pdf()`
         // branch), instead of the screenshot-based synthetic pager below.

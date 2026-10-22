@@ -154,40 +154,6 @@ export default function Creative({ cvData, lang, accentColor, bgColor, pageMinHe
           {/* RIGHT SIDEBAR (30%) */}
           <aside className="cv-creative-sidebar">
             <div className="cv-creative-sidebar-section">
-              <h4 className="cv-creative-sidebar-title">{L.contact}</h4>
-              {personal_info.phone && (
-                <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon"><i className="fa-solid fa-phone" /></span>
-                  <span>{personal_info.phone}</span>
-                </div>
-              )}
-              {personal_info.email && (
-                <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon"><i className="fa-solid fa-envelope" /></span>
-                  <span style={{ wordBreak: 'break-all' }}>{personal_info.email}</span>
-                </div>
-              )}
-              {personal_info.location && (
-                <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon"><i className="fa-solid fa-location-dot" /></span>
-                  <span>{personal_info.location}</span>
-                </div>
-              )}
-              {personal_info.linkedin && (
-                <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon"><i className="fa-brands fa-linkedin" /></span>
-                  <span style={{ wordBreak: 'break-all' }}>{personal_info.linkedin}</span>
-                </div>
-              )}
-              {personal_info.github && (
-                <div className="cv-creative-contact-item">
-                  <span className="cv-creative-contact-icon"><i className="fa-brands fa-github" /></span>
-                  <span>{personal_info.github}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="cv-creative-sidebar-section">
               <h4 className="cv-creative-sidebar-title">{L.skills}</h4>
               {skillCategories.map(({ key, label }) =>
                 skills[key]?.length > 0 ? (

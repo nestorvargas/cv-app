@@ -256,7 +256,7 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
               style={{
                 position: 'absolute',
                 top: 0, left: 0, right: 0,
-                height: PAGE_INSET,
+                height: PAGE_INSET - 2, // leave 2px so zoom rounding never eats the first row
                 background: overlayBg,
                 zIndex: 5,
                 pointerEvents: 'none',
@@ -271,12 +271,42 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
               style={{
                 position: 'absolute',
                 bottom: 0, left: 0, right: 0,
-                height: PAGE_H - (pageOffsets[i + 1] - pageOffsets[i] + (i === 0 ? 0 : PAGE_INSET)),
+                height: PAGE_H - (pageOffsets[i + 1] - pageOffsets[i] + (i === 0 ? 0 : PAGE_INSET)) + 2,
                 background: overlayBg,
                 zIndex: 5,
                 pointerEvents: 'none',
               }}
             />
+          )}
+
+          {/* Traditional format: double frame and page number on every page */}
+          {template === 'traditional' && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 12,
+                border: `4px double ${accentColor || '#374151'}`,
+                zIndex: 6,
+                pointerEvents: 'none',
+              }}
+            >
+              {pageCount > 1 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: 2,
+                    left: 0,
+                    right: 0,
+                    textAlign: 'center',
+                    fontFamily: 'Arial, Helvetica, sans-serif',
+                    fontSize: 10.5,
+                    color: '#6b7280',
+                  }}
+                >
+                  {lang === 'en' ? `Page ${i + 1} of ${pageCount}` : `Página ${i + 1} de ${pageCount}`}
+                </span>
+              )}
+            </div>
           )}
         </div>
       ))}

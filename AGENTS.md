@@ -36,7 +36,9 @@ cd frontend && npm run build && npm run preview
 
 - `profile_name` is a slug. New profiles are inserted for both `es` and `en` simultaneously.
 - Default profiles (`desarrollador`, `devops-linux`, `lider-tecnico`) are protected from deletion.
-- Template names are fixed lowercase keys: `classic`, `modern`, `executive`, `creative`, `minimal`.
+- Template names are fixed lowercase keys: `classic`, `modern`, `executive`, `creative`, `minimal`, `ats`, `atsmodern`, `elegant`, `timeline`, `compact`, `corporate`, `traditional`. A new template must be registered in `CVPreview/index.jsx`, `CVEditor/TemplatesForm.jsx` (thumbnail), `App.jsx` (default colors) and, if it has a colored column, the overlay in `Paged.jsx`.
+- `ats` and `atsmodern` are printed as real text (`REAL_TEXT_TEMPLATES` in `PrintPage.jsx` and `pdfController.js`); the rest are page screenshots.
+- `traditional` (Colombian format) uses the optional `personal_info` fields (`document_id`, `document_place`, `birth_date`, `birth_place`, `marital_status`, `address`, `signature`) and the `personal_references` column; its page frame and page numbers are drawn by `Paged.jsx`.
 - Template colors are managed in `App.jsx` and persisted in `localStorage` under `cv_prefs_<profileName>`.
 - DB JSONB fields: `personal_info`, `summary`, `experience`, `education`, `skills`, `certificates`, `profile_image`, `profile_label`.
 - PDF and preview templates share the same data model. Keep visuals in sync when changing either.

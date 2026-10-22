@@ -4,6 +4,9 @@ const { SESSION_COOKIE } = require('../lib/auth');
 
 const FRONTEND_URL = process.env.FRONTEND_INTERNAL_URL || 'http://frontend:5173';
 
+// ATS-oriented templates are printed as real (selectable) text instead of page screenshots
+const REAL_TEXT_TEMPLATES = ['ats', 'atsmodern'];
+
 async function generatePdf(req, res) {
   const { profileName, lang } = req.params;
   let browser;
@@ -29,7 +32,8 @@ async function generatePdf(req, res) {
     await page.setCookie({ name: SESSION_COOKIE, value: req.sessionToken, url: FRONTEND_URL });
     // Match the CSS pixel dimensions used by CVPagedViewer (794 × 1123)
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
-    if (tmpl === 'ats') await page.emulateMediaType('print');
+    const realText = REAL_TEXT_TEMPLATES.includes(tmpl);
+    if (realText) await page.emulateMediaType('print');
     await page.goto(printUrl, { waitUntil: 'networkidle0', timeout: 30000 });
 
     // Wait until PrintPage signals it is ready (fonts loaded + layout stable)
@@ -37,7 +41,7 @@ async function generatePdf(req, res) {
 
     const filename = `CV_NestorVargas_${profileName}_${lang.toUpperCase()}.pdf`;
 
-    if (tmpl === 'ats') {
+    if (realText) {
       // Real-text PDF: renders the actual document flow (no screenshots), so the
       // output has selectable, extractable text that ATS/AI parsers can read.
       const pdfBytes = await page.pdf({
