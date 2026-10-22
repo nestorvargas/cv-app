@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { downloadPdf } from '../api/cvApi.js';
+import UserMenu from './Auth/UserMenu.jsx';
 
-export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, template, profileName, profileLabel, onBack, accentColor, bgColor }) {
+export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, template, profileName, profileLabel, onBack, user, onLogout, accentColor, bgColor }) {
   const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -181,6 +182,8 @@ export default function Navbar({ lang, onLangToggle, onSave, saving, saveMsg, te
           <i className={`fa-solid ${downloading ? 'fa-spinner fa-spin' : 'fa-file-arrow-down'}`} />
           {downloading ? 'Generando...' : 'Descargar PDF'}
         </button>
+
+        <UserMenu user={user} onLogout={onLogout} />
       </div>
     </nav>
   );

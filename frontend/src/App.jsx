@@ -3,9 +3,10 @@ import Navbar from './components/Navbar.jsx';
 import CVEditor from './components/CVEditor/index.jsx';
 import CVPagedViewer from './components/CVPreview/Paged.jsx';
 import CVIndex from './components/CVIndex/index.jsx';
+import UsersPage from './components/Auth/UsersPage.jsx';
 import { getCv, updateCv } from './api/cvApi.js';
 
-export default function App() {
+export default function App({ user, onLogout }) {
   const [page, setPage] = useState('index');
   const [activeProfile, setActiveProfile] = useState(null); // { profileName, profileLabel }
   const [lang, setLang] = useState('es');
@@ -121,8 +122,12 @@ export default function App() {
     setCvData(prev => ({ ...prev, [field]: value }));
   };
 
+  if (page === 'users') {
+    return <UsersPage user={user} onLogout={onLogout} onBack={() => setPage('index')} />;
+  }
+
   if (page === 'index') {
-    return <CVIndex onEdit={handleEdit} />;
+    return <CVIndex onEdit={handleEdit} user={user} onLogout={onLogout} onManageUsers={() => setPage('users')} />;
   }
 
   return (
@@ -138,6 +143,8 @@ export default function App() {
         profileName={activeProfile?.profileName}
         profileLabel={activeProfile?.profileLabel}
         onBack={handleBack}
+        user={user}
+        onLogout={onLogout}
         accentColor={templateColors[template]}
         bgColor={templateBgColors[template]}
       />

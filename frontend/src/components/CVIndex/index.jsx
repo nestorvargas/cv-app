@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { listProfiles, createProfile, deleteProfile } from '../../api/cvApi.js';
+import UserMenu from '../Auth/UserMenu.jsx';
 import './index.css';
 
 const PROFILE_META = {
@@ -13,7 +14,7 @@ function getProfileMeta(profileName) {
   return PROFILE_META[profileName] || DEFAULT_META;
 }
 
-export default function CVIndex({ onEdit }) {
+export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -74,12 +75,15 @@ export default function CVIndex({ onEdit }) {
               <p className="cv-index-subtitle">Nestor Fabian Vargas Ferrucho</p>
             </div>
           </div>
-          {!loading && (
-            <div className="cv-index-header-badge">
-              <i className="fa-solid fa-layer-group" />
-              {profiles.length} perfil{profiles.length !== 1 ? 'es' : ''}
-            </div>
-          )}
+          <div className="cv-index-header-right">
+            {!loading && (
+              <div className="cv-index-header-badge">
+                <i className="fa-solid fa-layer-group" />
+                {profiles.length} perfil{profiles.length !== 1 ? 'es' : ''}
+              </div>
+            )}
+            <UserMenu user={user} onLogout={onLogout} onManageUsers={onManageUsers} />
+          </div>
         </div>
       </header>
 

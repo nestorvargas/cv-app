@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const { PDFDocument } = require('pdf-lib');
+const { SESSION_COOKIE } = require('../lib/auth');
 
 const FRONTEND_URL = process.env.FRONTEND_INTERNAL_URL || 'http://frontend:5173';
 
@@ -24,6 +25,8 @@ async function generatePdf(req, res) {
     });
 
     const page = await browser.newPage();
+    // The print page fetches the CV through the authenticated API: reuse the caller's session.
+    await page.setCookie({ name: SESSION_COOKIE, value: req.sessionToken, url: FRONTEND_URL });
     // Match the CSS pixel dimensions used by CVPagedViewer (794 × 1123)
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 2 });
     if (tmpl === 'ats') await page.emulateMediaType('print');
