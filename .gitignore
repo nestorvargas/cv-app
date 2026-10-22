@@ -6,3 +6,6 @@ dist/
 build/
 postgres_data/
 cv_examples/*
+.env.*
+!.env.example
+!.env.prod.example
