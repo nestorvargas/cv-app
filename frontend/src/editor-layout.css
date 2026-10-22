@@ -9,15 +9,19 @@
 .editor-pane {
   width: 45%;
   overflow-y: auto;
-  border-right: 1px solid #dee2e6;
+  border-right: 1px solid #e2e8f0;
   background: #fff;
 }
 
+/* Preview "desk": navy with a soft glow and dot grid */
 .preview-pane {
   width: 55%;
   overflow-y: auto;
-  background: #16233d;
-  padding: 32px 20px 48px;
+  padding: 32px 24px 56px;
+  background:
+    radial-gradient(600px 300px at 50% 0%, rgba(37, 99, 235, 0.18), transparent 70%),
+    radial-gradient(rgba(148, 178, 255, 0.09) 1px, transparent 1px) 0 0 / 18px 18px,
+    #0b1530;
 }
 
 .editor-view-toggle {
@@ -30,7 +34,8 @@
     display: flex;
     gap: 4px;
     padding: 6px;
-    background: #0f1f3d;
+    background: #070f24;
+    border-bottom: 1px solid var(--glass-border);
     flex-shrink: 0;
   }
 
@@ -47,7 +52,7 @@
   }
 
   .editor-view-toggle button.active {
-    background: #2f74e8;
+    background: var(--brand-grad);
     color: white;
   }
 

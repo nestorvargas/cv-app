@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Navbar from './components/Navbar.jsx';
 import CVEditor from './components/CVEditor/index.jsx';
 import CVPagedViewer from './components/CVPreview/Paged.jsx';
@@ -17,6 +17,7 @@ export default function App({ user, onLogout }) {
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
   const [mobileView, setMobileView] = useState('edit'); // narrow screens show one pane at a time
+  const [dirty, setDirty] = useState(false); // unsaved edits in the current CV
   const DEFAULT_COLORS = {
     classic:   '#1abc9c',
     modern:    '#e67e22',
@@ -49,6 +50,7 @@ export default function App({ user, onLogout }) {
     try {
       const res = await getCv(profileName, language);
       setCvData(res.data);
+      setDirty(false);
     } catch (err) {
       console.error('Failed to load CV:', err);
     } finally {
@@ -88,12 +90,18 @@ export default function App({ user, onLogout }) {
     setPage('editor');
   };
 
+  const confirmDiscard = () =>
+    !dirty || window.confirm('Tienes cambios sin guardar. ¿Quieres descartarlos?');
+
   const handleBack = () => {
+    if (!confirmDiscard()) return;
     setCvData(null);
+    setDirty(false);
     setPage('index');
   };
 
   const handleLangToggle = (newLang) => {
+    if (newLang === lang || !confirmDiscard()) return;
     setLang(newLang);
   };
 
@@ -112,6 +120,7 @@ export default function App({ user, onLogout }) {
         profile_label: activeProfile.profileLabel,
       });
       setCvData(res.data);
+      setDirty(false);
       setSaveMsg('Guardado');
       setTimeout(() => setSaveMsg(''), 2500);
     } catch (err) {
@@ -123,7 +132,31 @@ export default function App({ user, onLogout }) {
 
   const handleChange = (field, value) => {
     setCvData(prev => ({ ...prev, [field]: value }));
+    setDirty(true);
   };
+
+  // Ctrl/Cmd+S saves; the ref keeps the listener pointing at the latest handleSave
+  const saveRef = useRef(handleSave);
+  saveRef.current = handleSave;
+  useEffect(() => {
+    if (page !== 'editor') return;
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        saveRef.current();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [page]);
+
+  // Warn before closing or reloading the tab with unsaved edits
+  useEffect(() => {
+    if (!dirty) return;
+    const onBeforeUnload = (e) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [dirty]);
 
   if (page === 'users') {
     return <UsersPage user={user} onLogout={onLogout} onBack={() => setPage('index')} />;
@@ -141,6 +174,7 @@ export default function App({ user, onLogout }) {
         onSave={handleSave}
         saving={saving}
         saveMsg={saveMsg}
+        dirty={dirty}
         cvData={cvData}
         template={template}
         profileName={activeProfile?.profileName}
@@ -171,6 +205,7 @@ export default function App({ user, onLogout }) {
           <>
             <div className="editor-pane">
               <CVEditor
+                isAdmin={user?.role === 'admin'}
                 cvData={cvData}
                 onChange={handleChange}
                 lang={lang}

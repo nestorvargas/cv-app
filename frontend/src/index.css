@@ -1,22 +1,48 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-ui);
   background: #f0f2f5;
   color: #333;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 :root {
-  --primary: #2c3e50;
-  --accent: #3498db;
-  --accent-hover: #2980b9;
-  --success: #27ae60;
-  --danger: #e74c3c;
-  --bg: #f0f2f5;
+  /* App UI typography (CV templates keep their own fonts) */
+  --font-ui: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  /* Brand: "Aurora" — deep blue → blue → sky */
+  --brand-1: #1d4ed8;
+  --brand-2: #2563eb;
+  --brand-3: #0ea5e9;
+  --brand-grad: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 55%, var(--brand-3) 100%);
+  --brand-glow: 0 8px 24px -6px rgba(37, 99, 235, 0.55);
+
+  /* Dark glass surfaces (home, CV list, users, modals) */
+  --ink: #070f24;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-hover: rgba(255, 255, 255, 0.08);
+  --glass-strong: rgba(12, 22, 48, 0.78);
+  --glass-border: rgba(148, 178, 255, 0.14);
+  --on-dark: #e8eeff;
+  --on-dark-muted: #93a3c4;
+  --on-dark-faint: #64748b;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 9px;
+
+  /* Editor (light) */
+  --primary: #1e293b;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg: #f4f6fb;
   --white: #ffffff;
-  --border: #dee2e6;
-  --text-muted: #6c757d;
+  --border: #e2e8f0;
+  --text-muted: #64748b;
   --sidebar-dark: #2c3e50;
   --sidebar-darker: #1a252f;
 }
@@ -42,28 +68,34 @@ button:disabled { opacity: 0.55; cursor: not-allowed; }
 
 input, textarea, select {
   width: 100%;
-  padding: 9px 13px;
+  padding: 10px 13px;
   border: 1.5px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  background: #fff;
+  color: var(--primary);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  background: #f8fafc;
+}
+
+input:hover, textarea:hover, select:hover {
+  border-color: #cbd5e1;
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.12);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
 }
 
 textarea { resize: vertical; min-height: 80px; }
 
 label {
   display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #334155;
   margin-bottom: 5px;
 }
 
@@ -71,13 +103,13 @@ label {
 
 /* ── Primary ── */
 .btn-primary {
-  background: var(--accent);
+  background: var(--brand-grad);
   color: white;
-  box-shadow: 0 2px 6px rgba(52,152,219,0.3);
+  box-shadow: var(--brand-glow);
 }
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-  box-shadow: 0 4px 10px rgba(52,152,219,0.4);
+  filter: brightness(1.08);
+  box-shadow: 0 10px 28px -6px rgba(37, 99, 235, 0.65);
 }
 
 /* ── Success ── */

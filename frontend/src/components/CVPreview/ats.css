@@ -18,8 +18,16 @@
 }
 
 @media print {
-  @page { size: A4; margin: 0; }
+  /* Vertical page margins come from the PDF call (pdfController.js: 12mm top/bottom)
+     so every page — not only the first — gets breathing room at top and bottom. */
+  @page { size: A4; margin: 12mm 0; }
+  html:has(.cv-ats-wrapper),
+  body:has(.cv-ats-wrapper),
+  #cv-print-root { background: #ffffff !important; }
+  .cv-ats-wrapper { padding-top: 0; padding-bottom: 0; }
   [data-block] { break-inside: avoid; page-break-inside: avoid; }
+  /* Never leave a section title alone at the bottom of a page. */
+  .cv-ats-section-title { break-after: avoid; page-break-after: avoid; }
 }
 
 .cv-ats-header { margin-bottom: 22px; }

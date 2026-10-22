@@ -5,12 +5,12 @@ import UserMenu from '../Auth/UserMenu.jsx';
 import './index.css';
 
 const PROFILE_META = {
-  'devops-linux':  { faIcon: 'fa-server',      color: '#2980b9' },
-  'desarrollador': { faIcon: 'fa-laptop-code', color: '#27ae60' },
-  'lider-tecnico': { faIcon: 'fa-chess-king',  color: '#e67e22' },
+  'devops-linux':  { faIcon: 'fa-server',      color: '#0ea5e9' },
+  'desarrollador': { faIcon: 'fa-laptop-code', color: '#10b981' },
+  'lider-tecnico': { faIcon: 'fa-chess-king',  color: '#f97316' },
 };
 // Custom profiles get a stable color derived from their slug
-const CUSTOM_COLORS = ['#2f74e8', '#8e44ad', '#16a085', '#c0392b', '#d35400', '#2c3e94', '#0e7c86'];
+const CUSTOM_COLORS = ['#3b82f6', '#0ea5e9', '#14b8a6', '#f43f5e', '#f59e0b', '#2563eb', '#06b6d4'];
 
 function getProfileMeta(profileName) {
   if (PROFILE_META[profileName]) return PROFILE_META[profileName];
@@ -26,6 +26,7 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
   const [users, setUsers] = useState([]); // admin only: owner choices
+  const [search, setSearch] = useState('');
   const isAdmin = user?.role === 'admin';
 
   const load = async () => {
@@ -82,6 +83,19 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
     }
   };
 
+  const query = search.trim().toLowerCase();
+  const visible = query
+    ? profiles.filter(p => [p.profile_label, p.personal_info?.name, p.personal_info?.title, p.owner_username]
+        .some(v => v?.toLowerCase().includes(query)))
+    : profiles;
+  const people = new Set(profiles.map(p => p.personal_info?.name).filter(Boolean)).size;
+
+  const STATS = [
+    { icon: 'fa-layer-group', value: profiles.length, label: profiles.length === 1 ? 'Hoja de vida' : 'Hojas de vida' },
+    { icon: 'fa-language', value: profiles.length * 2, label: 'Versiones ES / EN' },
+    { icon: 'fa-user-group', value: people, label: people === 1 ? 'Persona' : 'Personas' },
+  ];
+
   return (
     <div className="cv-index app-bg">
       <header className="cv-index-header">
@@ -96,101 +110,136 @@ export default function CVIndex({ onEdit, user, onLogout, onManageUsers }) {
             </div>
           </div>
           <div className="cv-index-header-right">
-            {!loading && (
-              <div className="cv-index-header-badge">
-                <i className="fa-solid fa-layer-group" />
-                {profiles.length} perfil{profiles.length !== 1 ? 'es' : ''}
-              </div>
-            )}
             <UserMenu user={user} onLogout={onLogout} onManageUsers={onManageUsers} />
           </div>
         </div>
       </header>
 
       <main className="cv-index-main">
-        <div className="cv-index-section-header">
-          <h2 className="cv-index-section-title">{isAdmin ? 'Todos los CVs' : 'Mis CVs'}</h2>
+        <div className="cv-hero">
+          <div>
+            <p className="cv-hero-eyebrow">Hola, {user?.username}</p>
+            <h2 className="cv-index-section-title">
+              {isAdmin ? <>Todas las <span className="gradient-text">hojas de vida</span></> : <>Tus <span className="gradient-text">hojas de vida</span></>}
+            </h2>
+          </div>
           <button className="cv-index-add-btn" onClick={() => setShowModal(true)}>
             <i className="fa-solid fa-plus" /> Nuevo CV
           </button>
         </div>
+
+        {!loading && profiles.length > 0 && (
+          <div className="cv-stats">
+            {STATS.map(stat => (
+              <div key={stat.icon} className="cv-stat">
+                <div className="cv-stat-icon"><i className={`fa-solid ${stat.icon}`} /></div>
+                <div>
+                  <div className="cv-stat-value">{stat.value}</div>
+                  <div className="cv-stat-label">{stat.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {loading ? (
           <div className="cv-index-loading">
             <i className="fa-solid fa-spinner fa-spin" style={{ marginRight: 10 }} />
             Cargando perfiles...
           </div>
-        ) : (
-          <div className="cv-index-grid">
-            {profiles.map((profile) => {
-              const meta = getProfileMeta(profile.profile_name);
-              const isDefault = ['desarrollador', 'devops-linux', 'lider-tecnico'].includes(profile.profile_name);
-              return (
-                <div key={profile.profile_name} className="cv-card">
-                  <div className="cv-card-header" style={{ background: meta.color }}>
-                    {!isDefault && (
-                      <button
-                        className="cv-card-delete"
-                        onClick={() => handleDelete(profile.profile_name)}
-                        title="Eliminar perfil"
-                      >
-                        <i className="fa-solid fa-xmark" />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="cv-card-icon-wrap">
-                    <div className="cv-card-icon-circle" style={{ background: meta.color }}>
-                      <i className={`fa-solid ${meta.faIcon}`} />
-                    </div>
-                  </div>
-
-                  <div className="cv-card-body">
-                    <h3 className="cv-card-label">{profile.profile_label}</h3>
-                    <p className="cv-card-name">
-                      <i className="fa-solid fa-user" />
-                      {profile.personal_info?.name || '—'}
-                    </p>
-                    <p className="cv-card-role">{profile.personal_info?.title || '—'}</p>
-                    {isAdmin && (
-                      <label className="cv-card-owner">
-                        <i className="fa-solid fa-user-lock" />
-                        <select
-                          value={profile.owner_id ?? ''}
-                          onChange={e => handleOwnerChange(profile.profile_name, e.target.value)}
-                          title="Usuario que puede ver y editar este CV"
-                        >
-                          <option value="">Sin asignar (solo admins)</option>
-                          {users.map(u => (
-                            <option key={u.id} value={u.id}>{u.username}</option>
-                          ))}
-                        </select>
-                      </label>
-                    )}
-                  </div>
-
-                  <div className="cv-card-divider" />
-
-                  <div className="cv-card-actions">
-                    <button
-                      className="cv-card-edit-btn"
-                      style={{ background: meta.color }}
-                      onClick={() => onEdit(profile.profile_name, profile.profile_label, 'es')}
-                    >
-                      <i className="fa-solid fa-pen-to-square" /> Editar ES
-                    </button>
-                    <button
-                      className="cv-card-edit-btn cv-card-edit-btn--outline"
-                      style={{ color: meta.color, borderColor: meta.color }}
-                      onClick={() => onEdit(profile.profile_name, profile.profile_label, 'en')}
-                    >
-                      <i className="fa-solid fa-pen-to-square" /> Editar EN
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+        ) : profiles.length === 0 ? (
+          <div className="cv-empty">
+            <i className="fa-solid fa-file-circle-plus" />
+            Aún no tienes hojas de vida. Crea la primera con <strong>Nuevo CV</strong>.
           </div>
+        ) : (
+          <>
+            <div className="cv-toolbar">
+              <div className="cv-search">
+                <i className="fa-solid fa-magnifying-glass" />
+                <input
+                  type="search"
+                  placeholder="Buscar por perfil, nombre o cargo..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  aria-label="Buscar hojas de vida"
+                />
+              </div>
+              <span className="cv-toolbar-count">
+                {visible.length} de {profiles.length}
+              </span>
+            </div>
+
+            {visible.length === 0 ? (
+              <div className="cv-empty">
+                <i className="fa-solid fa-magnifying-glass" />
+                Ninguna hoja de vida coincide con "{search}".
+              </div>
+            ) : (
+              <ul className="cv-list">
+                {visible.map((profile, i) => {
+                  const meta = getProfileMeta(profile.profile_name);
+                  const isDefault = ['desarrollador', 'devops-linux', 'lider-tecnico'].includes(profile.profile_name);
+                  return (
+                    <li
+                      key={profile.profile_name}
+                      className="cv-row"
+                      style={{ '--row-color': meta.color, animationDelay: `${Math.min(i, 10) * 35}ms` }}
+                    >
+                      <div className="cv-row-icon">
+                        <i className={`fa-solid ${meta.faIcon}`} />
+                      </div>
+
+                      <div className="cv-row-info">
+                        <h3 className="cv-row-label">{profile.profile_label}</h3>
+                        <p className="cv-row-meta">
+                          <span className="cv-row-name">{profile.personal_info?.name || '—'}</span>
+                          {profile.personal_info?.title && <> · {profile.personal_info.title}</>}
+                        </p>
+                      </div>
+
+                      {isAdmin && (
+                        <label className="cv-row-owner" title="Usuario que puede ver y editar este CV">
+                          <i className="fa-solid fa-user-lock" />
+                          <select
+                            value={profile.owner_id ?? ''}
+                            onChange={e => handleOwnerChange(profile.profile_name, e.target.value)}
+                          >
+                            <option value="">Sin asignar</option>
+                            {users.map(u => (
+                              <option key={u.id} value={u.id}>{u.username}</option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+
+                      <div className="cv-row-actions">
+                        <div className="cv-lang-switch" role="group" aria-label="Editar versión">
+                          {['es', 'en'].map(lang => (
+                            <button
+                              key={lang}
+                              onClick={() => onEdit(profile.profile_name, profile.profile_label, lang)}
+                              title={`Editar versión ${lang === 'es' ? 'en español' : 'en inglés'}`}
+                            >
+                              <i className="fa-solid fa-pen" /> {lang.toUpperCase()}
+                            </button>
+                          ))}
+                        </div>
+                        <button
+                          className="cv-row-delete"
+                          onClick={() => handleDelete(profile.profile_name)}
+                          disabled={isDefault}
+                          title={isDefault ? 'Los perfiles por defecto no se pueden eliminar' : 'Eliminar perfil'}
+                        >
+                          <i className="fa-solid fa-trash" />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </>
         )}
       </main>
 

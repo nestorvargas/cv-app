@@ -11,65 +11,161 @@ const EFFECTIVE_H  = PAGE_H - PAGE_INSET - PAGE_BOTTOM_INSET;
 // Left-sidebar widths (%) per template — used to reconstruct the correct overlay color
 const SIDEBAR_WIDTHS = { classic: 35, executive: 30, minimal: 29 };
 
+// Tuning for the break search (all values in unscaled CSS px).
+const KEEP_MAX_H    = 0.45 * EFFECTIVE_H; // [data-block]s taller than this may split between lines
+// Max blank space accepted at a page bottom to honour keep-together rules.
+// Tried from most to least generous; the most generous one that does not add
+// a page wins (0 = only never-cut-a-line rules, used just to save a page).
+const KEEP_GAP_STEPS = [220, 140, 70, 0];
+const ATOMIC_MAX_H  = 40;   // any element this short (badge, chip, single line) is never cut
+const HEADING_TAIL  = 48;   // a heading keeps at least this much of the following content with it
+const BLOCK_HEAD    = 64;   // a split [data-block] keeps its title rows (company, role…) together
+const BLOCK_ATOMIC  = 90;   // [data-block]s up to this height (education, cert entries) stay whole
+const LINE_PAD      = 0.5;  // safety margin around text-line boxes (line gaps are only ~5px)
+
 /**
- * Given the full template height and the array of block bounding boxes
- * (relative to the top of the inner-div), compute a list of page-top offsets.
- *
- * Each page starts at an offset into the document. The raw breakpoints are
- * evenly spaced (FIRST_PAGE_H, FIRST_PAGE_H + EFFECTIVE_H, …). For each raw
- * breakpoint we look whether it falls inside a data-block element. If it does,
- * we move the breakpoint UP to the top edge of that block so the block starts
- * fresh on the next page.
- *
- * Returns an array of offsets where each page's visible window starts.
- * pageOffsets[0] is always 0. pageOffsets[i] is the scroll-top for page i.
+ * Find a cut position <= `raw` that does not fall strictly inside any of the
+ * given [top, bottom] intervals. Moving the cut up to an interval's top may
+ * land inside another interval (other column), so cascade until clear.
  */
-function computePageOffsets(totalHeight, blocks) {
+function findClearCut(raw, intervals) {
+  let cut = raw;
+  for (let guard = 0; guard < intervals.length + 1; guard++) {
+    const hit = intervals.find(b => b.top < cut - 0.5 && b.bottom > cut + 0.5);
+    if (!hit) return cut;
+    cut = hit.top;
+  }
+  return cut;
+}
+
+/**
+ * Compute the document offsets where each page starts.
+ *
+ *  Constraint tiers, from strongest to weakest preference:
+ *  - `hard` (text lines, images, icons, badges, short elements): never cut.
+ *    A break between two lines of a paragraph is allowed, through one is not.
+ *  - `medium` (heading + start of its content, first rows of a block, short
+ *    entries): avoid orphaned titles / dangling dates.
+ *  - `soft` ([data-block]s that fit comfortably on a page): keep whole.
+ *  The strongest tier set whose cut costs at most `maxKeepGap` px of blank
+ *  space wins; otherwise the break falls back to the nearest line boundary.
+ *  This avoids half-empty pages when a tall block (e.g. a long sidebar skill
+ *  group) straddles the boundary, and works for two-column layouts because
+ *  the cut must be clear in every column at once.
+ *
+ * pageOffsets[0] is always 0. `contentBottom` is the bottom of the last real
+ * content, so wrapper padding / min-height never creates a blank page.
+ */
+function computePageOffsets(contentBottom, { hard, medium, soft }, maxKeepGap) {
   const offsets = [0];
+  if (contentBottom <= FIRST_PAGE_H) return offsets;
 
-  // Nothing to paginate
-  if (totalHeight <= FIRST_PAGE_H) return offsets;
-
-  // Sort blocks by their top position
-  const sorted = [...blocks].sort((a, b) => a.top - b.top);
-
-  // Raw breakpoints in document space (where a page boundary would land
-  // without any adjustment). These are the bottom edges of each page's
-  // visible content area.
+  const tiers = [hard.concat(medium, soft), hard.concat(medium)];
   let rawBreak = FIRST_PAGE_H;
 
-  while (rawBreak < totalHeight) {
-    // The cut position in document space for this page boundary.
-    // Check if rawBreak falls inside any block (top < rawBreak < bottom).
-    const collision = sorted.find(b => b.top < rawBreak && b.bottom > rawBreak);
-
-    let breakPoint;
-    if (collision) {
-      // Move the cut up to just before the colliding block's top. Then
-      // cascade: the moved position may itself land inside another block
-      // (e.g. a sidebar block that straddles the same boundary), so keep
-      // moving up until the candidate is in a clear gap.
-      // Guard: fall back to rawBreak if cascading would produce a
-      // zero-height page (candidate <= last offset) or the block is
-      // taller than EFFECTIVE_H.
-      let candidate = collision.top;
-      for (let i = 0; i < sorted.length; i++) {
-        const inner = sorted.find(b => b.top < candidate && b.bottom > candidate);
-        if (!inner) break;
-        candidate = inner.top;
-      }
-      breakPoint = candidate > offsets[offsets.length - 1] ? candidate : rawBreak;
-    } else {
-      breakPoint = rawBreak;
+  while (rawBreak < contentBottom) {
+    const last = offsets[offsets.length - 1];
+    let cut = null;
+    for (const tier of tiers) {
+      const c = findClearCut(rawBreak, tier);
+      if (rawBreak - c <= maxKeepGap && c > last) { cut = c; break; }
     }
-
-    offsets.push(breakPoint);
-
-    // Advance the raw break by one EFFECTIVE_H from this actual break point.
-    rawBreak = breakPoint + EFFECTIVE_H;
+    if (cut === null) {
+      cut = findClearCut(rawBreak, hard);
+      if (cut <= last + 100) cut = rawBreak; // pathological: never loop / emit empty pages
+    }
+    offsets.push(cut);
+    rawBreak = cut + EFFECTIVE_H;
   }
 
   return offsets;
+}
+
+/**
+ * Measure page-break constraints inside `el` (the inner-div of page 0).
+ *
+ * The editor preview sits inside a CSS-zoom FitToWidth. Under zoom, rects are
+ * snapped to device pixels, which at e.g. 0.5 adds ~2 CSS px of noise — enough
+ * to open fake gaps between text lines (only ~5 px apart). So we temporarily
+ * cancel the ancestor zoom on `el` and measure at 1:1, exactly like the PDF
+ * print page. Done synchronously (no paint in between), and the box size is
+ * restored before the ResizeObserver checks it, so it does not re-trigger.
+ */
+function measureLayout(el) {
+  const ancestorScale = (el.offsetWidth && el.getBoundingClientRect().width / el.offsetWidth) || 1;
+  const prevZoom = el.style.zoom;
+  if (Math.abs(ancestorScale - 1) > 0.001) el.style.zoom = String(1 / ancestorScale);
+  try {
+    return measureUnzoomed(el);
+  } finally {
+    el.style.zoom = prevZoom;
+  }
+}
+
+function measureUnzoomed(el) {
+  // getBoundingClientRect() deltas give positions relative to the inner-div,
+  // which is position:absolute top:0 inside a non-scrolling clip box.
+  const containerRect = el.getBoundingClientRect();
+  // Safety net for any residual scale (e.g. a CSS transform on an ancestor):
+  // keep offsets in unscaled CSS pixels.
+  const scale = (el.offsetWidth && containerRect.width / el.offsetWidth) || 1;
+  const rel = r => {
+    const top = (r.top - containerRect.top) / scale;
+    return { top, bottom: top + r.height / scale };
+  };
+
+  const hard = [];
+  let contentBottom = 0;
+
+  // 1. Every rendered line of text.
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => (n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
+  });
+  const range = document.createRange();
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    range.selectNodeContents(n);
+    for (const r of range.getClientRects()) {
+      if (r.height <= 0 || r.width <= 0) continue;
+      const b = rel(r);
+      hard.push({ top: b.top - LINE_PAD, bottom: b.bottom + LINE_PAD });
+      if (b.bottom > contentBottom) contentBottom = b.bottom;
+    }
+  }
+
+  // 2. Images, icons and any short element (badges, chips, bars, single rows).
+  for (const node of el.querySelectorAll('*')) {
+    const r = node.getBoundingClientRect();
+    if (r.height <= 0 || r.width <= 0) continue;
+    const tag = node.tagName;
+    const isMedia = tag === 'IMG' || tag === 'svg' || tag === 'I';
+    const h = r.height / scale;
+    if (isMedia || h <= ATOMIC_MAX_H) {
+      const b = rel(r);
+      hard.push(b);
+      if (isMedia && b.bottom > contentBottom) contentBottom = b.bottom;
+    }
+  }
+
+  // 3. Keep-together preferences.
+  const medium = [];
+  const soft = [];
+  for (const node of el.querySelectorAll('[data-block]')) {
+    const b = rel(node.getBoundingClientRect());
+    const h = b.bottom - b.top;
+    if (h <= 0) continue;
+    if (h <= KEEP_MAX_H) soft.push(b);
+    // Even when a block must split, avoid stranding its first rows at a page bottom.
+    medium.push({ top: b.top, bottom: b.top + (h <= BLOCK_ATOMIC ? h : BLOCK_HEAD) });
+  }
+  for (const node of el.querySelectorAll('h2, h3, h4')) {
+    const b = rel(node.getBoundingClientRect());
+    if (b.bottom - b.top > 0) {
+      // Never leave a heading orphaned at the bottom of a page.
+      medium.push({ top: b.top, bottom: b.bottom + HEADING_TAIL });
+    }
+  }
+
+  return { contentBottom, hard, medium, soft };
 }
 
 export default function CVPagedViewer({ cvData, lang, template, accentColor, bgColor }) {
@@ -83,27 +179,13 @@ export default function CVPagedViewer({ cvData, lang, template, accentColor, bgC
     if (!el) return;
 
     const update = () => {
-      const h = el.scrollHeight;
-
-      // getBoundingClientRect() delta gives the block's top relative to the
-      // inner-div. The offsetParent chain walk was broken because template
-      // wrappers are position:static, so offsetParent jumped directly to the
-      // page-div (skipping the inner-div) and produced wrong values.
-      // The inner-div is position:absolute top:0 inside an overflow:hidden
-      // container that never scrolls, so its rect.top is a stable anchor.
-      const containerRect = el.getBoundingClientRect();
-      // Rects are in screen pixels: undo any ancestor zoom/scale (e.g. the
-      // fit-to-width preview) so offsets stay in unscaled CSS pixels.
-      const scale = (el.offsetWidth && containerRect.width / el.offsetWidth) || 1;
-
-      const blockEls = el.querySelectorAll('[data-block]');
-      const blocks = Array.from(blockEls).map(b => {
-        const bRect = b.getBoundingClientRect();
-        const top = (bRect.top - containerRect.top) / scale;
-        return { top, bottom: top + bRect.height / scale };
-      });
-
-      setPageOffsets(computePageOffsets(h, blocks));
+      const { contentBottom, ...constraints } = measureLayout(el);
+      const options = KEEP_GAP_STEPS.map(g => computePageOffsets(contentBottom, constraints, g));
+      const minPages = Math.min(...options.map(o => o.length));
+      const next = options.find(o => o.length === minPages);
+      setPageOffsets(prev =>
+        prev.length === next.length && prev.every((v, i) => Math.abs(v - next[i]) < 0.5) ? prev : next
+      );
     };
 
     const ro = new ResizeObserver(update);

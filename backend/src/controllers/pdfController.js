@@ -43,7 +43,9 @@ async function generatePdf(req, res) {
       const pdfBytes = await page.pdf({
         format: 'A4',
         printBackground: true,
-        margin: { top: '0', bottom: '0', left: '0', right: '0' },
+        // Top/bottom margin on every page (ats.css drops the wrapper's vertical
+        // padding in print so page 1 keeps roughly the same top spacing).
+        margin: { top: '12mm', bottom: '12mm', left: '0', right: '0' },
       });
       await browser.close();
       browser = null;

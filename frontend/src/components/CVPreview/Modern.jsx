@@ -37,11 +37,11 @@ export default function Modern({ cvData, lang, accentColor, bgColor, pageMinHeig
   const imgSrc = profile_image || null;
 
   const skillCategories = [
-    { key: 'technical', label: L.technical },
-    { key: 'databases', label: L.databases },
-    { key: 'devops', label: L.devops },
-    { key: 'tools', label: L.tools },
-    { key: 'languages', label: L.languages },
+    { key: 'technical', label: skills?._labels?.technical || L.technical },
+    { key: 'databases', label: skills?._labels?.databases || L.databases },
+    { key: 'devops', label: skills?._labels?.devops || L.devops },
+    { key: 'tools', label: skills?._labels?.tools || L.tools },
+    { key: 'languages', label: skills?._labels?.languages || L.languages },
   ];
 
   return (
